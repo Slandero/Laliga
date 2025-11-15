@@ -1,0 +1,185 @@
+// Sistema de enrutamiento para la aplicación
+// Maneja la navegación entre diferentes secciones
+
+class Router {
+    constructor() {
+        this.routes = {};
+        this.currentRoute = '';
+        this.initialized = false;
+    }
+
+    init() {
+        if (this.initialized) return;
+        
+        // Definir las rutas de la aplicación
+        this.routes = {
+            '': 'inicio',
+            'inicio': 'inicio',
+            'calendario': 'calendario',
+            'resultados': 'resultados',
+            'clasificacion': 'clasificacion',
+            'clubes': 'clubes',
+            'fichajes': 'fichajes'
+        };
+
+        // Escuchar cambios en la URL
+        window.addEventListener('popstate', () => this.handleRoute());
+        
+        // Manejar enlaces de navegación (usando delegación de eventos)
+        document.addEventListener('click', (e) => {
+            const routeElement = e.target.closest('[data-route]');
+            if (routeElement) {
+                e.preventDefault();
+                const route = routeElement.getAttribute('data-route');
+                console.log(`Click detectado en enlace con ruta: ${route}`);
+                this.navigate(route);
+            }
+        });
+
+        this.initialized = true;
+        
+        // Cargar la ruta inicial después de un pequeño delay para asegurar que el DOM está listo
+        setTimeout(() => this.handleRoute(), 100);
+    }
+
+    navigate(route) {
+        console.log(`Navegando a: ${route}`);
+        if (this.routes[route]) {
+            window.history.pushState({}, '', route ? `#${route}` : '#');
+            this.handleRoute();
+        } else {
+            console.error(`Ruta no encontrada: ${route}`);
+        }
+    }
+
+    handleRoute() {
+        // Obtener la ruta actual del hash
+        const hash = window.location.hash.slice(1) || '';
+        const route = this.routes[hash] || this.routes[''];
+        
+        if (route !== this.currentRoute) {
+            this.currentRoute = route;
+            this.loadPage(route);
+        }
+    }
+
+    async loadPage(pageName) {
+        try {
+            const main = document.querySelector('main') || document.querySelector('#app-content');
+            
+            if (!main) {
+                console.error('No se encontró el elemento main');
+                return;
+            }
+
+            console.log(`Cargando página: ${pageName}`);
+
+            // Mostrar estado de carga
+            main.innerHTML = '<section><h1>Cargando...</h1></section>';
+
+            // Importar y cargar el módulo de la página
+            console.log(`🔍 Intentando importar: ./pages/${pageName}.js`);
+            let pageModule;
+            try {
+                pageModule = await import(`./pages/${pageName}.js`);
+                console.log(`✅ Módulo importado:`, pageModule);
+                console.log(`📦 pageModule.default existe:`, !!pageModule.default);
+                console.log(`📦 pageModule.init existe:`, !!pageModule.init);
+                console.log(`📦 Tipo de pageModule.init:`, typeof pageModule.init);
+            } catch (importError) {
+                console.error(`❌ ERROR al importar módulo ${pageName}:`, importError);
+                throw importError;
+            }
+            
+            if (pageModule && pageModule.default) {
+                // Renderizar el contenido de la página
+                console.log(`🎨 Renderizando página ${pageName}...`);
+                main.innerHTML = pageModule.default();
+                console.log(`✅ Página ${pageName} renderizada correctamente`);
+                
+                // Ejecutar cualquier inicialización de la página después de renderizar
+                if (pageModule.init) {
+                    console.log(`🚀 Función init encontrada para ${pageName}, ejecutando...`);
+                    console.log(`🔍 Tipo de init:`, typeof pageModule.init);
+                    // Delay más largo para asegurar que el DOM esté completamente actualizado
+                    setTimeout(async () => {
+                        try {
+                            console.log(`📞 Llamando a init() de ${pageName}...`);
+                            const resultado = await pageModule.init();
+                            console.log(`✅ Init de ${pageName} ejecutado exitosamente. Resultado:`, resultado);
+                        } catch (initError) {
+                            console.error(`❌ ERROR en init de ${pageName}:`, initError);
+                            console.error('📚 Stack completo:', initError.stack);
+                            console.error('📋 Mensaje:', initError.message);
+                        }
+                    }, 200);
+                } else {
+                    console.warn(`⚠️ La página ${pageName} NO tiene función init`);
+                    console.log(`🔍 Propiedades del módulo:`, Object.keys(pageModule));
+                }
+            } else {
+                throw new Error(`El módulo ${pageName} no exporta una función default`);
+            }
+
+            // Actualizar el título de la página
+            document.title = `Proyecto Liga - ${this.getPageTitle(pageName)}`;
+            
+            // Actualizar la clase activa en el navbar (con un pequeño delay para asegurar que el navbar esté cargado)
+            setTimeout(() => this.updateActiveNav(), 50);
+            
+            // Scroll al inicio
+            window.scrollTo(0, 0);
+        } catch (error) {
+            console.error(`Error al cargar la página ${pageName}:`, error);
+            console.error('Stack:', error.stack);
+            // Cargar página de error o página por defecto
+            this.loadErrorPage();
+        }
+    }
+
+    getPageTitle(pageName) {
+        const titles = {
+            'inicio': 'Inicio',
+            'calendario': 'Calendario',
+            'resultados': 'Resultados',
+            'clasificacion': 'Clasificación',
+            'clubes': 'Clubes',
+            'fichajes': 'Fichajes'
+        };
+        return titles[pageName] || 'Inicio';
+    }
+
+    updateActiveNav() {
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        const currentHash = window.location.hash.slice(1) || 'inicio';
+        
+        navLinks.forEach(link => {
+            const route = link.getAttribute('data-route') || '';
+            if (route === currentHash || (currentHash === '' && route === 'inicio')) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    loadErrorPage() {
+        const main = document.querySelector('main') || document.querySelector('#app-content');
+        if (main) {
+            main.innerHTML = `
+                <section>
+                    <h1>Página no encontrada</h1>
+                    <p>La página que buscas no existe.</p>
+                    <a href="#" data-route="inicio">Volver al inicio</a>
+                </section>
+            `;
+        }
+    }
+}
+
+// Crear una instancia del router pero no inicializarla todavía
+const router = new Router();
+
+// Exportar el router
+export default router;
+

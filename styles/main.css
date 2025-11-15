@@ -1,0 +1,233 @@
+/* Estilos principales del Proyecto Liga */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Componente de Navegación Superior */
+.navbar {
+    background-color: #FF4B44;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.logo-button:hover {
+    transform: scale(1.05);
+}
+
+.logo-button:active {
+    transform: scale(0.98);
+}
+
+.logo-button img {
+    height: 50px;
+    width: auto;
+    max-width: 150px;
+    display: block;
+    border-radius: 5px;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-menu li {
+    position: relative;
+}
+
+.nav-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-menu a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.nav-menu a.active {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+}
+
+/* Contenido Principal */
+main {
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+}
+
+/* Footer */
+footer {
+    background-color: #FF4B44;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .nav-menu a {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .logo-button img {
+        height: 40px;
+    }
+}
+
+/* Estilos para la página de Clubes */
+#clubes {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+#clubes h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 2.5rem;
+}
+
+.clubes-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.club-item {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.club-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-color: #FF4B44;
+}
+
+.club-item:active {
+    transform: translateY(-2px);
+}
+
+.club-escudo-container {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.club-escudo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.club-nombre {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+    word-wrap: break-word;
+}
+
+/* Responsive para Clubes */
+@media (max-width: 1200px) {
+    .clubes-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .clubes-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    
+    .club-escudo-container {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .club-nombre {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .clubes-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+

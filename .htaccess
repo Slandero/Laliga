@@ -1,0 +1,63 @@
+# Configuración de Apache para Proyecto Liga
+
+# Habilitar el motor de reescritura
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Redirigir todas las rutas a index.html para SPA (Single Page Application)
+    # Excepto archivos y directorios que existen
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(?!.*\.(js|css|jpg|jpeg|png|gif|svg|ico|php|json)$).*$ index.html [L]
+</IfModule>
+
+# Configurar tipos MIME para módulos ES6
+<IfModule mod_mime.c>
+    # JavaScript modules
+    AddType application/javascript .js
+    AddType text/javascript .js
+    
+    # Asegurar que los módulos ES6 se sirvan correctamente
+    <FilesMatch "\.js$">
+        Header set Content-Type "application/javascript; charset=utf-8"
+    </FilesMatch>
+</IfModule>
+
+# Habilitar CORS si es necesario (para desarrollo)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Configuración de caché (opcional, para producción)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Compresión GZIP (si está disponible)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+</IfModule>
+
+# Prevenir acceso a archivos sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Configuración de índices
+DirectoryIndex index.html index.php
+
+# Configuración de errores personalizados (opcional)
+# ErrorDocument 404 /index.html
+
