@@ -308,14 +308,16 @@ function mostrarJugadores(jugadores, carpetaImagen) {
     });
     
     // Función para renderizar una tarjeta de entrenador/asistente
-    const renderizarEntrenador = (persona, carpetaImagen) => {
+    const renderizarEntrenador = (persona, carpetaImagen, esAsistente = false) => {
         // Obtener nombre
         const nombre = persona.nombre || persona.Nombre || persona.name || '';
         const apellido = persona.apellido || persona.Apellido || persona.surname || persona.lastname || '';
         const nombreCompleto = nombre && apellido ? `${nombre} ${apellido}` : (nombre || apellido || 'Sin nombre');
         
-        // Construir ruta de la imagen (los entrenadores no tienen dorsal, usar nombre o logo)
-        let rutaImagen = `images/${carpetaImagen}/entrenador.png`;
+        // Construir ruta de la imagen
+        // Si es asistente, usar "sentrenador", si no, usar "entrenador"
+        let nombreImagen = esAsistente ? 'sentrenador' : 'entrenador';
+        let rutaImagen = `images/${carpetaImagen}/${nombreImagen}.png`;
         
         // Función para formatear nombres de campos
         const formatearCampo = (campo) => {
@@ -338,7 +340,7 @@ function mostrarJugadores(jugadores, carpetaImagen) {
                     <img src="${rutaImagen}" 
                          alt="${nombreCompleto}" 
                          class="jugador-imagen"
-                         onerror="this.onerror=null; this.src='images/${carpetaImagen}/entrenador.jpg'; if(this.onerror) this.src='images/LaligaLogo.jpg';">
+                         onerror="this.onerror=null; this.src='images/${carpetaImagen}/${nombreImagen}.jpg'; if(this.onerror) this.src='images/LaligaLogo.jpg';">
                 </div>
                 <div class="jugador-info">
                     <h3 class="jugador-nombre">${nombreCompleto}</h3>
@@ -394,12 +396,12 @@ function mostrarJugadores(jugadores, carpetaImagen) {
         
         // Mostrar primero los entrenadores
         entrenadores.forEach(entrenador => {
-            html += renderizarEntrenador(entrenador, carpetaImagen);
+            html += renderizarEntrenador(entrenador, carpetaImagen, false);
         });
         
-        // Luego los asistentes
+        // Luego los asistentes (con imagen de "sentrenadores")
         asistentes.forEach(asistente => {
-            html += renderizarEntrenador(asistente, carpetaImagen);
+            html += renderizarEntrenador(asistente, carpetaImagen, true);
         });
         
         html += `
