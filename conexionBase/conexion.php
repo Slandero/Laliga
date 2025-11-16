@@ -4,7 +4,38 @@
  * Utiliza PDO para conexiones seguras y preparadas
  */
 
-require_once __DIR__ . '/../config/config.php';
+// Suprimir errores durante la carga
+@error_reporting(0);
+@ini_set('display_errors', 0);
+
+// Intentar cargar config.php si existe
+$configPath = __DIR__ . '/../config/config.php';
+if (file_exists($configPath)) {
+    @require_once $configPath;
+}
+
+// Si no están definidas las constantes, usar valores por defecto
+if (!defined('DB_HOST')) {
+    @define('DB_HOST', '127.0.0.1');
+}
+if (!defined('DB_NAME')) {
+    @define('DB_NAME', 'laliga');
+}
+if (!defined('DB_USER')) {
+    @define('DB_USER', 'root');
+}
+if (!defined('DB_PASS')) {
+    @define('DB_PASS', '');
+}
+if (!defined('DB_CHARSET')) {
+    @define('DB_CHARSET', 'utf8mb4');
+}
+if (!defined('APP_DEBUG')) {
+    @define('APP_DEBUG', false);
+}
+if (!defined('APP_ENV')) {
+    @define('APP_ENV', 'production');
+}
 
 class Conexion {
     private static $instancia = null;
@@ -76,8 +107,10 @@ class Conexion {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
-            return $stmt->fetchAll();
+            $resultado = $stmt->fetchAll();
+            return $resultado ? $resultado : [];
         } catch (PDOException $e) {
+            // Solo loggear errores, no mostrar
             if (APP_DEBUG) {
                 error_log("Error en consulta: " . $e->getMessage());
                 error_log("SQL: " . $sql);

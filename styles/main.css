@@ -231,3 +231,261 @@ footer {
     }
 }
 
+/* Estilos para la página de Equipo */
+#equipo {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.equipo-header {
+    margin-bottom: 2rem;
+}
+
+.btn-volver {
+    background-color: #FF4B44;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-volver:hover {
+    background-color: #e6392e;
+}
+
+.equipo-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.equipo-escudo-grande {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.equipo-info h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+#equipo-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.equipo-detalles h2 {
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.seccion-posicion {
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+
+.titulo-seccion {
+    color: #FF4B44;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #FF4B44;
+    text-align: center;
+}
+
+.equipo-detalles p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+/* Estilos para Jugadores */
+.total-jugadores {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.info-dorsal {
+    font-size: 0.9rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #e8f5e9;
+    border-radius: 5px;
+}
+
+.warning-dorsal {
+    font-size: 0.9rem;
+    color: #ff9800;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #fff3e0;
+    border-radius: 5px;
+}
+
+.jugadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+
+.jugador-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: block;
+    box-sizing: border-box;
+}
+
+.jugador-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-color: #FF4B44;
+}
+
+.jugador-imagen-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.jugador-imagen {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.jugador-dorsal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #FF4B44;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.jugador-etiqueta {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #4CAF50;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.jugador-info {
+    text-align: center;
+}
+
+.jugador-nombre {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.jugador-datos {
+    text-align: left;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.jugador-datos p {
+    margin: 0.3rem 0;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.jugador-datos p:last-child {
+    border-bottom: none;
+}
+
+.jugador-datos strong {
+    color: #333;
+    text-transform: capitalize;
+}
+
+.error-mensaje {
+    background: #ffe6e6;
+    border: 2px solid #ff4b44;
+    border-radius: 8px;
+    padding: 1.5rem;
+    color: #d32f2f;
+}
+
+.error-mensaje p {
+    margin: 0.5rem 0;
+}
+
+.error-mensaje small {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+/* Responsive para Equipo */
+@media (max-width: 768px) {
+    .equipo-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .equipo-escudo-grande {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .equipo-info h1 {
+        font-size: 2rem;
+    }
+    
+    .jugadores-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .jugadores-grid {
+        grid-template-columns: 1fr;
+    }
+    
+}
+

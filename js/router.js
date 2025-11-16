@@ -44,7 +44,11 @@ class Router {
 
     navigate(route) {
         console.log(`Navegando a: ${route}`);
-        if (this.routes[route]) {
+        // Permitir rutas dinámicas de equipo
+        if (route.startsWith('equipo/')) {
+            window.history.pushState({}, '', `#${route}`);
+            this.handleRoute();
+        } else if (this.routes[route]) {
             window.history.pushState({}, '', route ? `#${route}` : '#');
             this.handleRoute();
         } else {
@@ -55,6 +59,17 @@ class Router {
     handleRoute() {
         // Obtener la ruta actual del hash
         const hash = window.location.hash.slice(1) || '';
+        
+        // Verificar si es una ruta dinámica de equipo (equipo/nombre_equipo)
+        if (hash.startsWith('equipo/')) {
+            const equipoTabla = hash.split('/')[1];
+            if (equipoTabla) {
+                this.currentRoute = 'equipo';
+                this.loadEquipoPage(equipoTabla);
+                return;
+            }
+        }
+        
         const route = this.routes[hash] || this.routes[''];
         
         if (route !== this.currentRoute) {
@@ -163,6 +178,54 @@ class Router {
         });
     }
 
+    async loadEquipoPage(equipoTabla) {
+        try {
+            const main = document.querySelector('main') || document.querySelector('#app-content');
+            
+            if (!main) {
+                console.error('No se encontró el elemento main');
+                return;
+            }
+
+            console.log(`Cargando página de equipo: ${equipoTabla}`);
+
+            // Mostrar estado de carga
+            main.innerHTML = '<section><h1>Cargando equipo...</h1></section>';
+
+            // Importar el módulo de equipo
+            const equipoModule = await import(`./pages/equipo.js`);
+            
+            if (equipoModule && equipoModule.default) {
+                // Renderizar el contenido pasando el nombre del equipo
+                main.innerHTML = equipoModule.default(equipoTabla);
+                console.log(`Página de equipo ${equipoTabla} renderizada correctamente`);
+                
+                // Ejecutar inicialización si existe
+                if (equipoModule.init) {
+                    setTimeout(async () => {
+                        try {
+                            await equipoModule.init(equipoTabla);
+                            console.log(`Init de equipo ${equipoTabla} ejecutado`);
+                        } catch (initError) {
+                            console.error(`Error en init de equipo:`, initError);
+                        }
+                    }, 200);
+                }
+            } else {
+                throw new Error('El módulo equipo no exporta una función default');
+            }
+
+            // Actualizar el título
+            document.title = `Proyecto Liga - Equipo`;
+            
+            // Scroll al inicio
+            window.scrollTo(0, 0);
+        } catch (error) {
+            console.error(`Error al cargar la página de equipo:`, error);
+            this.loadErrorPage();
+        }
+    }
+
     loadErrorPage() {
         const main = document.querySelector('main') || document.querySelector('#app-content');
         if (main) {
@@ -179,6 +242,9 @@ class Router {
 
 // Crear una instancia del router pero no inicializarla todavía
 const router = new Router();
+
+// Hacer el router accesible globalmente para los botones
+window.router = router;
 
 // Exportar el router
 export default router;
