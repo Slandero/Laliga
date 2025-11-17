@@ -1636,3 +1636,437 @@ footer p {
     }
 }
 
+/* ============================================
+   LÍNEA DE TIEMPO DE EVENTOS
+   ============================================ */
+
+.eventos-row {
+    background-color: #f9f9f9;
+}
+
+.eventos-col {
+    padding: 0 !important;
+}
+
+.eventos-container {
+    padding: 1.5rem;
+    min-height: 200px;
+}
+
+.eventos-loading,
+.eventos-error {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.eventos-error {
+    color: #d32f2f;
+}
+
+.eventos-header {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.btn-agregar-evento {
+    background-color: #FF4B44;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-agregar-evento:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-eventos {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem 0.5rem;
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.btn-eventos:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.timeline-container {
+    position: relative;
+    width: 100%;
+    padding: 2rem 0;
+    min-height: 300px;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #1a237e;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.timeline-events {
+    position: relative;
+    width: 100%;
+}
+
+.timeline-team {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-team-local {
+    margin-bottom: 2rem;
+}
+
+.timeline-team-visitante {
+    margin-top: 2rem;
+}
+
+.timeline-team-center {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    pointer-events: none;
+}
+
+.timeline-team-center .team-events {
+    position: relative;
+    min-height: auto;
+}
+
+.timeline-team-center .evento-item {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF4B44;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(255, 75, 68, 0.4);
+    pointer-events: auto;
+}
+
+.timeline-team-center .evento-item:hover {
+    transform: translateX(-50%) scale(1.15);
+    box-shadow: 0 8px 24px rgba(255, 75, 68, 0.6);
+}
+
+.timeline-team-center .evento-nombre {
+    color: white;
+}
+
+.timeline-team-center .evento-minuto {
+    color: white;
+}
+
+.team-logo-container {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-logo-timeline {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.team-events {
+    flex: 1;
+    position: relative;
+    min-height: 80px;
+}
+
+.evento-item {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    max-width: 200px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.evento-item:hover {
+    z-index: 10;
+    transform: translateX(-50%) scale(1.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    background: #fff;
+    padding: 0.75rem;
+    min-width: 140px;
+    max-width: 250px;
+}
+
+.evento-item.evento-hover-center {
+    z-index: 1000 !important;
+    transform: translate(0, 0) scale(1.2) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+    padding: 1rem !important;
+    min-width: 160px !important;
+    max-width: 300px !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    max-height: none !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+}
+
+.timeline-team-local .evento-item {
+    bottom: 0;
+}
+
+.timeline-team-visitante .evento-item {
+    top: 0;
+}
+
+.evento-icono {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.evento-item:hover .evento-icono {
+    font-size: 1.8rem;
+}
+
+.evento-contenido {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.evento-nombre {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+}
+
+.evento-item:hover .evento-nombre {
+    font-size: 0.95rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.evento-asistencia-text {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+}
+
+.evento-item:hover .evento-asistencia-text {
+    font-size: 0.85rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.evento-tipo-gol {
+    font-size: 0.7rem;
+    color: #FF4B44;
+    font-weight: 700;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.evento-sustitucion-text {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+}
+
+.evento-item:hover .evento-sustitucion-text {
+    font-size: 0.85rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.evento-minuto {
+    font-size: 0.7rem;
+    color: #1a237e;
+    font-weight: 700;
+    margin-top: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.evento-item:hover .evento-minuto {
+    font-size: 0.8rem;
+}
+
+.evento-gol {
+    border-left: 3px solid #4CAF50;
+}
+
+.evento-tarjeta-amarilla {
+    border-left: 3px solid #FFC107;
+}
+
+.evento-tarjeta-roja {
+    border-left: 3px solid #F44336;
+}
+
+.evento-sustitucion {
+    border-left: 3px solid #2196F3;
+}
+
+.evento-fin-partido {
+    border-left: 3px solid #FF4B44;
+}
+
+.btn-eliminar-evento {
+    background: #f44336;
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.btn-eliminar-evento:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.timeline-minutes {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.timeline-minute {
+    position: absolute;
+    top: -15px;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1a237e;
+    background: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modal-evento-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: normal;
+    margin: 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkbox-label span {
+    line-height: 1.5;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .timeline-container {
+        padding: 1rem 0;
+    }
+    
+    .team-logo-container {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .team-logo-timeline {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .evento-item {
+        min-width: 100px;
+        max-width: 150px;
+        padding: 0.4rem;
+    }
+    
+    .evento-nombre {
+        font-size: 0.75rem;
+    }
+    
+    .evento-icono {
+        font-size: 1.2rem;
+    }
+}
+

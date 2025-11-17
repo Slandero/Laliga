@@ -382,7 +382,988 @@ async function verificarUsuarioLogueado() {
     }
 }
 
-function renderizarResultados(resultados) {
+// Variables globales para eventos
+let eventosPartidos = {}; // Cache de eventos por partido
+
+// Función para obtener el nombre de la tabla de jugadores de un equipo
+function obtenerTablaJugadores(nombreEquipo) {
+    const mapeo = {
+        'ATHLETIC CLUB': 'athletic_club',
+        'ATLÉTICO DE MADRID': 'atletico_de_madrid',
+        'CA OSASUNA': 'ca_osasuna',
+        'CELTA': 'celta_vigo',
+        'CELTA DE VIGO': 'celta_vigo',
+        'DEPORTIVO ALAVÉS': 'deportivo_alaves',
+        'ELCHE CF': 'elche_cf',
+        'FC BARCELONA': 'fc_barcelona',
+        'GETAFE CF': 'getafe_cf',
+        'GIRONA FC': 'girona_fc',
+        'LEVANTE UD': 'levante_ud',
+        'RAYO VALLECANO': 'rayo_vallecano',
+        'RCD ESPANYOL DE BARCELONA': 'rcd_espanyol',
+        'RCD MALLORCA': 'rcd_mallorca',
+        'REAL BETIS': 'real_betis',
+        'REAL MADRID': 'real_madrid',
+        'REAL OVIEDO': 'real_oviedo',
+        'REAL SOCIEDAD': 'real_sociedad',
+        'SEVILLA FC': 'sevilla_fc',
+        'VALENCIA CF': 'valencia_cf',
+        'VILLARREAL CF': 'villarreal_cf'
+    };
+    return mapeo[nombreEquipo] || null;
+}
+
+// Función para toggle de eventos
+async function toggleEventos(partidoId) {
+    const eventosRow = document.getElementById(`eventos-row-${partidoId}`);
+    if (!eventosRow) return;
+    
+    if (eventosRow.style.display === 'none') {
+        eventosRow.style.display = 'table-row';
+        await cargarEventos(partidoId);
+    } else {
+        eventosRow.style.display = 'none';
+    }
+}
+
+// Función para cargar eventos de un partido
+async function cargarEventos(partidoId) {
+    const container = document.getElementById(`eventos-container-${partidoId}`);
+    if (!container) return;
+    
+    container.innerHTML = '<div class="eventos-loading">Cargando eventos...</div>';
+    
+    try {
+        const response = await fetch(`api/eventos_partido.php?partido_id=${partidoId}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        // Obtener el texto de la respuesta primero
+        const text = await response.text();
+        
+        // Intentar parsear como JSON
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch (parseError) {
+            console.error('Error al parsear JSON. Respuesta recibida:', text);
+            container.innerHTML = `<div class="eventos-error">Error: La respuesta del servidor no es válida. Ver consola para detalles.</div>`;
+            return;
+        }
+        
+        if (result.success) {
+            eventosPartidos[partidoId] = result.eventos;
+            renderizarEventos(partidoId, result.eventos);
+        } else {
+            container.innerHTML = `<div class="eventos-error">Error: ${result.error || 'Error desconocido'}</div>`;
+        }
+    } catch (error) {
+        console.error('Error al cargar eventos:', error);
+        container.innerHTML = `<div class="eventos-error">Error al cargar eventos: ${error.message}</div>`;
+    }
+}
+
+// Función para renderizar la línea de tiempo de eventos
+function renderizarEventos(partidoId, eventos) {
+    const container = document.getElementById(`eventos-container-${partidoId}`);
+    if (!container) return;
+    
+    // Obtener información del partido
+    const partidoRow = document.querySelector(`tr[data-partido-id="${partidoId}"]`);
+    if (!partidoRow) return;
+    
+    const partido = resultadosActuales.find(p => p.id === partidoId);
+    if (!partido) return;
+    
+    const carpetaLocal = obtenerCarpetaEquipo(partido.local);
+    const carpetaVisitante = obtenerCarpetaEquipo(partido.visitante);
+    const rutaLogoLocal = carpetaLocal ? `images/${carpetaLocal}/escudo.png` : 'images/LaligaLogo.jpg';
+    const rutaLogoVisitante = carpetaVisitante ? `images/${carpetaVisitante}/escudo.png` : 'images/LaligaLogo.jpg';
+    
+    // Función auxiliar para convertir minuto a número para ordenar (definida antes de usarse)
+    const convertirMinutoANumero = (minuto) => {
+        if (typeof minuto === 'number') return minuto;
+        const str = String(minuto);
+        if (str.includes('+')) {
+            const partes = str.split('+');
+            return parseInt(partes[0]) + (parseInt(partes[1]) / 100); // Ej: 90+3 = 90.03
+        }
+        return parseInt(str) || 0;
+    };
+    
+    // Separar eventos por equipo y fin_partido
+    const eventosLocal = eventos.filter(e => e.equipo === 'local' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    });
+    const eventosVisitante = eventos.filter(e => e.equipo === 'visitante' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    });
+    const eventosFinPartido = eventos.filter(e => e.tipo_evento === 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    });
+    
+    // Obtener todos los minutos únicos y ordenarlos (usando la función ya definida arriba)
+    const todosMinutos = [...new Set(eventos.map(e => e.minuto))].sort((a, b) => {
+        return convertirMinutoANumero(a) - convertirMinutoANumero(b);
+    });
+    
+    // Botón para agregar evento (solo si está logueado)
+    const botonAgregar = usuarioLogueado ? `
+        <div class="eventos-header">
+            <button class="btn-agregar-evento" onclick="mostrarModalAgregarEvento(${partidoId})">
+                + Agregar Evento
+            </button>
+        </div>
+    ` : '';
+    
+    let html = `
+        ${botonAgregar}
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-events">
+                <div class="timeline-team timeline-team-local">
+                    <div class="team-logo-container">
+                        <img src="${rutaLogoLocal}" alt="${partido.local}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                    </div>
+                    <div class="team-events">
+                        ${eventosLocal.map(evento => renderizarEvento(evento, 'local', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
+                <div class="timeline-minutes">
+                    ${todosMinutos.map(min => `<div class="timeline-minute" style="left: ${calcularPosicionMinuto(min, todosMinutos)}%">${min}'</div>`).join('')}
+                </div>
+                ${eventosFinPartido.length > 0 ? `
+                <div class="timeline-team timeline-team-center">
+                    <div class="team-events">
+                        ${eventosFinPartido.map(evento => renderizarEvento(evento, 'center', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                <div class="timeline-team timeline-team-visitante">
+                    <div class="team-logo-container">
+                        <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                    </div>
+                    <div class="team-events">
+                        ${eventosVisitante.map(evento => renderizarEvento(evento, 'visitante', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+    
+    // Agregar event listeners para mover eventos al centro con click
+    setTimeout(() => {
+        const eventoItems = container.querySelectorAll('.evento-item');
+        eventoItems.forEach(item => {
+            // Guardar posición original desde el atributo data o el estilo actual
+            // IMPORTANTE: Guardar ANTES de cualquier modificación
+            const originalLeft = item.getAttribute('data-original-left') || item.style.left || '';
+            
+            // Detectar si es local o visitante para guardar top/bottom correcto
+            const parentTeam = item.closest('.timeline-team-local, .timeline-team-visitante, .timeline-team-center');
+            let originalTop = '';
+            let originalBottom = '';
+            
+            if (parentTeam) {
+                if (parentTeam.classList.contains('timeline-team-local')) {
+                    originalBottom = '0';
+                } else if (parentTeam.classList.contains('timeline-team-visitante')) {
+                    originalTop = '0';
+                }
+            } else {
+                // Si no se encuentra el parent, usar los valores del estilo
+                originalTop = item.style.top || '';
+                originalBottom = item.style.bottom || '';
+            }
+            
+            const originalPosition = 'absolute';
+            const originalTransform = 'translateX(-50%)';
+            const originalZIndex = '';
+            
+            // Guardar en dataset para uso posterior
+            item.dataset.originalLeft = originalLeft;
+            item.dataset.originalTop = originalTop;
+            item.dataset.originalBottom = originalBottom;
+            item.dataset.originalPosition = originalPosition;
+            item.dataset.originalTransform = originalTransform;
+            item.dataset.originalZIndex = originalZIndex;
+            item.dataset.isCentered = 'false';
+            
+            item.addEventListener('click', function(e) {
+                // Evitar que el click se propague (especialmente para el botón de eliminar)
+                if (e.target.classList.contains('btn-eliminar-evento')) {
+                    return;
+                }
+                
+                e.stopPropagation();
+                
+                const isCentered = this.dataset.isCentered === 'true';
+                
+                if (!isCentered) {
+                    // Guardar dimensiones originales antes de cambiar
+                    const originalWidth = this.style.width || '';
+                    const originalHeight = this.style.height || '';
+                    const originalMaxWidth = this.style.maxWidth || '';
+                    const originalMaxHeight = this.style.maxHeight || '';
+                    
+                    this.dataset.originalWidth = originalWidth;
+                    this.dataset.originalHeight = originalHeight;
+                    this.dataset.originalMaxWidth = originalMaxWidth;
+                    this.dataset.originalMaxHeight = originalMaxHeight;
+                    
+                    // Calcular posición centrada en la ventana
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    const itemRect = this.getBoundingClientRect();
+                    const itemWidth = itemRect.width;
+                    const itemHeight = itemRect.height;
+                    
+                    // Posición centrada
+                    const centerX = (viewportWidth / 2) - (itemWidth / 2);
+                    const centerY = (viewportHeight / 2) - (itemHeight / 2);
+                    
+                    // Aplicar transformación
+                    this.style.position = 'fixed';
+                    this.style.left = centerX + 'px';
+                    this.style.top = centerY + 'px';
+                    this.style.bottom = '';
+                    this.style.transform = 'translate(0, 0)';
+                    this.style.zIndex = '1000';
+                    this.style.width = 'auto';
+                    this.style.height = 'auto';
+                    this.style.maxHeight = 'none';
+                    this.classList.add('evento-hover-center');
+                    this.dataset.isCentered = 'true';
+                } else {
+                    // Restaurar posición original - usar los valores guardados
+                    const origLeft = this.dataset.originalLeft || this.getAttribute('data-original-left') || '';
+                    const origTop = this.dataset.originalTop || '';
+                    const origBottom = this.dataset.originalBottom || '';
+                    
+                    // Asegurarse de que left tenga el formato correcto (porcentaje)
+                    const leftValue = origLeft.includes('%') ? origLeft : origLeft + '%';
+                    
+                    // Restaurar todos los estilos
+                    this.style.position = 'absolute';
+                    this.style.left = leftValue;
+                    if (origTop) {
+                        this.style.top = origTop;
+                        this.style.bottom = '';
+                    } else if (origBottom) {
+                        this.style.bottom = origBottom;
+                        this.style.top = '';
+                    } else {
+                        this.style.top = '';
+                        this.style.bottom = '';
+                    }
+                    this.style.transform = 'translateX(-50%)';
+                    this.style.zIndex = '';
+                    
+                    // Restaurar dimensiones originales
+                    this.style.width = this.dataset.originalWidth || '';
+                    this.style.height = this.dataset.originalHeight || '';
+                    this.style.maxWidth = this.dataset.originalMaxWidth || '';
+                    this.style.maxHeight = this.dataset.originalMaxHeight || '';
+                    
+                    this.classList.remove('evento-hover-center');
+                    this.dataset.isCentered = 'false';
+                    
+                    // Forzar reflow para asegurar que los cambios se apliquen
+                    this.offsetHeight;
+                }
+            });
+        });
+    }, 0);
+}
+
+// Función auxiliar para convertir minuto a número
+function convertirMinutoANumero(minuto) {
+    if (typeof minuto === 'number') return minuto;
+    const str = String(minuto);
+    if (str.includes('+')) {
+        const partes = str.split('+');
+        return parseInt(partes[0]) + (parseInt(partes[1]) / 100); // Ej: 90+3 = 90.03
+    }
+    return parseInt(str) || 0;
+}
+
+// Función para calcular la posición de un minuto en la línea de tiempo
+function calcularPosicionMinuto(minuto, todosMinutos) {
+    if (todosMinutos.length === 0) return 0;
+    const minutoNum = convertirMinutoANumero(minuto);
+    const minutosNumeros = todosMinutos.map(m => convertirMinutoANumero(m));
+    const min = Math.min(...minutosNumeros);
+    const max = Math.max(...minutosNumeros);
+    if (max === min) return 50;
+    return ((minutoNum - min) / (max - min)) * 100;
+}
+
+// Función para renderizar un evento individual
+function renderizarEvento(evento, equipo, partidoId, todosMinutos) {
+    const posicion = calcularPosicionMinuto(evento.minuto, todosMinutos);
+    let icono = '';
+    let clase = '';
+    
+    switch (evento.tipo_evento) {
+        case 'gol':
+            icono = '⚽';
+            clase = 'evento-gol';
+            break;
+        case 'asistencia':
+            icono = '🎯';
+            clase = 'evento-asistencia';
+            break;
+        case 'tarjeta_amarilla':
+            icono = '🟨';
+            clase = 'evento-tarjeta-amarilla';
+            break;
+        case 'tarjeta_roja':
+            icono = '🟥';
+            clase = 'evento-tarjeta-roja';
+            break;
+        case 'sustitucion':
+            icono = '🔄';
+            clase = 'evento-sustitucion';
+            break;
+        case 'fin_partido':
+            icono = '🏁';
+            clase = 'evento-fin-partido';
+            break;
+    }
+    
+    const botonEliminar = usuarioLogueado ? `
+        <button class="btn-eliminar-evento" onclick="eliminarEvento(${evento.id}, ${partidoId})" title="Eliminar">×</button>
+    ` : '';
+    
+    // Función auxiliar para formatear nombre con dorsal
+    const formatearNombreConDorsal = (nombre, dorsal) => {
+        if (!nombre) return '';
+        if (dorsal) {
+            return `${dorsal}. ${nombre}`;
+        }
+        return nombre;
+    };
+    
+    let contenido = '';
+    if (evento.tipo_evento === 'gol') {
+        let tipoGol = '';
+        if (evento.es_penal) {
+            tipoGol = '<div class="evento-tipo-gol">(Penal)</div>';
+        } else if (evento.es_autogol) {
+            tipoGol = '<div class="evento-tipo-gol">(Autogol)</div>';
+        }
+        
+        const nombreJugador = formatearNombreConDorsal(evento.jugador_nombre, evento.jugador_dorsal);
+        const nombreAsistencia = evento.jugador_asistencia_nombre && !evento.es_penal && !evento.es_autogol 
+            ? formatearNombreConDorsal(evento.jugador_asistencia_nombre, evento.jugador_asistencia_dorsal)
+            : null;
+        
+        contenido = `
+            <div class="evento-nombre">${nombreJugador}</div>
+            ${tipoGol}
+            ${nombreAsistencia ? `<div class="evento-asistencia-text">Asistencia: ${nombreAsistencia}</div>` : ''}
+        `;
+    } else if (evento.tipo_evento === 'sustitucion') {
+        const nombreSale = formatearNombreConDorsal(evento.jugador_sale_nombre, evento.jugador_sale_dorsal);
+        const nombreEntra = formatearNombreConDorsal(evento.jugador_entra_nombre, evento.jugador_entra_dorsal);
+        contenido = `
+            <div class="evento-nombre">${nombreSale}</div>
+            <div class="evento-sustitucion-text">→ ${nombreEntra}</div>
+        `;
+    } else if (evento.tipo_evento === 'fin_partido') {
+        contenido = `<div class="evento-nombre">Fin del Partido</div>`;
+    } else {
+        const nombreJugador = formatearNombreConDorsal(evento.jugador_nombre, evento.jugador_dorsal);
+        contenido = `<div class="evento-nombre">${nombreJugador}</div>`;
+    }
+    
+    return `
+        <div class="evento-item ${clase}" data-event-id="${evento.id}" data-original-left="${posicion}" style="left: ${posicion}%">
+            <div class="evento-icono">${icono}</div>
+            <div class="evento-contenido">
+                ${contenido}
+                <div class="evento-minuto">${evento.minuto}'</div>
+            </div>
+            ${botonEliminar}
+        </div>
+    `;
+}
+
+// Función para mostrar modal de agregar evento
+async function mostrarModalAgregarEvento(partidoId) {
+    const partido = resultadosActuales.find(p => p.id === partidoId);
+    if (!partido) return;
+    
+    // Obtener jugadores de ambos equipos
+    const tablaLocal = obtenerTablaJugadores(partido.local);
+    const tablaVisitante = obtenerTablaJugadores(partido.visitante);
+    
+    let jugadoresLocal = [];
+    let jugadoresVisitante = [];
+    
+    try {
+        if (tablaLocal) {
+            const response = await fetch(`api/jugadores.php?tabla=${tablaLocal}`);
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    jugadoresLocal = result.data || [];
+                }
+            }
+        }
+        
+        if (tablaVisitante) {
+            const response = await fetch(`api/jugadores.php?tabla=${tablaVisitante}`);
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    jugadoresVisitante = result.data || [];
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error al cargar jugadores:', error);
+    }
+    
+    const modalHTML = `
+        <div id="modal-evento" class="modal-partido">
+            <div class="modal-partido-content modal-evento-content">
+                <span class="modal-partido-close" onclick="cerrarModalEvento()">&times;</span>
+                <h2>Agregar Evento</h2>
+                <form id="form-evento">
+                    <input type="hidden" id="evento-partido-id" value="${partidoId}">
+                    
+                    <div class="form-group">
+                        <label>Tipo de Evento *</label>
+                        <select id="evento-tipo" required onchange="cambiarTipoEvento()">
+                            <option value="">Seleccione...</option>
+                            <option value="gol">Gol</option>
+                            <option value="tarjeta_amarilla">Tarjeta Amarilla</option>
+                            <option value="tarjeta_roja">Tarjeta Roja</option>
+                            <option value="sustitucion">Sustitución</option>
+                            <option value="fin_partido">Fin del Partido</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupo-equipo">
+                        <label>Equipo *</label>
+                        <select id="evento-equipo" required onchange="cambiarEquipoEvento()">
+                            <option value="">Seleccione...</option>
+                            <option value="local">${partido.local}</option>
+                            <option value="visitante">${partido.visitante}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Minuto *</label>
+                        <input type="text" id="evento-minuto" pattern="[0-9]+(\+[0-9]+)?" placeholder="Ej: 45 o 90+3" required>
+                        <small style="color: #666; font-size: 0.75rem;">Puedes usar el signo + para tiempo añadido (ej: 90+3)</small>
+                    </div>
+                    
+                    <div class="form-group" id="grupo-jugador">
+                        <label id="label-jugador">Jugador *</label>
+                        <select id="evento-jugador" required>
+                            <option value="">Seleccione jugador...</option>
+                        </select>
+                        <input type="text" id="evento-jugador-nombre" placeholder="O escribir nombre manualmente" style="margin-top: 0.5rem;">
+                    </div>
+                    
+                    <div class="form-group" id="grupo-opciones-gol" style="display: none;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="evento-es-penal" onchange="cambiarOpcionesGol()">
+                            <span>Es Penal</span>
+                        </label>
+                        <label class="checkbox-label" style="margin-left: 1rem;">
+                            <input type="checkbox" id="evento-es-autogol" onchange="cambiarOpcionesGol()">
+                            <span>Es Autogol</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="grupo-asistencia" style="display: none;">
+                        <label>Asistencia</label>
+                        <select id="evento-asistencia">
+                            <option value="">Sin asistencia</option>
+                        </select>
+                        <input type="text" id="evento-asistencia-nombre" placeholder="O escribir nombre manualmente" style="margin-top: 0.5rem;">
+                    </div>
+                    
+                    <div class="form-group" id="grupo-sustitucion" style="display: none;">
+                        <label>Jugador Sale</label>
+                        <select id="evento-jugador-sale">
+                            <option value="">Seleccione...</option>
+                        </select>
+                        <input type="text" id="evento-jugador-sale-nombre" placeholder="O escribir nombre manualmente" style="margin-top: 0.5rem;">
+                        
+                        <label style="margin-top: 1rem;">Jugador Entra</label>
+                        <select id="evento-jugador-entra">
+                            <option value="">Seleccione...</option>
+                        </select>
+                        <input type="text" id="evento-jugador-entra-nombre" placeholder="O escribir nombre manualmente" style="margin-top: 0.5rem;">
+                    </div>
+                    
+                    <div id="evento-error" class="error-message"></div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="btn-cancel" onclick="cerrarModalEvento()">Cancelar</button>
+                        <button type="submit" class="btn-submit">Guardar Evento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    // Eliminar modal anterior si existe
+    const modalAnterior = document.getElementById('modal-evento');
+    if (modalAnterior) {
+        modalAnterior.remove();
+    }
+    
+    // Agregar modal al body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Guardar jugadores para uso en el modal
+    window.jugadoresModal = {
+        local: jugadoresLocal,
+        visitante: jugadoresVisitante,
+        partido: partido
+    };
+    
+    // Event listeners
+    const modal = document.getElementById('modal-evento');
+    const form = document.getElementById('form-evento');
+    
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) cerrarModalEvento();
+        });
+    }
+    
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await guardarEvento();
+        });
+    }
+    
+    // Inicializar selectores de jugadores
+    cambiarEquipoEvento();
+    
+    // Asegurarse de que los campos ocultos no tengan required
+    const grupoJugador = document.getElementById('grupo-jugador');
+    const grupoSustitucion = document.getElementById('grupo-sustitucion');
+    const selectJugador = document.getElementById('evento-jugador');
+    
+    if (grupoJugador && grupoJugador.style.display === 'none') {
+        if (selectJugador) selectJugador.removeAttribute('required');
+    }
+    
+    if (grupoSustitucion && grupoSustitucion.style.display === 'none') {
+        // Los campos de sustitución no deberían tener required inicialmente
+    }
+}
+
+// Función para cambiar el equipo en el modal
+function cambiarEquipoEvento() {
+    const equipo = document.getElementById('evento-equipo').value;
+    const selectJugador = document.getElementById('evento-jugador');
+    const selectAsistencia = document.getElementById('evento-asistencia');
+    const selectSale = document.getElementById('evento-jugador-sale');
+    const selectEntra = document.getElementById('evento-jugador-entra');
+    
+    if (!window.jugadoresModal) return;
+    
+    const jugadores = equipo === 'local' ? window.jugadoresModal.local : window.jugadoresModal.visitante;
+    
+    // Función auxiliar para obtener el dorsal
+    const obtenerDorsal = (jugador) => {
+        return jugador.dorsal || jugador.Dorsal || jugador.numero || jugador.Numero || jugador.num || jugador.Num || '';
+    };
+    
+    // Limpiar y poblar selectores
+    [selectJugador, selectAsistencia, selectSale, selectEntra].forEach(select => {
+        if (select) {
+            select.innerHTML = '<option value="">Seleccione...</option>';
+            jugadores.forEach(jugador => {
+                const nombre = jugador.nombre || jugador.Nombre || jugador.name || '';
+                const id = jugador.id || jugador.ID || jugador.dorsal || jugador.Dorsal || '';
+                const dorsal = obtenerDorsal(jugador);
+                
+                if (nombre) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    // Guardar dorsal como atributo data
+                    option.setAttribute('data-dorsal', dorsal);
+                    // Mostrar nombre con dorsal si existe
+                    option.textContent = dorsal ? `${dorsal}. ${nombre}` : nombre;
+                    select.appendChild(option);
+                }
+            });
+        }
+    });
+}
+
+// Función para cambiar el tipo de evento
+function cambiarTipoEvento() {
+    const tipo = document.getElementById('evento-tipo').value;
+    const grupoJugador = document.getElementById('grupo-jugador');
+    const grupoEquipo = document.getElementById('grupo-equipo');
+    const grupoOpcionesGol = document.getElementById('grupo-opciones-gol');
+    const grupoAsistencia = document.getElementById('grupo-asistencia');
+    const grupoSustitucion = document.getElementById('grupo-sustitucion');
+    const labelJugador = document.getElementById('label-jugador');
+    const checkboxPenal = document.getElementById('evento-es-penal');
+    const checkboxAutogol = document.getElementById('evento-es-autogol');
+    const selectEquipo = document.getElementById('evento-equipo');
+    const selectJugador = document.getElementById('evento-jugador');
+    
+    // Si es fin_partido, ocultar todos los campos excepto minuto
+    if (tipo === 'fin_partido') {
+        if (grupoJugador) grupoJugador.style.display = 'none';
+        if (grupoEquipo) grupoEquipo.style.display = 'none';
+        if (grupoOpcionesGol) grupoOpcionesGol.style.display = 'none';
+        if (grupoAsistencia) grupoAsistencia.style.display = 'none';
+        if (grupoSustitucion) grupoSustitucion.style.display = 'none';
+        if (selectEquipo) selectEquipo.removeAttribute('required');
+        if (selectJugador) selectJugador.removeAttribute('required');
+    } else {
+        // Mostrar/ocultar grupos según el tipo de evento
+        if (grupoJugador) grupoJugador.style.display = tipo === 'sustitucion' ? 'none' : 'block';
+        if (grupoEquipo) grupoEquipo.style.display = 'block';
+        if (grupoOpcionesGol) grupoOpcionesGol.style.display = tipo === 'gol' ? 'block' : 'none';
+        if (grupoAsistencia) grupoAsistencia.style.display = tipo === 'gol' ? 'block' : 'none';
+        if (grupoSustitucion) grupoSustitucion.style.display = tipo === 'sustitucion' ? 'block' : 'none';
+        
+        // Manejar atributo required según el tipo de evento
+        if (selectEquipo) {
+            if (tipo === 'sustitucion' || tipo === 'gol' || tipo === 'tarjeta_amarilla' || tipo === 'tarjeta_roja') {
+                selectEquipo.setAttribute('required', 'required');
+            } else {
+                selectEquipo.removeAttribute('required');
+            }
+        }
+        
+        if (selectJugador) {
+            if (tipo === 'sustitucion' || tipo === 'fin_partido') {
+                selectJugador.removeAttribute('required');
+            } else {
+                selectJugador.setAttribute('required', 'required');
+            }
+        }
+        
+        // Si es sustitución y hay un equipo seleccionado, poblar los selects
+        if (tipo === 'sustitucion') {
+            const equipoSelect = document.getElementById('evento-equipo');
+            if (equipoSelect && equipoSelect.value) {
+                cambiarEquipoEvento();
+            }
+        }
+    }
+    
+    // Resetear checkboxes
+    if (checkboxPenal) checkboxPenal.checked = false;
+    if (checkboxAutogol) checkboxAutogol.checked = false;
+    
+    // Actualizar visibilidad de asistencia
+    cambiarOpcionesGol();
+    
+    if (labelJugador) {
+        labelJugador.textContent = 'Jugador *';
+    }
+}
+
+// Función para cambiar opciones de gol (penal/autogol)
+function cambiarOpcionesGol() {
+    const checkboxPenal = document.getElementById('evento-es-penal');
+    const checkboxAutogol = document.getElementById('evento-es-autogol');
+    const grupoAsistencia = document.getElementById('grupo-asistencia');
+    const tipoEvento = document.getElementById('evento-tipo') ? document.getElementById('evento-tipo').value : '';
+    
+    if (!checkboxPenal || !checkboxAutogol || !grupoAsistencia) return;
+    
+    // Si no es gol, no mostrar asistencia
+    if (tipoEvento !== 'gol') {
+        grupoAsistencia.style.display = 'none';
+        return;
+    }
+    
+    const esPenal = checkboxPenal.checked;
+    const esAutogol = checkboxAutogol.checked;
+    
+    // Si es penal o autogol, ocultar asistencia
+    if (esPenal || esAutogol) {
+        grupoAsistencia.style.display = 'none';
+        // Limpiar campos de asistencia
+        const selectAsistencia = document.getElementById('evento-asistencia');
+        const inputAsistencia = document.getElementById('evento-asistencia-nombre');
+        if (selectAsistencia) selectAsistencia.value = '';
+        if (inputAsistencia) inputAsistencia.value = '';
+    } else {
+        // Solo mostrar asistencia si es gol y no es penal ni autogol
+        grupoAsistencia.style.display = 'block';
+    }
+    
+    // No permitir que ambos estén marcados a la vez
+    if (esPenal && esAutogol) {
+        checkboxAutogol.checked = false;
+    }
+}
+
+// Función para guardar evento
+async function guardarEvento() {
+    const errorDiv = document.getElementById('evento-error');
+    if (errorDiv) {
+        errorDiv.textContent = '';
+    }
+    
+    // Remover required de campos ocultos antes de validar
+    const grupoJugador = document.getElementById('grupo-jugador');
+    const grupoSustitucion = document.getElementById('grupo-sustitucion');
+    const selectJugador = document.getElementById('evento-jugador');
+    
+    if (grupoJugador && grupoJugador.style.display === 'none' && selectJugador) {
+        selectJugador.removeAttribute('required');
+    }
+    
+    const partidoId = parseInt(document.getElementById('evento-partido-id').value);
+    const tipoEvento = document.getElementById('evento-tipo').value;
+    const equipoSelect = document.getElementById('evento-equipo');
+    const equipo = tipoEvento === 'fin_partido' ? 'local' : (equipoSelect ? equipoSelect.value : '');
+    const minutoInput = document.getElementById('evento-minuto').value.trim();
+    
+    // Validar formato de minuto (número o número+número)
+    if (!/^\d+(\+\d+)?$/.test(minutoInput)) {
+        if (errorDiv) {
+            errorDiv.textContent = 'El minuto debe ser un número o número+número (ej: 45 o 90+3)';
+        }
+        return;
+    }
+    
+    const minuto = minutoInput;
+    const jugadorSelect = document.getElementById('evento-jugador');
+    const jugadorNombreInput = document.getElementById('evento-jugador-nombre');
+    const asistenciaSelect = document.getElementById('evento-asistencia');
+    const asistenciaNombreInput = document.getElementById('evento-asistencia-nombre');
+    const jugadorSaleSelect = document.getElementById('evento-jugador-sale');
+    const jugadorSaleNombreInput = document.getElementById('evento-jugador-sale-nombre');
+    const jugadorEntraSelect = document.getElementById('evento-jugador-entra');
+    const jugadorEntraNombreInput = document.getElementById('evento-jugador-entra-nombre');
+    
+    // Función auxiliar para obtener dorsal de un select
+    const obtenerDorsalDeSelect = (select) => {
+        if (select && select.value) {
+            const option = select.options[select.selectedIndex];
+            return option ? option.getAttribute('data-dorsal') || '' : '';
+        }
+        return '';
+    };
+    
+    // Obtener nombre y dorsal del jugador
+    let jugadorNombre = jugadorNombreInput ? jugadorNombreInput.value.trim() : '';
+    let jugadorId = jugadorSelect ? jugadorSelect.value : '';
+    let jugadorDorsal = obtenerDorsalDeSelect(jugadorSelect);
+    
+    if (!jugadorNombre && jugadorSelect && jugadorSelect.value) {
+        const option = jugadorSelect.options[jugadorSelect.selectedIndex];
+        const textoCompleto = option.textContent;
+        // Extraer nombre sin el dorsal (formato: "10. Nombre" o solo "Nombre")
+        jugadorNombre = textoCompleto.replace(/^\d+\.\s*/, '');
+    }
+    
+    if (!jugadorNombre && tipoEvento !== 'sustitucion' && tipoEvento !== 'fin_partido') {
+        if (errorDiv) {
+            errorDiv.textContent = 'Debe especificar el nombre del jugador';
+        }
+        return;
+    }
+    
+    // Obtener opciones de gol (penal/autogol)
+    const checkboxPenal = document.getElementById('evento-es-penal');
+    const checkboxAutogol = document.getElementById('evento-es-autogol');
+    const esPenal = checkboxPenal ? checkboxPenal.checked : false;
+    const esAutogol = checkboxAutogol ? checkboxAutogol.checked : false;
+    
+    // Obtener asistencia si es gol (solo si no es penal ni autogol)
+    let asistenciaNombre = null;
+    let asistenciaId = null;
+    let asistenciaDorsal = null;
+    if (tipoEvento === 'gol' && !esPenal && !esAutogol) {
+        asistenciaNombre = asistenciaNombreInput ? asistenciaNombreInput.value.trim() : '';
+        asistenciaId = asistenciaSelect ? asistenciaSelect.value : '';
+        asistenciaDorsal = obtenerDorsalDeSelect(asistenciaSelect);
+        
+        if (!asistenciaNombre && asistenciaSelect && asistenciaSelect.value) {
+            const option = asistenciaSelect.options[asistenciaSelect.selectedIndex];
+            const textoCompleto = option.textContent;
+            asistenciaNombre = textoCompleto.replace(/^\d+\.\s*/, '');
+        }
+    }
+    
+    // Obtener jugadores de sustitución
+    let jugadorSaleNombre = null;
+    let jugadorSaleId = null;
+    let jugadorSaleDorsal = null;
+    let jugadorEntraNombre = null;
+    let jugadorEntraId = null;
+    let jugadorEntraDorsal = null;
+    
+    if (tipoEvento === 'sustitucion') {
+        jugadorSaleNombre = jugadorSaleNombreInput ? jugadorSaleNombreInput.value.trim() : '';
+        jugadorSaleId = jugadorSaleSelect ? jugadorSaleSelect.value : '';
+        jugadorSaleDorsal = obtenerDorsalDeSelect(jugadorSaleSelect);
+        
+        if (!jugadorSaleNombre && jugadorSaleSelect && jugadorSaleSelect.value) {
+            const option = jugadorSaleSelect.options[jugadorSaleSelect.selectedIndex];
+            const textoCompleto = option.textContent;
+            jugadorSaleNombre = textoCompleto.replace(/^\d+\.\s*/, '');
+        }
+        
+        jugadorEntraNombre = jugadorEntraNombreInput ? jugadorEntraNombreInput.value.trim() : '';
+        jugadorEntraId = jugadorEntraSelect ? jugadorEntraSelect.value : '';
+        jugadorEntraDorsal = obtenerDorsalDeSelect(jugadorEntraSelect);
+        
+        if (!jugadorEntraNombre && jugadorEntraSelect && jugadorEntraSelect.value) {
+            const option = jugadorEntraSelect.options[jugadorEntraSelect.selectedIndex];
+            const textoCompleto = option.textContent;
+            jugadorEntraNombre = textoCompleto.replace(/^\d+\.\s*/, '');
+        }
+        
+        if (!jugadorSaleNombre || !jugadorEntraNombre) {
+            if (errorDiv) {
+                errorDiv.textContent = 'Debe especificar el jugador que sale y el que entra';
+            }
+            return;
+        }
+    }
+    
+    // Para sustituciones, usar jugador_sale_nombre como jugador_nombre
+    let jugadorNombreFinal = jugadorNombre;
+    if (tipoEvento === 'sustitucion' && jugadorSaleNombre) {
+        jugadorNombreFinal = jugadorSaleNombre;
+    }
+    
+    // Preparar datos para enviar
+    const datosEnvio = {
+        partido_id: partidoId,
+        tipo_evento: tipoEvento,
+        minuto: minuto,
+        equipo: equipo,
+        jugador_id: jugadorId || null,
+        jugador_nombre: jugadorNombreFinal || '',
+        jugador_dorsal: jugadorDorsal || null,
+        jugador_asistencia_id: asistenciaId || null,
+        jugador_asistencia_nombre: asistenciaNombre || null,
+        jugador_asistencia_dorsal: asistenciaDorsal || null,
+        es_penal: esPenal,
+        es_autogol: esAutogol,
+        jugador_sale_id: jugadorSaleId || null,
+        jugador_sale_nombre: jugadorSaleNombre || null,
+        jugador_sale_dorsal: jugadorSaleDorsal || null,
+        jugador_entra_id: jugadorEntraId || null,
+        jugador_entra_nombre: jugadorEntraNombre || null,
+        jugador_entra_dorsal: jugadorEntraDorsal || null
+    };
+    
+    console.log('Enviando datos de evento:', datosEnvio);
+    
+    try {
+        const response = await fetch('api/eventos_partido.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(datosEnvio)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        // Obtener el texto de la respuesta primero
+        const text = await response.text();
+        
+        // Intentar parsear como JSON
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch (parseError) {
+            console.error('Error al parsear JSON. Respuesta recibida:', text);
+            if (errorDiv) {
+                errorDiv.textContent = 'Error: La respuesta del servidor no es válida. Ver consola para detalles.';
+            }
+            return;
+        }
+        
+        console.log('Respuesta del servidor:', result);
+        
+        if (result.success) {
+            cerrarModalEvento();
+            await cargarEventos(partidoId);
+        } else {
+            console.error('Error del servidor:', result.error);
+            if (errorDiv) {
+                errorDiv.textContent = result.error || 'Error al guardar el evento';
+            }
+        }
+    } catch (error) {
+        console.error('Error al guardar evento:', error);
+        if (errorDiv) {
+            errorDiv.textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+        }
+    }
+}
+
+// Función para eliminar evento
+async function eliminarEvento(eventoId, partidoId) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`api/eventos_partido.php?id=${eventoId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            await cargarEventos(partidoId);
+        } else {
+            alert(result.error || 'Error al eliminar el evento');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión. Por favor, intenta de nuevo.');
+    }
+}
+
+// Función para cerrar modal de evento
+function cerrarModalEvento() {
+    const modal = document.getElementById('modal-evento');
+    if (modal) {
+        modal.remove();
+    }
+    window.jugadoresModal = null;
+}
+
+// Hacer funciones disponibles globalmente
+window.toggleEventos = toggleEventos;
+window.mostrarModalAgregarEvento = mostrarModalAgregarEvento;
+window.cambiarEquipoEvento = cambiarEquipoEvento;
+window.cambiarTipoEvento = cambiarTipoEvento;
+window.cambiarOpcionesGol = cambiarOpcionesGol;
+window.eliminarEvento = eliminarEvento;
+window.cerrarModalEvento = cerrarModalEvento;
+
+async function renderizarResultados(resultados) {
     const tbody = document.getElementById('resultados-tbody');
     if (!tbody || !resultados || resultados.length === 0) {
         tbody.innerHTML = `
@@ -395,7 +1376,9 @@ function renderizarResultados(resultados) {
         return;
     }
 
-    tbody.innerHTML = resultados.map(partido => {
+    tbody.innerHTML = '';
+    
+    for (const partido of resultados) {
         const carpetaLocal = obtenerCarpetaEquipo(partido.local);
         const carpetaVisitante = obtenerCarpetaEquipo(partido.visitante);
         const rutaLogoLocal = carpetaLocal ? `images/${carpetaLocal}/escudo.png` : 'images/LaligaLogo.jpg';
@@ -409,8 +1392,15 @@ function renderizarResultados(resultados) {
         // Si el resultado es '-' o está vacío y el usuario está logueado, mostrar botón para agregar resultado
         const mostrarBotonResultado = usuarioLogueado && partido.id && (!partido.resultado || partido.resultado === '-' || partido.resultado === '');
         
-        return `
-        <tr class="partido-row" data-partido-id="${partido.id || ''}">
+        // Botón para ver/agregar eventos
+        const botonEventos = partido.id ? `
+            <button class="btn-eventos" onclick="toggleEventos(${partido.id})" title="Ver Eventos">📊</button>
+        ` : '';
+        
+        const row = document.createElement('tr');
+        row.className = 'partido-row';
+        row.setAttribute('data-partido-id', partido.id || '');
+        row.innerHTML = `
             <td class="fecha-col">${partido.fecha}</td>
             <td class="horario-col">${partido.horario}</td>
             <td class="partido-col">
@@ -427,6 +1417,7 @@ function renderizarResultados(resultados) {
                             ${partido.resultado || '-'}
                         </div>
                         ${botonEditar}
+                        ${botonEventos}
                     </div>
                     <div class="equipo-visitante">
                         <img src="${rutaLogoVisitante}" 
@@ -437,9 +1428,25 @@ function renderizarResultados(resultados) {
                     </div>
                 </div>
             </td>
-        </tr>
         `;
-    }).join('');
+        tbody.appendChild(row);
+        
+        // Agregar fila expandible para eventos (inicialmente oculta)
+        if (partido.id) {
+            const eventosRow = document.createElement('tr');
+            eventosRow.className = 'eventos-row';
+            eventosRow.id = `eventos-row-${partido.id}`;
+            eventosRow.style.display = 'none';
+            eventosRow.innerHTML = `
+                <td colspan="3" class="eventos-col">
+                    <div class="eventos-container" id="eventos-container-${partido.id}">
+                        <div class="eventos-loading">Cargando eventos...</div>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(eventosRow);
+        }
+    }
 }
 
 // Lista completa de equipos

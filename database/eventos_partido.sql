@@ -1,0 +1,32 @@
+-- Tabla para almacenar eventos de partido (goles, asistencias, tarjetas)
+CREATE TABLE IF NOT EXISTS `eventos_partido` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `partido_id` INT(11) NOT NULL,
+  `tipo_evento` ENUM('gol', 'asistencia', 'tarjeta_amarilla', 'tarjeta_roja', 'sustitucion', 'fin_partido') NOT NULL,
+  `minuto` VARCHAR(10) NOT NULL,
+  `jugador_id` VARCHAR(100) DEFAULT NULL,
+  `jugador_nombre` VARCHAR(200) NOT NULL,
+  `jugador_dorsal` VARCHAR(10) DEFAULT NULL,
+  `equipo` ENUM('local', 'visitante') NOT NULL,
+  `jugador_asistencia_id` VARCHAR(100) DEFAULT NULL,
+  `jugador_asistencia_nombre` VARCHAR(200) DEFAULT NULL,
+  `jugador_asistencia_dorsal` VARCHAR(10) DEFAULT NULL,
+  `jugador_sale_id` VARCHAR(100) DEFAULT NULL,
+  `jugador_sale_nombre` VARCHAR(200) DEFAULT NULL,
+  `jugador_sale_dorsal` VARCHAR(10) DEFAULT NULL,
+  `jugador_entra_id` VARCHAR(100) DEFAULT NULL,
+  `jugador_entra_nombre` VARCHAR(200) DEFAULT NULL,
+  `jugador_entra_dorsal` VARCHAR(10) DEFAULT NULL,
+  `es_penal` TINYINT(1) DEFAULT 0,
+  `es_autogol` TINYINT(1) DEFAULT 0,
+  `usuario_id` INT(11) DEFAULT NULL,
+  `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_partido` (`partido_id`),
+  KEY `idx_tipo_evento` (`tipo_evento`),
+  KEY `idx_minuto` (`minuto`),
+  KEY `idx_usuario` (`usuario_id`),
+  CONSTRAINT `fk_eventos_partido` FOREIGN KEY (`partido_id`) REFERENCES `partidos` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
