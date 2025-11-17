@@ -45,9 +45,11 @@ function ResultadosPage() {
                 </div>
                 <div class="resultados-title-section">
                     <h1 class="resultados-title">RESULTADOS DE LA JORNADA 1 DE LALIGA EA SPORTS 2025/26</h1>
-                    <select id="jornada-select" class="jornada-select">
-                        ${jornadasOptions}
-                    </select>
+                    <div class="jornada-select-wrapper">
+                        <select id="jornada-select" class="jornada-select">
+                            ${jornadasOptions}
+                        </select>
+                    </div>
                 </div>
                 <div class="resultados-fecha-rango" id="fecha-rango" style="color: white; font-size: 0.9rem; margin-top: 0.5rem;">
                     15 - 19 AGOSTO
@@ -109,11 +111,78 @@ function inicializarResultados() {
         // Cargar resultados de la jornada seleccionada
         cargarResultados(parseInt(jornadaSelect.value));
         
+        // Configurar comportamiento del select: mostrar 5 opciones con scroll
+        jornadaSelect.size = 1; // Por defecto como dropdown
+        
+        jornadaSelect.addEventListener('focus', () => {
+            jornadaSelect.size = 5; // Mostrar 5 opciones al abrir
+        });
+        
+        jornadaSelect.addEventListener('blur', () => {
+            setTimeout(() => {
+                jornadaSelect.size = 1; // Volver a dropdown al cerrar
+            }, 200);
+        });
+        
+        // Función para limpiar todos los estilos de hover
+        const limpiarEstilosHover = () => {
+            const options = jornadaSelect.options;
+            for (let i = 0; i < options.length; i++) {
+                options[i].style.backgroundColor = '';
+                options[i].style.color = '';
+            }
+        };
+        
+        // Aplicar estilo rojo cuando se mueve el mouse sobre el select abierto
+        jornadaSelect.addEventListener('mousemove', (e) => {
+            if (jornadaSelect.size > 1) {
+                const rect = jornadaSelect.getBoundingClientRect();
+                const mouseY = e.clientY - rect.top;
+                const scrollTop = jornadaSelect.scrollTop || 0;
+                const optionHeight = rect.height / Math.min(jornadaSelect.size, jornadaSelect.options.length);
+                const hoveredIndex = Math.floor((mouseY + scrollTop) / optionHeight);
+                
+                if (hoveredIndex >= 0 && hoveredIndex < jornadaSelect.options.length) {
+                    limpiarEstilosHover();
+                    jornadaSelect.options[hoveredIndex].style.backgroundColor = '#FF4B44';
+                    jornadaSelect.options[hoveredIndex].style.color = 'white';
+                }
+            }
+        });
+        
+        // Limpiar estilos cuando el mouse sale del select
+        jornadaSelect.addEventListener('mouseleave', () => {
+            if (jornadaSelect.size > 1) {
+                limpiarEstilosHover();
+            }
+        });
+        
+        // Aplicar estilo rojo cuando se selecciona con el teclado
+        jornadaSelect.addEventListener('keydown', (e) => {
+            if (jornadaSelect.size > 1) {
+                setTimeout(() => {
+                    const selectedIndex = jornadaSelect.selectedIndex;
+                    const options = jornadaSelect.options;
+                    limpiarEstilosHover();
+                    if (selectedIndex >= 0 && selectedIndex < options.length) {
+                        options[selectedIndex].style.backgroundColor = '#FF4B44';
+                        options[selectedIndex].style.color = 'white';
+                    }
+                }, 10);
+            }
+        });
+        
+        // Limpiar estilos cuando se cierra el select
+        jornadaSelect.addEventListener('blur', () => {
+            limpiarEstilosHover();
+        });
+        
         // Event listener para cambio de jornada
         jornadaSelect.addEventListener('change', (e) => {
             const jornada = parseInt(e.target.value);
             cargarResultados(jornada);
             actualizarTituloJornada(jornada);
+            jornadaSelect.size = 1; // Cerrar después de seleccionar
         });
     }
     
@@ -382,6 +451,9 @@ const listaEquipos = [
 ];
 
 async function cargarPartidosJornada(jornada) {
+    // Asegurar que jornada sea un número
+    jornada = parseInt(jornada, 10);
+    
     if (!confirm(`¿Deseas cargar todos los partidos de la jornada ${jornada}?\n\nEsto creará los 10 partidos de la jornada si no existen.`)) {
         return;
     }
@@ -599,8 +671,329 @@ async function cargarPartidosJornada(jornada) {
             { fecha: '2025-12-07', horario: '14:00', local: 'REAL MADRID', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
             { fecha: '2025-12-08', horario: '14:00', local: 'CA OSASUNA', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 }
         ];
+    } else if (jornada === 16) {
+        // Jornada 16 según la imagen (12-15 de diciembre 2025)
+        partidosJornada = [
+            { fecha: '2025-12-12', horario: '14:00', local: 'REAL SOCIEDAD', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-13', horario: '07:00', local: 'ATLÉTICO DE MADRID', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-13', horario: '09:15', local: 'RCD MALLORCA', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-13', horario: '11:30', local: 'FC BARCELONA', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-13', horario: '14:00', local: 'GETAFE CF', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-14', horario: '07:00', local: 'SEVILLA FC', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-14', horario: '09:15', local: 'CELTA', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-14', horario: '11:30', local: 'LEVANTE UD', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-14', horario: '14:00', local: 'DEPORTIVO ALAVÉS', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-15', horario: '14:00', local: 'RAYO VALLECANO', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 17) {
+        // Jornada 17 según la imagen (todos los partidos el 20.12.2025, horarios distribuidos)
+        partidosJornada = [
+            { fecha: '2025-12-20', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '09:15', local: 'REAL BETIS', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '11:30', local: 'ELCHE CF', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '14:00', local: 'LEVANTE UD', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '16:30', local: 'REAL MADRID', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '19:00', local: 'CA OSASUNA', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '21:00', local: 'GIRONA FC', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-20', horario: '23:00', local: 'VILLARREAL CF', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-21', horario: '07:00', local: 'REAL OVIEDO', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-21', horario: '14:00', local: 'VALENCIA CF', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 18) {
+        // Jornada 18 según la imagen (todos los partidos el 03.01.2026, horarios distribuidos)
+        partidosJornada = [
+            { fecha: '2026-01-03', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '09:15', local: 'CELTA', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '11:30', local: 'ELCHE CF', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '14:00', local: 'CA OSASUNA', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '16:30', local: 'REAL SOCIEDAD', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '19:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-03', horario: '21:00', local: 'REAL MADRID', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-04', horario: '07:00', local: 'RAYO VALLECANO', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-04', horario: '09:15', local: 'RCD MALLORCA', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-04', horario: '14:00', local: 'SEVILLA FC', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 19) {
+        // Jornada 19 según la imagen (partidos del 2-3 dic 2025 y 10 ene 2026)
+        partidosJornada = [
+            { fecha: '2025-12-02', horario: '14:00', local: 'FC BARCELONA', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2025-12-03', horario: '12:00', local: 'ATHLETIC CLUB', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '07:00', local: 'GETAFE CF', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '09:15', local: 'GIRONA FC', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '11:30', local: 'VILLARREAL CF', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '14:00', local: 'REAL OVIEDO', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '16:30', local: 'SEVILLA FC', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '19:00', local: 'VALENCIA CF', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-10', horario: '21:00', local: 'LEVANTE UD', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-11', horario: '14:00', local: 'RAYO VALLECANO', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 20) {
+        // Jornada 20 según la imagen (todos los partidos el 17.01.2026)
+        partidosJornada = [
+            { fecha: '2026-01-17', horario: '07:00', local: 'REAL BETIS', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '09:15', local: 'CELTA', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '11:30', local: 'ELCHE CF', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '16:30', local: 'GETAFE CF', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '19:00', local: 'CA OSASUNA', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-17', horario: '21:00', local: 'ATLÉTICO DE MADRID', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-18', horario: '07:00', local: 'RCD MALLORCA', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-18', horario: '09:15', local: 'REAL SOCIEDAD', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-18', horario: '14:00', local: 'REAL MADRID', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 21) {
+        // Jornada 21 según la imagen (todos los partidos el 24.01.2026)
+        partidosJornada = [
+            { fecha: '2026-01-24', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '11:30', local: 'FC BARCELONA', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '14:00', local: 'SEVILLA FC', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '16:30', local: 'REAL SOCIEDAD', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '19:00', local: 'LEVANTE UD', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-24', horario: '21:00', local: 'VALENCIA CF', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-25', horario: '07:00', local: 'GIRONA FC', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-25', horario: '09:15', local: 'RAYO VALLECANO', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-25', horario: '14:00', local: 'VILLARREAL CF', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 22) {
+        // Jornada 22 según la imagen (todos los partidos el 31.01.2026)
+        partidosJornada = [
+            { fecha: '2026-01-31', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '09:15', local: 'REAL BETIS', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '11:30', local: 'RCD MALLORCA', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '14:00', local: 'CA OSASUNA', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '16:30', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '19:00', local: 'LEVANTE UD', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-01-31', horario: '21:00', local: 'ELCHE CF', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-01', horario: '07:00', local: 'GETAFE CF', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-01', horario: '09:15', local: 'REAL OVIEDO', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-01', horario: '14:00', local: 'REAL MADRID', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 23) {
+        // Jornada 23 según la imagen (todos los partidos el 07.02.2026)
+        partidosJornada = [
+            { fecha: '2026-02-07', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '09:15', local: 'ATHLETIC CLUB', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '11:30', local: 'ATLÉTICO DE MADRID', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '14:00', local: 'FC BARCELONA', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '16:30', local: 'CELTA', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '19:00', local: 'REAL SOCIEDAD', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-07', horario: '21:00', local: 'VILLARREAL CF', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-08', horario: '07:00', local: 'SEVILLA FC', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-08', horario: '09:15', local: 'VALENCIA CF', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-08', horario: '14:00', local: 'RAYO VALLECANO', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 24) {
+        // Jornada 24 según la imagen (todos los partidos el 14.02.2026)
+        partidosJornada = [
+            { fecha: '2026-02-14', horario: '07:00', local: 'ELCHE CF', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '09:15', local: 'GETAFE CF', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '11:30', local: 'LEVANTE UD', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '14:00', local: 'REAL MADRID', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '16:30', local: 'SEVILLA FC', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '19:00', local: 'REAL OVIEDO', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-14', horario: '21:00', local: 'RAYO VALLECANO', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-15', horario: '07:00', local: 'GIRONA FC', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-15', horario: '09:15', local: 'RCD MALLORCA', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-15', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 25) {
+        // Jornada 25 según la imagen (todos los partidos el 21.02.2026)
+        partidosJornada = [
+            { fecha: '2026-02-21', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '09:15', local: 'ATHLETIC CLUB', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '11:30', local: 'ATLÉTICO DE MADRID', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '14:00', local: 'FC BARCELONA', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '16:30', local: 'REAL BETIS', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '19:00', local: 'CELTA', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-21', horario: '21:00', local: 'GETAFE CF', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-22', horario: '07:00', local: 'CA OSASUNA', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-22', horario: '09:15', local: 'VILLARREAL CF', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-22', horario: '14:00', local: 'REAL SOCIEDAD', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 26) {
+        // Jornada 26 según la imagen (todos los partidos el 28.02.2026)
+        partidosJornada = [
+            { fecha: '2026-02-28', horario: '07:00', local: 'FC BARCELONA', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '09:15', local: 'REAL BETIS', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '11:30', local: 'ELCHE CF', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '14:00', local: 'RCD MALLORCA', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '16:30', local: 'LEVANTE UD', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '19:00', local: 'RAYO VALLECANO', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-02-28', horario: '21:00', local: 'REAL OVIEDO', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-01', horario: '07:00', local: 'GIRONA FC', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-01', horario: '09:15', local: 'REAL MADRID', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-01', horario: '14:00', local: 'VALENCIA CF', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 27) {
+        // Jornada 27 según la imagen (todos los partidos el 07.03.2026)
+        partidosJornada = [
+            { fecha: '2026-03-07', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '11:30', local: 'CELTA', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '16:30', local: 'VALENCIA CF', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '19:00', local: 'GETAFE CF', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-07', horario: '21:00', local: 'VILLARREAL CF', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-08', horario: '07:00', local: 'LEVANTE UD', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-08', horario: '09:15', local: 'CA OSASUNA', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-08', horario: '14:00', local: 'SEVILLA FC', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 28) {
+        // Jornada 28 según la imagen (todos los partidos el 14.03.2026)
+        partidosJornada = [
+            { fecha: '2026-03-14', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '11:30', local: 'FC BARCELONA', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '14:00', local: 'REAL BETIS', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '16:30', local: 'REAL OVIEDO', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '19:00', local: 'GIRONA FC', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-14', horario: '21:00', local: 'REAL MADRID', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-15', horario: '07:00', local: 'RCD MALLORCA', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-15', horario: '09:15', local: 'RAYO VALLECANO', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-15', horario: '14:00', local: 'REAL SOCIEDAD', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 29) {
+        // Jornada 29 según la imagen (todos los partidos el 21.03.2026)
+        partidosJornada = [
+            { fecha: '2026-03-21', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '09:15', local: 'FC BARCELONA', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '11:30', local: 'ELCHE CF', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '16:30', local: 'LEVANTE UD', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '19:00', local: 'SEVILLA FC', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-21', horario: '21:00', local: 'CELTA', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-22', horario: '07:00', local: 'REAL MADRID', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-22', horario: '09:15', local: 'CA OSASUNA', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-03-22', horario: '14:00', local: 'VILLARREAL CF', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 30) {
+        // Jornada 30 según la imagen (todos los partidos el 04.04.2026)
+        partidosJornada = [
+            { fecha: '2026-04-04', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '11:30', local: 'REAL BETIS', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '14:00', local: 'GIRONA FC', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '16:30', local: 'RCD MALLORCA', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '19:00', local: 'REAL OVIEDO', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-04', horario: '21:00', local: 'GETAFE CF', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-05', horario: '07:00', local: 'VALENCIA CF', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-05', horario: '09:15', local: 'RAYO VALLECANO', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-05', horario: '14:00', local: 'REAL SOCIEDAD', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 31) {
+        // Jornada 31 según la imagen (todos los partidos el 11.04.2026)
+        partidosJornada = [
+            { fecha: '2026-04-11', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '09:15', local: 'FC BARCELONA', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '11:30', local: 'CELTA', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '14:00', local: 'ELCHE CF', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '16:30', local: 'RCD MALLORCA', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '19:00', local: 'REAL SOCIEDAD', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-11', horario: '21:00', local: 'SEVILLA FC', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-12', horario: '07:00', local: 'CA OSASUNA', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-12', horario: '09:15', local: 'LEVANTE UD', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-12', horario: '14:00', local: 'REAL MADRID', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 32) {
+        // Jornada 32 según la imagen (todos los partidos el 18.04.2026)
+        partidosJornada = [
+            { fecha: '2026-04-18', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '09:15', local: 'REAL BETIS', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '11:30', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '14:00', local: 'CA OSASUNA', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '16:30', local: 'RAYO VALLECANO', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '19:00', local: 'ATLÉTICO DE MADRID', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-18', horario: '21:00', local: 'GETAFE CF', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-19', horario: '07:00', local: 'VILLARREAL CF', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-19', horario: '09:15', local: 'REAL OVIEDO', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-19', horario: '14:00', local: 'VALENCIA CF', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 33) {
+        // Jornada 33 según la imagen (todos los partidos el 21.04.2026)
+        partidosJornada = [
+            { fecha: '2026-04-21', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '09:15', local: 'FC BARCELONA', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '11:30', local: 'LEVANTE UD', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '14:00', local: 'RCD MALLORCA', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '16:30', local: 'REAL OVIEDO', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '19:00', local: 'REAL MADRID', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-21', horario: '21:00', local: 'ELCHE CF', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-22', horario: '07:00', local: 'GIRONA FC', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-22', horario: '09:15', local: 'RAYO VALLECANO', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-04-22', horario: '14:00', local: 'REAL SOCIEDAD', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 34) {
+        // Jornada 34 según la imagen (todos los partidos el 02.05.2026)
+        partidosJornada = [
+            { fecha: '2026-05-02', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '09:15', local: 'REAL BETIS', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '11:30', local: 'CELTA', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '16:30', local: 'GETAFE CF', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '19:00', local: 'GIRONA FC', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-02', horario: '21:00', local: 'VALENCIA CF', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-03', horario: '07:00', local: 'CA OSASUNA', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-03', horario: '09:15', local: 'VILLARREAL CF', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-03', horario: '14:00', local: 'SEVILLA FC', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 35) {
+        // Jornada 35 según la imagen (todos los partidos el 09.05.2026)
+        partidosJornada = [
+            { fecha: '2026-05-09', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '11:30', local: 'FC BARCELONA', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '14:00', local: 'LEVANTE UD', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '16:30', local: 'RCD MALLORCA', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '19:00', local: 'ELCHE CF', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-09', horario: '21:00', local: 'REAL SOCIEDAD', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-10', horario: '07:00', local: 'SEVILLA FC', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-10', horario: '09:15', local: 'REAL OVIEDO', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-10', horario: '14:00', local: 'RAYO VALLECANO', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 36) {
+        // Jornada 36 según la imagen (todos los partidos el 12.05.2026)
+        partidosJornada = [
+            { fecha: '2026-05-12', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '09:15', local: 'REAL BETIS', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '11:30', local: 'CELTA', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '14:00', local: 'GETAFE CF', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '16:30', local: 'GIRONA FC', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '19:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-12', horario: '21:00', local: 'CA OSASUNA', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-13', horario: '07:00', local: 'VALENCIA CF', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-13', horario: '09:15', local: 'VILLARREAL CF', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-13', horario: '14:00', local: 'REAL MADRID', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 37) {
+        // Jornada 37 según la imagen (todos los partidos el 16.05.2026)
+        partidosJornada = [
+            { fecha: '2026-05-16', horario: '07:00', local: 'ATHLETIC CLUB', visitante: 'CELTA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '09:15', local: 'ATLÉTICO DE MADRID', visitante: 'GIRONA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '11:30', local: 'FC BARCELONA', visitante: 'REAL BETIS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '14:00', local: 'ELCHE CF', visitante: 'GETAFE CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '16:30', local: 'LEVANTE UD', visitante: 'RCD MALLORCA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '19:00', local: 'RAYO VALLECANO', visitante: 'VILLARREAL CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-16', horario: '21:00', local: 'REAL SOCIEDAD', visitante: 'VALENCIA CF', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-17', horario: '07:00', local: 'REAL OVIEDO', visitante: 'DEPORTIVO ALAVÉS', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-17', horario: '09:15', local: 'CA OSASUNA', visitante: 'RCD ESPANYOL DE BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-17', horario: '14:00', local: 'SEVILLA FC', visitante: 'REAL MADRID', golesLocal: 0, golesVisitante: 0 }
+        ];
+    } else if (jornada === 38) {
+        // Jornada 38 según la imagen (última jornada, todos los partidos el 23.05.2026)
+        partidosJornada = [
+            { fecha: '2026-05-23', horario: '07:00', local: 'DEPORTIVO ALAVÉS', visitante: 'RAYO VALLECANO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '09:15', local: 'REAL BETIS', visitante: 'LEVANTE UD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '11:30', local: 'CELTA', visitante: 'SEVILLA FC', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '14:00', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'REAL SOCIEDAD', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '16:30', local: 'GETAFE CF', visitante: 'CA OSASUNA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '19:00', local: 'RCD MALLORCA', visitante: 'REAL OVIEDO', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-23', horario: '21:00', local: 'REAL MADRID', visitante: 'ATHLETIC CLUB', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-24', horario: '07:00', local: 'VILLARREAL CF', visitante: 'ATLÉTICO DE MADRID', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-24', horario: '09:15', local: 'VALENCIA CF', visitante: 'FC BARCELONA', golesLocal: 0, golesVisitante: 0 },
+            { fecha: '2026-05-24', horario: '14:00', local: 'GIRONA FC', visitante: 'ELCHE CF', golesLocal: 0, golesVisitante: 0 }
+        ];
     } else {
-        // Para jornadas 16-38: no cargar partidos estándar, solo usar los que se proporcionen
         // Si la jornada no está definida, no se cargarán partidos
         alert(`La jornada ${jornada} aún no está configurada. Por favor, proporciona los partidos específicos para esta jornada.`);
         return; // No crear partidos si la jornada no está definida
@@ -799,11 +1192,84 @@ function cerrarModalPartido() {
     }
 }
 
+async function eliminarJornada(jornada) {
+    if (!confirm(`¿Estás seguro de que deseas eliminar todos los partidos de la jornada ${jornada}?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`api/partidos.php?jornada=${jornada}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            // Recargar resultados si estamos viendo esa jornada
+            const jornadaActual = parseInt(document.getElementById('jornada-select')?.value);
+            if (jornadaActual === jornada) {
+                await cargarResultados(jornada);
+            }
+        } else {
+            alert(result.error || 'Error al eliminar la jornada');
+        }
+    } catch (error) {
+        console.error('Error al eliminar jornada:', error);
+        alert('Error al eliminar la jornada');
+    }
+}
 
+// Eliminar jornadas 1, 4, 15 y 16
+async function eliminarJornadasEspecificas() {
+    const jornadasAEliminar = [1, 4, 15, 16];
+    
+    if (!confirm(`¿Estás seguro de que deseas eliminar todos los partidos de las jornadas ${jornadasAEliminar.join(', ')}?`)) {
+        return;
+    }
+    
+    let eliminadas = 0;
+    let errores = 0;
+    
+    for (const jornada of jornadasAEliminar) {
+        try {
+            const response = await fetch(`api/partidos.php?jornada=${jornada}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                eliminadas++;
+                console.log(`Jornada ${jornada} eliminada: ${result.message}`);
+            } else {
+                errores++;
+                console.error(`Error al eliminar jornada ${jornada}:`, result.error);
+            }
+        } catch (error) {
+            errores++;
+            console.error(`Error al eliminar jornada ${jornada}:`, error);
+        }
+    }
+    
+    alert(`Proceso completado:\n- Jornadas eliminadas: ${eliminadas}\n- Errores: ${errores}`);
+    
+    // Recargar resultados si estamos viendo una de esas jornadas
+    const jornadaActual = parseInt(document.getElementById('jornada-select')?.value);
+    if (jornadasAEliminar.includes(jornadaActual)) {
+        await cargarResultados(jornadaActual);
+    }
+}
+
+// Función disponible globalmente para ejecutar manualmente
+window.eliminarJornadasEspecificas = eliminarJornadasEspecificas;
 
 // Hacer funciones disponibles globalmente para onclick
 window.editarResultado = editarResultado;
 window.cerrarModalPartido = cerrarModalPartido;
+window.eliminarJornada = eliminarJornada;
 
 export default ResultadosPage;
 export { init };

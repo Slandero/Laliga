@@ -296,7 +296,7 @@ try {
             exit;
             
         case 'DELETE':
-            // Eliminar partido (requiere autenticación)
+            // Eliminar partido o jornada completa (requiere autenticación)
             if (!$usuarioLogueado) {
                 ob_clean();
                 http_response_code(401);
@@ -309,12 +309,40 @@ try {
             }
             
             $id = isset($_GET['id']) ? intval($_GET['id']) : null;
+            $jornada = isset($_GET['jornada']) ? intval($_GET['jornada']) : null;
             
+            // Si se proporciona jornada, eliminar todos los partidos de esa jornada
+            if ($jornada) {
+                if ($jornada < 1 || $jornada > 38) {
+                    ob_clean();
+                    echo json_encode([
+                        'success' => false,
+                        'error' => 'Jornada inválida. Debe ser entre 1 y 38.'
+                    ], JSON_UNESCAPED_UNICODE);
+                    ob_end_flush();
+                    exit;
+                }
+                
+                $sql = "DELETE FROM partidos WHERE jornada = :jornada";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([':jornada' => $jornada]);
+                $eliminados = $stmt->rowCount();
+                
+                ob_clean();
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Se eliminaron {$eliminados} partidos de la jornada {$jornada}"
+                ], JSON_UNESCAPED_UNICODE);
+                ob_end_flush();
+                exit;
+            }
+            
+            // Si se proporciona ID, eliminar un partido específico
             if (!$id) {
                 ob_clean();
                 echo json_encode([
                     'success' => false,
-                    'error' => 'ID de partido requerido'
+                    'error' => 'ID de partido o jornada requerido'
                 ], JSON_UNESCAPED_UNICODE);
                 ob_end_flush();
                 exit;

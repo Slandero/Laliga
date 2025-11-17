@@ -1020,6 +1020,11 @@ footer p {
     gap: 1.5rem;
 }
 
+.jornada-select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .resultados-title {
     font-size: 1.8rem;
     font-weight: 700;
@@ -1031,31 +1036,103 @@ footer p {
 }
 
 .jornada-select {
-    background-color: white;
-    color: #333;
+    background-color: transparent !important;
+    color: black;
     border: none;
-    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid black;
+    padding: 0;
+    padding-bottom: 0.25rem;
+    padding-right: 1.5rem;
     font-size: 1rem;
-    font-weight: 600;
-    border-radius: 5px;
+    font-weight: 700;
+    font-family: sans-serif;
+    border-radius: 0;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='black' d='M4 6L1 3h6z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 1rem center;
-    padding-right: 3rem;
+    background-position: right center;
+    background-size: 8px 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: visible;
+    min-width: 120px;
+    max-height: none;
+    line-height: 1.2;
+    position: relative;
+    z-index: 1;
+    height: auto;
+}
+
+.jornada-select[size="1"] {
+    max-height: none;
+    height: auto;
+}
+
+.jornada-select[size="5"] {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.25rem;
+    max-height: calc(5 * 2.5rem);
+    overflow-y: auto;
+    background-color: white !important;
+    border: none;
+    padding: 0.25rem 0;
+    min-width: 150px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: auto;
+}
+
+/* Estilo del scrollbar para el dropdown */
+.jornada-select[size="5"]::-webkit-scrollbar {
+    width: 8px;
+}
+
+.jornada-select[size="5"]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.jornada-select[size="5"]::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.jornada-select[size="5"]::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}
+
+.jornada-select option {
+    background-color: white;
+    color: black;
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    font-family: sans-serif;
+    border: none;
+}
+
+.jornada-select option:hover {
+    background-color: #FF4B44 !important;
+    color: white !important;
+}
+
+.jornada-select option:checked,
+.jornada-select option:focus {
+    background-color: #FF4B44;
+    color: white;
+    font-weight: 700;
 }
 
 .jornada-select:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
+    border-bottom-color: black;
 }
 
 .jornada-select:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid black;
+    background-color: transparent !important;
 }
 
 /* Barra informativa gris */
