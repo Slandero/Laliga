@@ -16,7 +16,7 @@ function cargarNavbar() {
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="#" data-route="calendarioprueva">Calendario</a></li>
+                <li><a href="#" data-route="calendario">Calendario</a></li>
                 <li><a href="#" data-route="resultados">Resultados</a></li>
                 <li><a href="#" data-route="clasificacion">Clasificación</a></li>
                 <li><a href="#" data-route="clubes">Clubes</a></li>
