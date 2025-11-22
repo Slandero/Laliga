@@ -2070,3 +2070,266 @@ footer p {
     }
 }
 
+/* ============================================
+   TABLA DE CLASIFICACIÓN
+   ============================================ */
+
+.clasificacion-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 2rem 0;
+}
+
+.clasificacion-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.clasificacion-table thead {
+    background-color: #f0f0f0;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.clasificacion-table th {
+    padding: 1rem 1.5rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #1a237e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clasificacion-table th:first-child {
+    text-align: left;
+    padding-left: 2rem;
+}
+
+.clasificacion-table th:nth-child(2) {
+    text-align: left;
+}
+
+.clasificacion-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+.clasificacion-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.clasificacion-table tbody tr:nth-child(1),
+.clasificacion-table tbody tr:nth-child(2),
+.clasificacion-table tbody tr:nth-child(3),
+.clasificacion-table tbody tr:nth-child(4) {
+    background-color: #f5f5f5;
+}
+
+.clasificacion-table tbody td {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    color: #333;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.clasificacion-table tbody td.posicion {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a237e;
+    text-align: left;
+    padding-left: 2rem;
+    width: 80px;
+    position: relative;
+}
+
+/* Franja azul para los primeros 4 equipos (Champions League) */
+.clasificacion-table tbody tr:nth-child(1) td.posicion::before,
+.clasificacion-table tbody tr:nth-child(2) td.posicion::before,
+.clasificacion-table tbody tr:nth-child(3) td.posicion::before,
+.clasificacion-table tbody tr:nth-child(4) td.posicion::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #1a237e;
+}
+
+/* Franja naranja para el quinto lugar (Europa League) */
+.clasificacion-table tbody tr:nth-child(5) td.posicion::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #ff9800;
+}
+
+/* Franja verde para el sexto lugar (Conference League) */
+.clasificacion-table tbody tr:nth-child(6) td.posicion::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #4caf50;
+}
+
+/* Franja roja para los últimos 3 lugares (Descenso) */
+.clasificacion-table tbody tr:nth-last-child(1) td.posicion::before,
+.clasificacion-table tbody tr:nth-last-child(2) td.posicion::before,
+.clasificacion-table tbody tr:nth-last-child(3) td.posicion::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #d32f2f;
+}
+
+/* Leyenda de clasificación */
+.clasificacion-leyenda {
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    border-radius: 0 0 10px 10px;
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #000000;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.leyenda-franja {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.franja-azul {
+    background-color: #1a237e;
+}
+
+.franja-naranja {
+    background-color: #ff9800;
+}
+
+.franja-verde {
+    background-color: #4caf50;
+}
+
+.franja-roja {
+    background-color: #d32f2f;
+}
+
+.clasificacion-table tbody td.equipo {
+    font-weight: 600;
+    text-align: left;
+    color: #333;
+}
+
+.equipo-con-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.equipo-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.equipo-nombre {
+    flex: 1;
+}
+
+.clasificacion-table tbody td.puntos {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a237e;
+}
+
+.clasificacion-table tbody td.dg-positivo {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.clasificacion-table tbody td.dg-negativo {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+/* Responsive para tabla de clasificación */
+@media (max-width: 1024px) {
+    .clasificacion-container {
+        overflow-x: auto;
+    }
+
+    .clasificacion-table {
+        min-width: 800px;
+    }
+
+    .clasificacion-table th,
+    .clasificacion-table td {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .clasificacion-table {
+        min-width: 700px;
+    }
+
+    .clasificacion-table th,
+    .clasificacion-table td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .clasificacion-table tbody td.posicion {
+        padding-left: 1rem;
+        font-size: 1rem;
+    }
+
+    .equipo-logo {
+        width: 28px;
+        height: 28px;
+    }
+
+    .equipo-con-logo {
+        gap: 0.5rem;
+    }
+
+    .clasificacion-leyenda {
+        padding: 0.75rem 1rem;
+        gap: 1rem;
+    }
+
+    .leyenda-item {
+        font-size: 0.8rem;
+    }
+
+    .leyenda-franja {
+        width: 16px;
+        height: 16px;
+    }
+}
+

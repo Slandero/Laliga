@@ -90,22 +90,32 @@ try {
     
     switch ($method) {
         case 'GET':
-            // Obtener partidos de una jornada específica
-            $jornada = isset($_GET['jornada']) ? intval($_GET['jornada']) : null;
+            // Obtener partidos de una jornada específica o todos los partidos
+            $jornada = isset($_GET['jornada']) ? $_GET['jornada'] : null;
+            $todos = ($jornada === 'all' || $jornada === null || $jornada === '');
             
-            if (!$jornada || $jornada < 1 || $jornada > 38) {
-                ob_clean();
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Jornada inválida. Debe ser entre 1 y 38.'
-                ], JSON_UNESCAPED_UNICODE);
-                ob_end_flush();
-                exit;
+            if (!$todos) {
+                $jornada = intval($jornada);
+                if ($jornada < 1 || $jornada > 38) {
+                    ob_clean();
+                    echo json_encode([
+                        'success' => false,
+                        'error' => 'Jornada inválida. Debe ser entre 1 y 38.'
+                    ], JSON_UNESCAPED_UNICODE);
+                    ob_end_flush();
+                    exit;
+                }
+                
+                $sql = "SELECT * FROM partidos WHERE jornada = :jornada ORDER BY fecha ASC, horario ASC";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([':jornada' => $jornada]);
+            } else {
+                // Obtener todos los partidos
+                $sql = "SELECT * FROM partidos ORDER BY jornada ASC, fecha ASC, horario ASC";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
             }
             
-            $sql = "SELECT * FROM partidos WHERE jornada = :jornada ORDER BY fecha ASC, horario ASC";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':jornada' => $jornada]);
             $partidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Formatear resultados
@@ -140,7 +150,7 @@ try {
             ob_clean();
             echo json_encode([
                 'success' => true,
-                'jornada' => $jornada,
+                'jornada' => $todos ? 'all' : $jornada,
                 'partidos' => $resultados,
                 'total' => count($resultados)
             ], JSON_UNESCAPED_UNICODE);
