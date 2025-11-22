@@ -44,16 +44,29 @@ class Router {
 
     navigate(route) {
         console.log(`Navegando a: ${route}`);
+        
+        // Asegurar que el router esté inicializado
+        if (!this.initialized) {
+            console.warn('Router no inicializado, inicializando ahora...');
+            this.init();
+        }
+        
         // Permitir rutas dinámicas de equipo
-        if (route.startsWith('equipo/')) {
+        if (route && route.startsWith('equipo/')) {
             window.history.pushState({}, '', `#${route}`);
             this.handleRoute();
-        } else if (this.routes[route]) {
+            return;
+        }
+        
+        // Verificar rutas estáticas
+        if (route && this.routes[route]) {
             window.history.pushState({}, '', route ? `#${route}` : '#');
             this.handleRoute();
-        } else {
-            console.error(`Ruta no encontrada: ${route}`);
+            return;
         }
+        
+        // Si no es una ruta válida, mostrar error
+        console.error(`Ruta no encontrada: ${route}`);
     }
 
     handleRoute() {
