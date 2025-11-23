@@ -303,7 +303,7 @@ function generarDatosEjemplo(jornada) {
     // TODO: Reemplazar con llamada real a la API
     
     // Datos específicos para jornada 2
-    if (jornada === 2) {
+    /*if (jornada === 2) {
         return [
             { fecha: 'VIE 22.08.2025', horario: '13:30', local: 'REAL BETIS', visitante: 'DEPORTIVO ALAVÉS', resultado: '1-0' },
             { fecha: 'SÁB 23.08.2025', horario: '09:00', local: 'RCD MALLORCA', visitante: 'CELTA', resultado: '1-1' },
@@ -316,10 +316,10 @@ function generarDatosEjemplo(jornada) {
             { fecha: 'LUN 25.08.2025', horario: '11:30', local: 'ATHLETIC CLUB', visitante: 'RAYO VALLECANO', resultado: '1-0' },
             { fecha: 'LUN 25.08.2025', horario: '13:30', local: 'SEVILLA FC', visitante: 'GETAFE CF', resultado: '1-2' }
         ];
-    }
+    }*/
     
     // Datos específicos para jornada 3
-    if (jornada === 3) {
+    /*if (jornada === 3) {
         return [
             { fecha: 'VIE 29.08.2025', horario: '11:30', local: 'ELCHE CF', visitante: 'LEVANTE UD', resultado: '2-0' },
             { fecha: 'VIE 29.08.2025', horario: '13:30', local: 'VALENCIA CF', visitante: 'GETAFE CF', resultado: '3-0' },
@@ -332,7 +332,7 @@ function generarDatosEjemplo(jornada) {
             { fecha: 'DOM 31.08.2025', horario: '11:30', local: 'RCD ESPANYOL DE BARCELONA', visitante: 'CA OSASUNA', resultado: '1-0' },
             { fecha: 'DOM 31.08.2025', horario: '13:30', local: 'RAYO VALLECANO', visitante: 'FC BARCELONA', resultado: '1-1' }
         ];
-    }
+    }*/
     
     // Datos para jornada 1 u otras jornadas
     
