@@ -17,34 +17,40 @@ const DB_CONFIG = {
 };
 
 module.exports = async (req, res) => {
-    // Permitir CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Content-Type', 'application/json; charset=UTF-8');
-    
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-    
-    // Solo permitir POST
-    if (req.method !== 'POST') {
-        return res.status(405).json({
-            success: false,
-            error: 'Método no permitido'
-        });
-    }
-    
     try {
-        // Obtener datos del body (Vercel ya parsea el JSON automáticamente)
+        // Permitir CORS siempre
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+        
+        // Manejar OPTIONS
+        if (req.method === 'OPTIONS') {
+            return res.status(200).json({});
+        }
+        
+        // Solo permitir POST
+        if (req.method !== 'POST') {
+            return res.status(405).json({
+                success: false,
+                error: 'Método no permitido'
+            });
+        }
+        
+        // Obtener datos del body
+        // En Vercel, el body puede venir parseado o como string
         let body = {};
+        
+        // Intentar obtener el body de diferentes maneras
         if (req.body) {
             if (typeof req.body === 'string') {
                 try {
                     body = JSON.parse(req.body);
                 } catch (e) {
-                    body = {};
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Error al procesar los datos de la solicitud'
+                    });
                 }
             } else {
                 body = req.body;
