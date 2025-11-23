@@ -159,8 +159,85 @@ module.exports = async (req, res) => {
                         total: resultados.length
                     });
                     
-                case 'POST':
                 case 'PUT':
+                    // Actualizar resultado de un partido
+                    const idPartido = body.id ? parseInt(body.id) : null;
+                    
+                    if (!idPartido) {
+                        await connection.end();
+                        return res.status(400).json({
+                            success: false,
+                            error: 'ID de partido requerido'
+                        });
+                    }
+                    
+                    // Construir query de actualización dinámicamente
+                    const camposActualizar = [];
+                    const valoresActualizar = [];
+                    
+                    if (body.goles_local !== undefined && body.goles_local !== null) {
+                        camposActualizar.push('goles_local = ?');
+                        valoresActualizar.push(body.goles_local === '' ? null : parseInt(body.goles_local));
+                    }
+                    if (body.goles_visitante !== undefined && body.goles_visitante !== null) {
+                        camposActualizar.push('goles_visitante = ?');
+                        valoresActualizar.push(body.goles_visitante === '' ? null : parseInt(body.goles_visitante));
+                    }
+                    
+                    // También permitir actualizar otros campos si vienen
+                    if (body.jornada !== undefined) {
+                        camposActualizar.push('jornada = ?');
+                        valoresActualizar.push(parseInt(body.jornada));
+                    }
+                    if (body.fecha !== undefined) {
+                        camposActualizar.push('fecha = ?');
+                        valoresActualizar.push(body.fecha);
+                    }
+                    if (body.horario !== undefined) {
+                        camposActualizar.push('horario = ?');
+                        valoresActualizar.push(body.horario);
+                    }
+                    if (body.equipo_local !== undefined) {
+                        camposActualizar.push('equipo_local = ?');
+                        valoresActualizar.push(body.equipo_local);
+                    }
+                    if (body.equipo_visitante !== undefined) {
+                        camposActualizar.push('equipo_visitante = ?');
+                        valoresActualizar.push(body.equipo_visitante);
+                    }
+                    
+                    if (camposActualizar.length === 0) {
+                        await connection.end();
+                        return res.status(400).json({
+                            success: false,
+                            error: 'No hay campos para actualizar'
+                        });
+                    }
+                    
+                    // Agregar el ID al final de los valores
+                    valoresActualizar.push(idPartido);
+                    
+                    // Ejecutar actualización
+                    const sqlUpdate = `UPDATE partidos SET ${camposActualizar.join(', ')} WHERE id = ?`;
+                    const [resultUpdate] = await connection.execute(sqlUpdate, valoresActualizar);
+                    
+                    if (resultUpdate.affectedRows === 0) {
+                        await connection.end();
+                        return res.status(404).json({
+                            success: false,
+                            error: 'Partido no encontrado'
+                        });
+                    }
+                    
+                    await connection.end();
+                    
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Resultado actualizado correctamente',
+                        affectedRows: resultUpdate.affectedRows
+                    });
+                    
+                case 'POST':
                 case 'DELETE':
                     // Por ahora, solo devolver error para métodos que modifican datos
                     // TODO: Implementar lógica completa cuando se necesite

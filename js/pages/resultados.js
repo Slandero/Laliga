@@ -2210,8 +2210,36 @@ async function guardarResultado() {
     }
     
     const partidoId = document.getElementById('resultado-partido-id').value;
-    const golesLocal = parseInt(document.getElementById('resultado-goles-local').value) || 0;
-    const golesVisitante = parseInt(document.getElementById('resultado-goles-visitante').value) || 0;
+    const golesLocalInput = document.getElementById('resultado-goles-local').value;
+    const golesVisitanteInput = document.getElementById('resultado-goles-visitante').value;
+    
+    // Validar que los campos no estén vacíos
+    if (golesLocalInput === '' || golesVisitanteInput === '') {
+        if (errorDiv) {
+            errorDiv.textContent = 'Por favor, ingresa los goles para ambos equipos';
+        }
+        return;
+    }
+    
+    // Convertir a números enteros
+    const golesLocal = parseInt(golesLocalInput);
+    const golesVisitante = parseInt(golesVisitanteInput);
+    
+    // Validar que sean números válidos
+    if (isNaN(golesLocal) || isNaN(golesVisitante)) {
+        if (errorDiv) {
+            errorDiv.textContent = 'Los goles deben ser números válidos';
+        }
+        return;
+    }
+    
+    // Validar que no sean negativos
+    if (golesLocal < 0 || golesVisitante < 0) {
+        if (errorDiv) {
+            errorDiv.textContent = 'Los goles no pueden ser negativos';
+        }
+        return;
+    }
     
     try {
         const response = await fetch('api/partidos.php', {
@@ -2227,6 +2255,10 @@ async function guardarResultado() {
             })
         });
         
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
         const result = await response.json();
         
         if (result.success) {
@@ -2239,9 +2271,11 @@ async function guardarResultado() {
             }
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al guardar resultado:', error);
         if (errorDiv) {
             errorDiv.textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+        } else {
+            alert('Error al guardar el resultado. Por favor, intenta de nuevo.');
         }
     }
 }
