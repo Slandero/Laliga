@@ -1,7 +1,16 @@
 {
+  "functions": {
+    "api/jugadores.php.js": {
+      "memory": 1024
+    }
+  },
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/jugadores.php",
+      "destination": "/api/jugadores.php.js"
+    },
+    {
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ],
