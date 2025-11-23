@@ -16,16 +16,19 @@ if (file_exists($configPath)) {
 
 // Si no están definidas las constantes, usar valores por defecto
 if (!defined('DB_HOST')) {
-    @define('DB_HOST', '127.0.0.1');
+    @define('DB_HOST', 'yamabiko.proxy.rlwy.net');
+}
+if (!defined('DB_PORT')) {
+    @define('DB_PORT', '28754');
 }
 if (!defined('DB_NAME')) {
-    @define('DB_NAME', 'laliga');
+    @define('DB_NAME', 'railway');
 }
 if (!defined('DB_USER')) {
     @define('DB_USER', 'root');
 }
 if (!defined('DB_PASS')) {
-    @define('DB_PASS', '');
+    @define('DB_PASS', 'ZAkiwwKgwmthUgTOJMwktjGDtNmmpVxi');
 }
 if (!defined('DB_CHARSET')) {
     @define('DB_CHARSET', 'utf8mb4');
@@ -46,7 +49,7 @@ class Conexion {
      */
     private function __construct() {
         try {
-            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+            $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
             
             $opciones = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,

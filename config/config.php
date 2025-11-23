@@ -5,10 +5,11 @@
  */
 
 // Configuración de la base de datos
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'laliga');
+define('DB_HOST', 'yamabiko.proxy.rlwy.net');
+define('DB_PORT', '28754');
+define('DB_NAME', 'railway');
 define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_PASS', 'ZAkiwwKgwmthUgTOJMwktjGDtNmmpVxi');
 define('DB_CHARSET', 'utf8mb4');
 
 // Configuración de la aplicación
