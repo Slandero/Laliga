@@ -4,8 +4,7 @@
   "description": "Proyecto Liga - API Serverless para Vercel",
   "main": "index.js",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required' && exit 0"
+    "dev": "vercel dev"
   },
   "dependencies": {
     "mysql2": "^3.6.5",
