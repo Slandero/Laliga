@@ -275,10 +275,40 @@ async function obtenerResultados(jornada) {
         const result = await response.json();
         
         if (result.success && result.partidos && result.partidos.length > 0) {
+            // Función auxiliar para formatear fecha (por si la API no la formateó correctamente)
+            const formatearFecha = (fecha) => {
+                if (!fecha) return '';
+                // Si ya está formateada (contiene "DOM", "LUN", etc.), devolverla tal cual
+                if (typeof fecha === 'string' && /^(DOM|LUN|MAR|MIÉ|JUE|VIE|SÁB)\s/.test(fecha)) {
+                    return fecha;
+                }
+                // Si no está formateada, formatearla
+                try {
+                    let fechaStr = String(fecha);
+                    // Extraer la fecha en formato YYYY-MM-DD
+                    const fechaMatch = fechaStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                    if (fechaMatch) {
+                        const año = parseInt(fechaMatch[1], 10);
+                        const mes = parseInt(fechaMatch[2], 10) - 1; // Los meses van de 0-11
+                        const dia = parseInt(fechaMatch[3], 10);
+                        const fechaObj = new Date(año, mes, dia);
+                        const dias = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+                        const diaSemana = dias[fechaObj.getDay()];
+                        const diaFormateado = fechaObj.getDate().toString().padStart(2, '0');
+                        const mesFormateado = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
+                        const añoFormateado = fechaObj.getFullYear();
+                        return `${diaSemana} ${diaFormateado}.${mesFormateado}.${añoFormateado}`;
+                    }
+                } catch (e) {
+                    console.error('Error al formatear fecha en frontend:', e, fecha);
+                }
+                return String(fecha);
+            };
+            
             // Convertir formato de la API al formato esperado por renderizarResultados
             return result.partidos.map(partido => ({
                 id: partido.id,
-                fecha: partido.fecha,
+                fecha: formatearFecha(partido.fecha || partido.fecha_iso),
                 horario: partido.horario,
                 local: partido.local,
                 visitante: partido.visitante,

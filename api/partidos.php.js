@@ -117,12 +117,28 @@ module.exports = async (req, res) => {
                         let fechaFormateada = '';
                         if (partido.fecha) {
                             try {
+                                // Convertir la fecha a string si es un objeto Date
+                                let fechaStr = partido.fecha;
+                                if (partido.fecha instanceof Date) {
+                                    // Si es un objeto Date, convertir a formato YYYY-MM-DD
+                                    const año = partido.fecha.getFullYear();
+                                    const mes = (partido.fecha.getMonth() + 1).toString().padStart(2, '0');
+                                    const dia = partido.fecha.getDate().toString().padStart(2, '0');
+                                    fechaStr = `${año}-${mes}-${dia}`;
+                                } else if (typeof partido.fecha === 'object' && partido.fecha !== null) {
+                                    // Si es un objeto (puede ser un objeto Date de MySQL), intentar extraer la fecha
+                                    fechaStr = String(partido.fecha);
+                                } else {
+                                    fechaStr = String(partido.fecha);
+                                }
+                                
                                 // Parsear la fecha como fecha local (YYYY-MM-DD)
-                                const partesFecha = String(partido.fecha).split('-');
-                                if (partesFecha.length === 3) {
-                                    const año = parseInt(partesFecha[0], 10);
-                                    const mes = parseInt(partesFecha[1], 10) - 1; // Los meses van de 0-11
-                                    const dia = parseInt(partesFecha[2], 10);
+                                // La fecha puede venir como "2025-08-15" o "2025-08-15T00:00:00.000Z" o similar
+                                const fechaMatch = fechaStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                                if (fechaMatch) {
+                                    const año = parseInt(fechaMatch[1], 10);
+                                    const mes = parseInt(fechaMatch[2], 10) - 1; // Los meses van de 0-11
+                                    const dia = parseInt(fechaMatch[3], 10);
                                     const fechaObj = new Date(año, mes, dia);
                                     const dias = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
                                     const diaSemana = dias[fechaObj.getDay()];
@@ -131,10 +147,11 @@ module.exports = async (req, res) => {
                                     const añoFormateado = fechaObj.getFullYear();
                                     fechaFormateada = `${diaSemana} ${diaFormateado}.${mesFormateado}.${añoFormateado}`;
                                 } else {
-                                    fechaFormateada = partido.fecha;
+                                    fechaFormateada = fechaStr;
                                 }
                             } catch (e) {
-                                fechaFormateada = partido.fecha;
+                                console.error('Error al formatear fecha:', e, partido.fecha);
+                                fechaFormateada = String(partido.fecha);
                             }
                         }
                         
