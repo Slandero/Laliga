@@ -307,16 +307,25 @@ function obtenerPartidosPorJornadaData(jornada) {
 }
 
 function generarDatosEjemplo(jornada) {
-    // Función auxiliar para formatear fecha
+    // Función auxiliar para formatear fecha (usar parseo local para evitar problemas de zona horaria)
     const formatearFecha = (fechaISO) => {
         try {
-            const fechaObj = new Date(fechaISO + 'T00:00:00');
-            const dias = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
-            const diaSemana = dias[fechaObj.getUTCDay()];
-            const dia = fechaObj.getUTCDate().toString().padStart(2, '0');
-            const mes = (fechaObj.getUTCMonth() + 1).toString().padStart(2, '0');
-            const año = fechaObj.getUTCFullYear();
-            return `${diaSemana} ${dia}.${mes}.${año}`;
+            // Parsear la fecha como fecha local (YYYY-MM-DD)
+            const partesFecha = String(fechaISO).split('-');
+            if (partesFecha.length === 3) {
+                const año = parseInt(partesFecha[0], 10);
+                const mes = parseInt(partesFecha[1], 10) - 1; // Los meses van de 0-11
+                const dia = parseInt(partesFecha[2], 10);
+                const fechaObj = new Date(año, mes, dia);
+                const dias = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+                const diaSemana = dias[fechaObj.getDay()];
+                const diaFormateado = fechaObj.getDate().toString().padStart(2, '0');
+                const mesFormateado = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
+                const añoFormateado = fechaObj.getFullYear();
+                return `${diaSemana} ${diaFormateado}.${mesFormateado}.${añoFormateado}`;
+            } else {
+                return fechaISO;
+            }
         } catch (e) {
             return fechaISO;
         }

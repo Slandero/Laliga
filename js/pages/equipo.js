@@ -347,6 +347,32 @@ function mostrarJugadores(jugadores, carpetaImagen) {
                     <div class="jugador-datos">
         `;
         
+        // Función para formatear fechas (detectar campos de fecha y formatearlos)
+        const formatearValor = (key, valor) => {
+            const keyLower = key.toLowerCase();
+            // Detectar si es un campo de fecha (fecha_nacimiento, fecha_nac, fecha, etc.)
+            if ((keyLower.includes('fecha') || keyLower.includes('date') || keyLower.includes('nacimiento') || keyLower.includes('birth')) && 
+                valor && typeof valor === 'string' && /^\d{4}-\d{2}-\d{2}/.test(valor)) {
+                try {
+                    // Parsear la fecha como fecha local (YYYY-MM-DD)
+                    const partesFecha = String(valor).split('-');
+                    if (partesFecha.length >= 3) {
+                        const año = parseInt(partesFecha[0], 10);
+                        const mes = parseInt(partesFecha[1], 10) - 1; // Los meses van de 0-11
+                        const dia = parseInt(partesFecha[2], 10);
+                        const fechaObj = new Date(año, mes, dia);
+                        const diaFormateado = fechaObj.getDate().toString().padStart(2, '0');
+                        const mesFormateado = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
+                        const añoFormateado = fechaObj.getFullYear();
+                        return `${diaFormateado}/${mesFormateado}/${añoFormateado}`;
+                    }
+                } catch (e) {
+                    // Si hay error, devolver el valor original
+                }
+            }
+            return valor;
+        };
+        
         // Mostrar todos los datos del entrenador/asistente
         Object.keys(persona).forEach(key => {
             if (key !== campoCargo &&
@@ -355,7 +381,8 @@ function mostrarJugadores(jugadores, carpetaImagen) {
                 const valor = persona[key];
                 if (valor !== null && valor !== '' && valor !== undefined) {
                     const campoFormateado = formatearCampo(key);
-                    html += `<p><strong>${campoFormateado}:</strong> ${valor}</p>`;
+                    const valorFormateado = formatearValor(key, valor);
+                    html += `<p><strong>${campoFormateado}:</strong> ${valorFormateado}</p>`;
                 }
             }
         });
@@ -468,6 +495,32 @@ function mostrarJugadores(jugadores, carpetaImagen) {
                     return formateado;
                 };
                 
+                // Función para formatear fechas (detectar campos de fecha y formatearlos)
+                const formatearValor = (key, valor) => {
+                    const keyLower = key.toLowerCase();
+                    // Detectar si es un campo de fecha (fecha_nacimiento, fecha_nac, fecha, etc.)
+                    if ((keyLower.includes('fecha') || keyLower.includes('date') || keyLower.includes('nacimiento') || keyLower.includes('birth')) && 
+                        valor && typeof valor === 'string' && /^\d{4}-\d{2}-\d{2}/.test(valor)) {
+                        try {
+                            // Parsear la fecha como fecha local (YYYY-MM-DD)
+                            const partesFecha = String(valor).split('-');
+                            if (partesFecha.length >= 3) {
+                                const año = parseInt(partesFecha[0], 10);
+                                const mes = parseInt(partesFecha[1], 10) - 1; // Los meses van de 0-11
+                                const dia = parseInt(partesFecha[2], 10);
+                                const fechaObj = new Date(año, mes, dia);
+                                const diaFormateado = fechaObj.getDate().toString().padStart(2, '0');
+                                const mesFormateado = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
+                                const añoFormateado = fechaObj.getFullYear();
+                                return `${diaFormateado}/${mesFormateado}/${añoFormateado}`;
+                            }
+                        } catch (e) {
+                            // Si hay error, devolver el valor original
+                        }
+                    }
+                    return valor;
+                };
+                
                 // Mostrar todos los datos del jugador
                 Object.keys(jugador).forEach(key => {
                     if (key !== campoDorsal && key !== campoPosicion &&
@@ -477,7 +530,8 @@ function mostrarJugadores(jugadores, carpetaImagen) {
                         const valor = jugador[key];
                         if (valor !== null && valor !== '' && valor !== undefined) {
                             const campoFormateado = formatearCampo(key);
-                            html += `<p><strong>${campoFormateado}:</strong> ${valor}</p>`;
+                            const valorFormateado = formatearValor(key, valor);
+                            html += `<p><strong>${campoFormateado}:</strong> ${valorFormateado}</p>`;
                         }
                     }
                 });
