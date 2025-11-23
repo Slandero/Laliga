@@ -335,27 +335,8 @@ function generarDatosEjemplo(jornada) {
     }*/
     
     // Datos para jornada 1 u otras jornadas
-    
-    const fechas = [
-        { fecha: 'VIE 15.08.2025', hora: '11:00' },
-        { fecha: 'VIE 15.08.2025', hora: '13:30' },
-        { fecha: 'SÁB 16.08.2025', hora: '09:00' },
-        { fecha: 'SÁB 16.08.2025', hora: '11:00' },
-        { fecha: 'SÁB 16.08.2025', hora: '13:30' },
-        { fecha: 'DOM 17.08.2025', hora: '09:00' },
-        { fecha: 'DOM 17.08.2025', hora: '11:00' },
-        { fecha: 'DOM 17.08.2025', hora: '13:30' },
-        { fecha: 'LUN 18.08.2025', hora: '11:00' },
-        { fecha: 'MAR 19.08.2025', hora: '13:30' }
-    ];
-
-    return equipos.map((equipo, index) => ({
-        fecha: fechas[index].fecha,
-        horario: fechas[index].hora,
-        local: equipo.nombre,
-        visitante: equipo.rival,
-        resultado: equipo.resultado
-    }));
+    // Si no hay datos de ejemplo, devolver array vacío
+    return [];
 }
 
 let usuarioLogueado = false;

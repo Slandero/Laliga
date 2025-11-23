@@ -14,6 +14,9 @@
     },
     "api/logout.php.js": {
       "memory": 1024
+    },
+    "api/partidos.php.js": {
+      "memory": 1024
     }
   },
   "rewrites": [
@@ -36,6 +39,10 @@
     {
       "source": "/api/logout.php",
       "destination": "/api/logout.php.js"
+    },
+    {
+      "source": "/api/partidos.php",
+      "destination": "/api/partidos.php.js"
     }
   ],
   "headers": [
