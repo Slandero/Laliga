@@ -3,6 +3,14 @@
 api/*.php
 *.php
 
-# Mantener solo las funciones serverless de Node.js
-!api/*.php.js
+# Ignorar scripts de actualización (no son funciones serverless)
+scripts/*
+api/actualizar_*.js
+api/eliminar_*.js
+
+# Ignorar todos los archivos .php.js excepto los que necesitamos como módulos
+# Mantener solo la función serverless principal y sus dependencias
+!api/index.js
+!api/partidos.php.js
+!api/eventos_partido.php.js
 

@@ -1,55 +1,13 @@
 {
   "functions": {
-    "api/jugadores.php.js": {
-      "memory": 1024
-    },
-    "api/login.php.js": {
-      "memory": 1024
-    },
-    "api/registro.php.js": {
-      "memory": 1024
-    },
-    "api/check_session.php.js": {
-      "memory": 1024
-    },
-    "api/logout.php.js": {
-      "memory": 1024
-    },
-    "api/partidos.php.js": {
-      "memory": 1024
-    },
-    "api/eventos_partido.php.js": {
+    "api/index.js": {
       "memory": 1024
     }
   },
   "rewrites": [
     {
-      "source": "/api/jugadores.php",
-      "destination": "/api/jugadores.php.js"
-    },
-    {
-      "source": "/api/login.php",
-      "destination": "/api/login.php.js"
-    },
-    {
-      "source": "/api/registro.php",
-      "destination": "/api/registro.php.js"
-    },
-    {
-      "source": "/api/check_session.php",
-      "destination": "/api/check_session.php.js"
-    },
-    {
-      "source": "/api/logout.php",
-      "destination": "/api/logout.php.js"
-    },
-    {
-      "source": "/api/partidos.php",
-      "destination": "/api/partidos.php.js"
-    },
-    {
-      "source": "/api/eventos_partido.php",
-      "destination": "/api/eventos_partido.php.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
       "source": "/:path*",
