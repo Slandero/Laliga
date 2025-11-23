@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
     // Permitir CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Content-Type', 'application/json; charset=UTF-8');
     
     if (req.method === 'OPTIONS') {
@@ -28,9 +28,17 @@ module.exports = async (req, res) => {
         return;
     }
     
+    // Solo permitir GET para esta función
+    if (req.method !== 'GET') {
+        return res.status(405).json({
+            success: false,
+            error: 'Method not allowed'
+        });
+    }
+    
     try {
-        const { query } = req;
-        const tabla = query.tabla;
+        // Obtener query parameters de Vercel (ya parseados automáticamente)
+        const tabla = req.query?.tabla || (req.url ? new URL(req.url, `http://${req.headers.host}`).searchParams.get('tabla') : null);
         
         if (!tabla) {
             return res.status(400).json({
