@@ -22,21 +22,13 @@
 @ob_clean();
 
 try {
-    // Configuración directa
-    if (!defined('DB_HOST')) {
-        define('DB_HOST', '127.0.0.1');
-        define('DB_NAME', 'laliga');
-        define('DB_USER', 'root');
-        define('DB_PASS', '');
-        define('DB_CHARSET', 'utf8mb4');
-    }
-    
-    // Cargar conexión
+    // Cargar configuración primero (esto definirá Railway)
     $configPath = __DIR__ . '/../config/config.php';
     if (file_exists($configPath)) {
         @require_once $configPath;
     }
     
+    // Cargar conexión después de la configuración
     @require_once __DIR__ . '/../conexionBase/conexion.php';
     
     // Obtener parámetro
@@ -75,12 +67,19 @@ try {
     $columnas = $pdo->query("SHOW COLUMNS FROM `$tabla`")->fetchAll(PDO::FETCH_COLUMN);
     $columnaOrden = null;
     
-    if (in_array('dorsal', $columnas)) {
+    // Buscar campo dorsal (puede estar en mayúsculas o minúsculas)
+    if (in_array('Dorsal', $columnas)) {
+        $columnaOrden = 'Dorsal';
+    } elseif (in_array('dorsal', $columnas)) {
         $columnaOrden = 'dorsal';
     } elseif (in_array('numero', $columnas)) {
         $columnaOrden = 'numero';
+    } elseif (in_array('Numero', $columnas)) {
+        $columnaOrden = 'Numero';
     } elseif (in_array('num', $columnas)) {
         $columnaOrden = 'num';
+    } elseif (in_array('Num', $columnas)) {
+        $columnaOrden = 'Num';
     }
     
     if ($columnaOrden) {

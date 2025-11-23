@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `valencia_cf` (
   PRIMARY KEY (`Dorsal`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-/*-- Insertar jugadores del Valencia CF
+-- Insertar jugadores del Valencia CF
 INSERT INTO `valencia_cf` (`Dorsal`, `Nombre`, `Apellido`, `Posicion`, `Fecha_Nacimiento`, `Nacionalidad`) VALUES
 (1, 'Stole', 'Dimitrievski', 'Portero', '1993-12-24', 'Macedonia del Norte'),
 (3, 'Jose Luis', 'Copete', 'Defensa', '1999-10-09', 'España'),
@@ -40,7 +40,7 @@ INSERT INTO `valencia_cf` (`Dorsal`, `Nombre`, `Apellido`, `Posicion`, `Fecha_Na
 (32, 'Marc', 'Navarro', 'Defensa', '2004-05-29', 'España'),
 (36, 'Pedro', 'Blazquez', 'Centrocampista', '2006-03-18', 'España'),
 (37, 'Sergio', 'Jurado', 'Delantero', '2005-12-07', 'España'),
-(38, 'Alberto', 'Mari', 'Centrocampista', '2004-08-22', 'España');*/
+(38, 'Alberto', 'Mari', 'Centrocampista', '2004-08-22', 'España');
 
 CREATE TABLE laliga.real_betis (
     Dorsal INT,

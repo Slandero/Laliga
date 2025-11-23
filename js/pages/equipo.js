@@ -152,8 +152,8 @@ function mostrarJugadores(jugadores, carpetaImagen) {
         }
     }
     
-    // Detectar campo de posición - buscar en todos los registros
-    const posiblesCamposPosicion = ['posicion', 'Posicion', 'posición', 'Posición', 'position', 'Position', 'puesto', 'Puesto'];
+    // Detectar campo de posición - buscar en todos los registros (priorizar mayúsculas primero)
+    const posiblesCamposPosicion = ['Posicion', 'posicion', 'Posición', 'posición', 'Position', 'position', 'Puesto', 'puesto'];
     let campoPosicion = null;
     
     for (const jugador of jugadores) {

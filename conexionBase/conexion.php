@@ -14,21 +14,21 @@ if (file_exists($configPath)) {
     @require_once $configPath;
 }
 
-// Si no están definidas las constantes, usar valores por defecto
+// Si no están definidas las constantes, usar valores por defecto (LOCAL)
 if (!defined('DB_HOST')) {
-    @define('DB_HOST', 'yamabiko.proxy.rlwy.net');
+    @define('DB_HOST', '127.0.0.1');
 }
 if (!defined('DB_PORT')) {
-    @define('DB_PORT', '28754');
+    @define('DB_PORT', '3306');
 }
 if (!defined('DB_NAME')) {
-    @define('DB_NAME', 'railway');
+    @define('DB_NAME', 'laliga');
 }
 if (!defined('DB_USER')) {
     @define('DB_USER', 'root');
 }
 if (!defined('DB_PASS')) {
-    @define('DB_PASS', 'ZAkiwwKgwmthUgTOJMwktjGDtNmmpVxi');
+    @define('DB_PASS', '');
 }
 if (!defined('DB_CHARSET')) {
     @define('DB_CHARSET', 'utf8mb4');
@@ -55,9 +55,25 @@ class Conexion {
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
+                PDO::ATTR_TIMEOUT            => 10,
+                PDO::ATTR_PERSISTENT         => false,
             ];
             
-            $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $opciones);
+            // Para Railway, puede ser necesario desactivar SSL si no está configurado
+            // O configurar SSL según los requisitos de Railway
+            try {
+                $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $opciones);
+            } catch (PDOException $e) {
+                // Si falla, intentar sin especificar el puerto en el DSN
+                if (strpos($e->getMessage(), 'denegó expresamente') !== false || 
+                    strpos($e->getMessage(), 'Connection refused') !== false) {
+                    // Intentar sin especificar charset explícitamente
+                    $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
+                    $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $opciones);
+                } else {
+                    throw $e;
+                }
+            }
             
             if (APP_DEBUG && APP_ENV === 'development') {
                 error_log("Conexión a MySQL establecida correctamente");

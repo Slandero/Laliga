@@ -15,12 +15,42 @@
 @header('Access-Control-Allow-Origin: *');
 
 try {
-    // Cargar configuración y conexión
+    // Cargar configuración
     $configPath = __DIR__ . '/../config/config.php';
     if (file_exists($configPath)) {
         @require_once $configPath;
     }
     
+    $resultados = [];
+    
+    // Detectar si estamos en localhost
+    $isLocal = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', 'localhost:80', 'localhost:8080', 'localhost:3000', '127.0.0.1:80', '127.0.0.1:8080']) 
+              || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost:') === 0
+              || strpos($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1:') === 0;
+    
+    // Si estamos en local, crear la base de datos si no existe ANTES de usar Conexion
+    if ($isLocal && defined('DB_HOST') && defined('DB_NAME') && defined('DB_USER') && defined('DB_PASS')) {
+        try {
+            // Conectar a MySQL sin especificar la base de datos
+            $dsn = "mysql:host=" . DB_HOST . ";port=" . (defined('DB_PORT') ? DB_PORT : '3306') . ";charset=utf8mb4";
+            $pdoTemp = new PDO($dsn, DB_USER, DB_PASS, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
+            
+            // Verificar si la base de datos existe
+            $stmt = $pdoTemp->query("SHOW DATABASES LIKE '" . DB_NAME . "'");
+            if ($stmt->rowCount() === 0) {
+                // Crear la base de datos
+                $pdoTemp->exec("CREATE DATABASE `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                $resultados['base_datos_creada'] = "Base de datos '" . DB_NAME . "' creada automáticamente";
+            }
+        } catch (PDOException $e) {
+            // Si hay error al crear la base de datos, mostrar mensaje pero continuar
+            $resultados['advertencia'] = "No se pudo verificar/crear la base de datos: " . $e->getMessage();
+        }
+    }
+    
+    // Ahora cargar la conexión
     @require_once __DIR__ . '/../conexionBase/conexion.php';
     
     // Obtener conexión
@@ -28,7 +58,6 @@ try {
     $pdo = $conexion->obtenerPDO();
     
     $reinsertar = isset($_GET['reinsertar']) && $_GET['reinsertar'] === '1';
-    $resultados = [];
     $tablasProcesadas = [];
     
     // Leer el archivo SQL
