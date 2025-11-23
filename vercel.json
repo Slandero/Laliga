@@ -8,6 +8,12 @@
     },
     "api/registro.php.js": {
       "memory": 1024
+    },
+    "api/check_session.php.js": {
+      "memory": 1024
+    },
+    "api/logout.php.js": {
+      "memory": 1024
     }
   },
   "rewrites": [
@@ -22,6 +28,14 @@
     {
       "source": "/api/registro.php",
       "destination": "/api/registro.php.js"
+    },
+    {
+      "source": "/api/check_session.php",
+      "destination": "/api/check_session.php.js"
+    },
+    {
+      "source": "/api/logout.php",
+      "destination": "/api/logout.php.js"
     }
   ],
   "headers": [

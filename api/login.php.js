@@ -105,6 +105,19 @@ module.exports = async (req, res) => {
             
             await connection.end();
             
+            // Establecer cookie para mantener la sesión (en lugar de sesión PHP)
+            // En serverless, usamos cookies para mantener el estado
+            const isProduction = req.headers.host && !req.headers.host.includes('localhost');
+            const cookieOptions = [
+                `usuario_id=${usuario.id}`,
+                'Path=/',
+                'SameSite=Lax',
+                isProduction ? 'Secure' : '', // Solo Secure en producción (HTTPS)
+                'Max-Age=86400' // 24 horas
+            ].filter(Boolean).join('; ');
+            
+            res.setHeader('Set-Cookie', cookieOptions);
+            
             // Devolver datos del usuario (sin la contraseña)
             return res.status(200).json({
                 success: true,
