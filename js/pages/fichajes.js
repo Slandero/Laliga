@@ -1,41 +1,42 @@
 // Página de Fichajes
 
 // Mapeo de países a abreviaciones oficiales (ISO 3166-1 alpha-2)
+// Los países están en español para facilitar la búsqueda
 const mapeoPaises = {
-    'Spain': 'ES',
-    'United States': 'US',
-    'Italy': 'IT',
+    'España': 'ES',
+    'Estados Unidos': 'US',
+    'Italia': 'IT',
     'Serbia': 'RS',
     'Argentina': 'AR',
-    'United Kingdom': 'GB',
-    'Brazil': 'BR',
-    'Slovakia': 'SK',
-    'Canada': 'CA',
+    'Reino Unido': 'GB',
+    'Brasil': 'BR',
+    'Eslovaquia': 'SK',
+    'Canadá': 'CA',
     'Uruguay': 'UY',
-    'France': 'FR',
-    'Romania': 'RO',
+    'Francia': 'FR',
+    'Rumania': 'RO',
     'Ghana': 'GH',
     'Portugal': 'PT',
     'Venezuela': 'VE',
     'Nigeria': 'NG',
-    'Switzerland': 'CH',
-    'Morocco': 'MA',
+    'Suiza': 'CH',
+    'Marruecos': 'MA',
     'Guinea': 'GN',
-    'Netherlands': 'NL',
+    'Países Bajos': 'NL',
     'Colombia': 'CO',
-    'Belgium': 'BE',
-    'Germany': 'DE',
-    'Croatia': 'HR',
+    'Bélgica': 'BE',
+    'Alemania': 'DE',
+    'Croacia': 'HR',
     'Australia': 'AU',
     'Chile': 'CL',
-    'Ireland': 'IE',
-    'Comoros': 'KM',
-    'Finland': 'FI',
+    'Irlanda': 'IE',
+    'Comoras': 'KM',
+    'Finlandia': 'FI',
     'Israel': 'IL',
-    'DR Congo': 'CD',
-    'Cameroon': 'CM',
-    'Ukraine': 'UA',
-    'Greece': 'GR'
+    'República Democrática del Congo': 'CD',
+    'Camerún': 'CM',
+    'Ucrania': 'UA',
+    'Grecia': 'GR'
 };
 
 // Mapeo de equipos a carpetas de imágenes
@@ -169,7 +170,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Morocco',
+        pais: 'Marruecos',
         jugador: 'AZZ-EDDINE',
         destino: 'MARSEILLE',
         procedencia: 'Girona FC',
@@ -178,7 +179,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Morocco',
+        pais: 'Marruecos',
         jugador: 'A. ABQAR',
         destino: 'Deportivo Alavés',
         procedencia: 'Getafe CF',
@@ -187,7 +188,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARC BERNAL',
         destino: 'FC BARCELONA JUVENIL',
         procedencia: 'FC Barcelona',
@@ -196,7 +197,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JUANMI',
         destino: 'Real Betis',
         procedencia: 'Sevilla FC',
@@ -205,7 +206,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Cameroon',
+        pais: 'Camerún',
         jugador: 'NEYOU',
         destino: 'CD Leganés',
         procedencia: 'Real Sociedad',
@@ -214,7 +215,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ALEX',
         destino: 'BURGOS CF',
         procedencia: 'RCD Mallorca',
@@ -223,7 +224,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JAVI MUÑOZ',
         destino: 'UD LAS PALMAS',
         procedencia: 'Levante UD',
@@ -232,7 +233,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'KIKO F.',
         destino: 'Villarreal CF',
         procedencia: 'Levante UD',
@@ -250,7 +251,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'MENDY',
         destino: 'TRABZONSPOR',
         procedencia: 'Sevilla FC',
@@ -259,7 +260,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RAMÓN MARTÍNEZ',
         destino: 'Sevilla Atlético',
         procedencia: 'RCD Mallorca',
@@ -268,7 +269,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JOEL ROCA',
         destino: 'GIRONA FC B',
         procedencia: 'Girona FC',
@@ -277,7 +278,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'C.SOLER',
         destino: 'PSG',
         procedencia: 'Valencia CF',
@@ -286,7 +287,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JAN VIRGILI',
         destino: 'MALLORCA B',
         procedencia: 'RCD Mallorca',
@@ -295,7 +296,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Greece',
+        pais: 'Grecia',
         jugador: 'ALAN MATTURRO',
         destino: 'GENOA',
         procedencia: 'Levante UD',
@@ -322,7 +323,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Croatia',
+        pais: 'Croacia',
         jugador: 'LIVAKOVIC',
         destino: 'FENERBAHÇE',
         procedencia: 'Girona FC',
@@ -331,7 +332,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'MIKAUTADZE',
         destino: 'LYON',
         procedencia: 'Villarreal CF',
@@ -340,7 +341,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'United Kingdom',
+        pais: 'Reino Unido',
         jugador: 'ABU KAMARA',
         destino: 'Hull City AFC',
         procedencia: 'Getafe CF',
@@ -349,7 +350,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'VENCEDOR',
         destino: 'Athletic Club',
         procedencia: 'Levante UD',
@@ -358,7 +359,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Netherlands',
+        pais: 'Países Bajos',
         jugador: 'S. BECKER',
         destino: 'Real Sociedad',
         procedencia: 'CA Osasuna',
@@ -367,7 +368,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'BRYAN',
         destino: 'SPURS',
         procedencia: 'Girona FC',
@@ -376,7 +377,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Netherlands',
+        pais: 'Países Bajos',
         jugador: 'AMRABAT',
         destino: 'FENERBAHÇE',
         procedencia: 'Real Betis',
@@ -394,7 +395,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'ALEMÃO',
         destino: 'PACHUCA',
         procedencia: 'Rayo Vallecano',
@@ -403,7 +404,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Cameroon',
+        pais: 'Camerún',
         jugador: 'ETTA EYONG',
         destino: 'VILLARREAL B',
         procedencia: 'Levante UD',
@@ -412,7 +413,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'ANTONY',
         destino: 'MAN UTD',
         procedencia: 'Real Betis',
@@ -421,7 +422,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Ukraine',
+        pais: 'Ucrania',
         jugador: 'VANAT',
         destino: 'Dinamo Kiev',
         procedencia: 'Girona FC',
@@ -430,7 +431,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'DR Congo',
+        pais: 'República Democrática del Congo',
         jugador: 'DIANG',
         destino: 'West Brom',
         procedencia: 'Elche CF',
@@ -439,7 +440,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ARRIAGA',
         destino: 'PARTIZAN',
         procedencia: 'Levante UD',
@@ -457,7 +458,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'PEDROSA',
         destino: 'Sevilla FC',
         procedencia: 'Elche CF',
@@ -466,7 +467,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Comoros',
+        pais: 'Comoras',
         jugador: 'KOYALIPOU',
         destino: 'LENS',
         procedencia: 'RCD Mallorca',
@@ -475,7 +476,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Finland',
+        pais: 'Finlandia',
         jugador: 'BERGSTROM',
         destino: 'CHELSEA',
         procedencia: 'Sevilla FC',
@@ -484,7 +485,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'AZPILICUETA',
         destino: 'Atlético de Madrid',
         procedencia: 'Real Sociedad',
@@ -493,7 +494,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'HERRERA',
         destino: 'Girona FC',
         procedencia: 'Real Oviedo',
@@ -502,7 +503,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JAVI LÓPEZ',
         destino: 'Real Sociedad',
         procedencia: 'Villarreal CF',
@@ -520,7 +521,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'DENIS SUÁREZ',
         destino: 'Minnesota United FC',
         procedencia: 'Villarreal CF',
@@ -538,7 +539,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Switzerland',
+        pais: 'Suiza',
         jugador: 'PICKLE',
         destino: 'NEWCASTLE',
         procedencia: 'FC Barcelona',
@@ -547,7 +548,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Germany',
+        pais: 'Alemania',
         jugador: 'ODISSEAS',
         destino: 'PSG',
         procedencia: 'FC Barcelona',
@@ -556,7 +557,7 @@ const fichajes = [
     {
         fecha: '01/09/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ARNAU TENAS',
         destino: 'FC BARCELONA B',
         procedencia: 'FC Barcelona',
@@ -565,7 +566,7 @@ const fichajes = [
     {
         fecha: '30/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARTÍN',
         destino: 'FC Barcelona',
         procedencia: 'Real Sociedad',
@@ -574,7 +575,7 @@ const fichajes = [
     {
         fecha: '29/08/2025',
         competicion: 'LALIGA',
-        pais: 'Belgium',
+        pais: 'Bélgica',
         jugador: 'RAMAZANI',
         destino: 'Valencia CF',
         procedencia: 'LEEDS',
@@ -583,7 +584,7 @@ const fichajes = [
     {
         fecha: '29/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'URKO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Real Sociedad',
@@ -601,7 +602,7 @@ const fichajes = [
     {
         fecha: '29/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'OLASAGASTI',
         destino: 'Levante UD',
         procedencia: 'Real Sociedad',
@@ -610,7 +611,7 @@ const fichajes = [
     {
         fecha: '29/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'IÑAKI PEÑA',
         destino: 'Elche CF',
         procedencia: 'FC Barcelona',
@@ -619,7 +620,7 @@ const fichajes = [
     {
         fecha: '28/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'PACHECO',
         destino: 'Deportivo Alavés',
         procedencia: 'Real Sociedad',
@@ -637,7 +638,7 @@ const fichajes = [
     {
         fecha: '28/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ALFON',
         destino: 'Sevilla FC',
         procedencia: 'Celta',
@@ -646,7 +647,7 @@ const fichajes = [
     {
         fecha: '24/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ALEX MORENO',
         destino: 'Girona FC',
         procedencia: 'A VILLA',
@@ -655,7 +656,7 @@ const fichajes = [
     {
         fecha: '23/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'IKER',
         destino: 'Levante UD',
         procedencia: 'Real Betis',
@@ -664,7 +665,7 @@ const fichajes = [
     {
         fecha: '23/08/2025',
         competicion: 'LALIGA',
-        pais: 'Netherlands',
+        pais: 'Países Bajos',
         jugador: 'BREKALO',
         destino: 'Real Oviedo',
         procedencia: 'FIORENTINA',
@@ -673,7 +674,7 @@ const fichajes = [
     {
         fecha: '23/08/2025',
         competicion: 'LALIGA',
-        pais: 'United States',
+        pais: 'Estados Unidos',
         jugador: 'KOLEOSHO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'BURNLEY',
@@ -682,7 +683,7 @@ const fichajes = [
     {
         fecha: '23/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'DAWDA',
         destino: 'Girona FC',
         procedencia: 'GIRONA FC B',
@@ -700,7 +701,7 @@ const fichajes = [
     {
         fecha: '22/08/2025',
         competicion: 'LALIGA',
-        pais: 'Ireland',
+        pais: 'Irlanda',
         jugador: 'E. BAILLY',
         destino: 'Real Oviedo',
         procedencia: 'Villarreal CF',
@@ -709,7 +710,7 @@ const fichajes = [
     {
         fecha: '22/08/2025',
         competicion: 'LALIGA',
-        pais: 'Belgium',
+        pais: 'Bélgica',
         jugador: 'DENDONCKER',
         destino: 'Real Oviedo',
         procedencia: 'A VILLA',
@@ -718,7 +719,7 @@ const fichajes = [
     {
         fecha: '21/08/2025',
         competicion: 'LALIGA',
-        pais: 'Italy',
+        pais: 'Italia',
         jugador: 'KUMBULLA',
         destino: 'RCD Mallorca',
         procedencia: 'ROMA',
@@ -736,7 +737,7 @@ const fichajes = [
     {
         fecha: '18/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RAFA MIR',
         destino: 'Elche CF',
         procedencia: 'Sevilla FC',
@@ -745,7 +746,7 @@ const fichajes = [
     {
         fecha: '18/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'REDONDO',
         destino: 'Elche CF',
         procedencia: 'INTER MIAMI CF',
@@ -754,7 +755,7 @@ const fichajes = [
     {
         fecha: '16/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JOAN GARCIA',
         destino: 'FC Barcelona',
         procedencia: 'RCD Espanyol de Barcelona',
@@ -763,7 +764,7 @@ const fichajes = [
     {
         fecha: '16/08/2025',
         competicion: 'LALIGA',
-        pais: 'United Kingdom',
+        pais: 'Reino Unido',
         jugador: 'RASHFORD',
         destino: 'FC Barcelona',
         procedencia: 'MAN UTD',
@@ -790,7 +791,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Germany',
+        pais: 'Alemania',
         jugador: 'JEREMY TOLJAN',
         destino: 'Levante UD',
         procedencia: 'SASSUOLO',
@@ -799,7 +800,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Romania',
+        pais: 'Rumania',
         jugador: 'RADU',
         destino: 'Celta',
         procedencia: 'VENEZIA FC',
@@ -817,7 +818,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'B. IGLESIAS',
         destino: 'Celta',
         procedencia: 'Real Betis',
@@ -826,7 +827,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Croatia',
+        pais: 'Croacia',
         jugador: 'CALETA-CAR',
         destino: 'Real Sociedad',
         procedencia: 'LYON',
@@ -835,7 +836,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JAVI RUEDA',
         destino: 'Celta',
         procedencia: 'CELTA DE VIGO B',
@@ -844,7 +845,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MANU FERNÁNDEZ',
         destino: 'Celta',
         procedencia: 'CELTA DE VIGO B',
@@ -853,7 +854,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'VÍCTOR G.',
         destino: 'Levante UD',
         procedencia: 'CD ELDENSE',
@@ -862,7 +863,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'P. CAMPOS',
         destino: 'Levante UD',
         procedencia: 'ATLÉTICO LEVANTE UD',
@@ -871,7 +872,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'FRAN PÉREZ',
         destino: 'Rayo Vallecano',
         procedencia: 'Valencia CF',
@@ -880,7 +881,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MATEO JOSEPH',
         destino: 'RCD Mallorca',
         procedencia: 'LEEDS',
@@ -889,7 +890,7 @@ const fichajes = [
     {
         fecha: '15/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARIO MARTÍN',
         destino: 'Getafe CF',
         procedencia: 'REAL MADRID CASTILLA',
@@ -898,7 +899,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'M. ROMÁN',
         destino: 'Celta',
         procedencia: 'CELTA DE VIGO B',
@@ -907,7 +908,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'LISO',
         destino: 'Getafe CF',
         procedencia: 'REAL ZARAGOZA',
@@ -916,7 +917,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'LÉO PETRÓT',
         destino: 'Elche CF',
         procedencia: 'SAINT-ÉTIENNE',
@@ -925,7 +926,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'BRANDON',
         destino: 'Real Oviedo',
         procedencia: 'Debreceni VSC',
@@ -934,7 +935,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Italy',
+        pais: 'Italia',
         jugador: 'RASPADORI',
         destino: 'Atlético de Madrid',
         procedencia: 'NAPOLI',
@@ -943,7 +944,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Netherlands',
+        pais: 'Países Bajos',
         jugador: 'JUNIOR',
         destino: 'Real Betis',
         procedencia: 'LEEDS',
@@ -961,7 +962,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MANU SÁNCHEZ',
         destino: 'Levante UD',
         procedencia: 'Celta',
@@ -970,7 +971,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Belgium',
+        pais: 'Bélgica',
         jugador: 'WITSEL',
         destino: 'Girona FC',
         procedencia: 'Atlético de Madrid',
@@ -979,7 +980,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'United Kingdom',
+        pais: 'Reino Unido',
         jugador: 'DOLAN',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'BLACKBURN ROVERS',
@@ -988,7 +989,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'CALEBE',
         destino: 'Deportivo Alavés',
         procedencia: 'Fortaleza Esporte Clube',
@@ -997,7 +998,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Switzerland',
+        pais: 'Suiza',
         jugador: 'UGRINIC',
         destino: 'Valencia CF',
         procedencia: 'YOUNG BOYS',
@@ -1006,7 +1007,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Morocco',
+        pais: 'Marruecos',
         jugador: 'ILYAS',
         destino: 'Real Oviedo',
         procedencia: 'GIRONA FC B',
@@ -1024,7 +1025,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'PAU LOPEZ',
         destino: 'Real Betis',
         procedencia: 'DEPORTIVO TOLUCA F.C.',
@@ -1033,7 +1034,7 @@ const fichajes = [
     {
         fecha: '14/08/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'VITOR REIS',
         destino: 'Girona FC',
         procedencia: 'MAN CITY',
@@ -1051,7 +1052,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'BRYAN',
         destino: 'Celta',
         procedencia: 'FC BAYERN',
@@ -1060,7 +1061,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'GORROTXA',
         destino: 'Real Sociedad',
         procedencia: 'R. SOCIEDAD B',
@@ -1069,7 +1070,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'KARRIKABURU',
         destino: 'Real Sociedad',
         procedencia: 'R. SOCIEDAD B',
@@ -1078,7 +1079,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. ALTI',
         destino: 'Villarreal CF',
         procedencia: 'VILLARREAL B',
@@ -1087,7 +1088,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'V. PARADA',
         destino: 'Deportivo Alavés',
         procedencia: 'DEPORTIVO ALAVÉS',
@@ -1096,7 +1097,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'CARREIRA',
         destino: 'Celta',
         procedencia: 'CELTA DE VIGO B',
@@ -1105,7 +1106,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'GOTI',
         destino: 'Real Sociedad',
         procedencia: 'R. SOCIEDAD B',
@@ -1114,7 +1115,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'FERRAN',
         destino: 'Celta',
         procedencia: 'CLUB BRUJAS',
@@ -1132,7 +1133,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ÁLVARO',
         destino: 'Elche CF',
         procedencia: 'REAL MADRID CASTILLA',
@@ -1141,7 +1142,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARC VIDAL',
         destino: 'Celta',
         procedencia: 'CELTA DE VIGO B',
@@ -1150,7 +1151,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARIANO',
         destino: 'Deportivo Alavés',
         procedencia: 'Sevilla FC',
@@ -1159,7 +1160,7 @@ const fichajes = [
     {
         fecha: '13/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'V. CHUST',
         destino: 'Elche CF',
         procedencia: 'CÁDIZ CF',
@@ -1204,7 +1205,7 @@ const fichajes = [
     {
         fecha: '12/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. FORES',
         destino: 'Real Oviedo',
         procedencia: 'VILLARREAL B',
@@ -1213,7 +1214,7 @@ const fichajes = [
     {
         fecha: '12/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. REINA',
         destino: 'Real Oviedo',
         procedencia: 'CD MIRANDÉS',
@@ -1240,7 +1241,7 @@ const fichajes = [
     {
         fecha: '12/08/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'SANTAMARIA',
         destino: 'Valencia CF',
         procedencia: 'RENNES',
@@ -1249,7 +1250,7 @@ const fichajes = [
     {
         fecha: '12/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'GERMAN V.',
         destino: 'Elche CF',
         procedencia: 'VALENCIA MESTALLA',
@@ -1258,7 +1259,7 @@ const fichajes = [
     {
         fecha: '12/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'COLLADO',
         destino: 'Real Betis',
         procedencia: 'Al Akhdoud Saudi Club',
@@ -1267,7 +1268,7 @@ const fichajes = [
     {
         fecha: '11/08/2025',
         competicion: 'LALIGA',
-        pais: 'Romania',
+        pais: 'Rumania',
         jugador: 'MOLDOVAN',
         destino: 'Real Oviedo',
         procedencia: 'Atlético de Madrid',
@@ -1285,7 +1286,7 @@ const fichajes = [
     {
         fecha: '09/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'GONZALO',
         destino: 'Real Madrid',
         procedencia: 'REAL MADRID CASTILLA',
@@ -1294,7 +1295,7 @@ const fichajes = [
     {
         fecha: '08/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. FORTUÑO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'RCD ESPANYOL B',
@@ -1303,7 +1304,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ALEÑÁ',
         destino: 'Deportivo Alavés',
         procedencia: 'Getafe CF',
@@ -1312,7 +1313,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'YOUSSEF',
         destino: 'Deportivo Alavés',
         procedencia: 'REAL MADRID CASTILLA',
@@ -1321,7 +1322,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RAÚL FERNÁNDEZ',
         destino: 'Deportivo Alavés',
         procedencia: 'CD MIRANDÉS',
@@ -1330,7 +1331,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'IBAÑEZ',
         destino: 'Deportivo Alavés',
         procedencia: 'CA Osasuna',
@@ -1339,7 +1340,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ARESO',
         destino: 'Athletic Club',
         procedencia: 'CA Osasuna',
@@ -1348,7 +1349,7 @@ const fichajes = [
     {
         fecha: '07/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. ROCA',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'RCD ESPANYOL B',
@@ -1366,7 +1367,7 @@ const fichajes = [
     {
         fecha: '06/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'C. ROMERO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Villarreal CF',
@@ -1375,7 +1376,7 @@ const fichajes = [
     {
         fecha: '05/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MARC PUBILL',
         destino: 'Atlético de Madrid',
         procedencia: 'UD ALMERÍA',
@@ -1384,7 +1385,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RABA',
         destino: 'Valencia CF',
         procedencia: 'CD Leganés',
@@ -1393,7 +1394,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'VÍCTOR MUÑOZ',
         destino: 'CA Osasuna',
         procedencia: 'REAL MADRID CF C',
@@ -1402,7 +1403,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Slovakia',
+        pais: 'Eslovaquia',
         jugador: 'DAVID HANCKO',
         destino: 'Atlético de Madrid',
         procedencia: 'FEYENOORD',
@@ -1411,7 +1412,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'V. ROSIER',
         destino: 'CA Osasuna',
         procedencia: 'CD Leganés',
@@ -1420,7 +1421,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'I. BENITO',
         destino: 'CA Osasuna',
         procedencia: 'CLUB ATLETICO OSASUNA B',
@@ -1429,7 +1430,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Canada',
+        pais: 'Canadá',
         jugador: 'BUCHANAN',
         destino: 'Villarreal CF',
         procedencia: 'INTER',
@@ -1438,7 +1439,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'J. OTTO',
         destino: 'Deportivo Alavés',
         procedencia: 'PAOK',
@@ -1447,7 +1448,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. MOLEIRO',
         destino: 'Villarreal CF',
         procedencia: 'UD LAS PALMAS',
@@ -1456,7 +1457,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ADAMA',
         destino: 'Athletic Club',
         procedencia: 'ATHLETIC CLUB B',
@@ -1474,7 +1475,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'France',
+        pais: 'Francia',
         jugador: 'LEMAR',
         destino: 'Girona FC',
         procedencia: 'Atlético de Madrid',
@@ -1483,7 +1484,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'H. RINCÓN',
         destino: 'Girona FC',
         procedencia: 'ATHLETIC CLUB B',
@@ -1492,7 +1493,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'AGIRREZABALA',
         destino: 'Valencia CF',
         procedencia: 'Athletic Club',
@@ -1501,7 +1502,7 @@ const fichajes = [
     {
         fecha: '04/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'COPETE',
         destino: 'Valencia CF',
         procedencia: 'RCD Mallorca',
@@ -1510,7 +1511,7 @@ const fichajes = [
     {
         fecha: '01/08/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'PABLO TORRE',
         destino: 'RCD Mallorca',
         procedencia: 'FC BARCELONA B',
@@ -1519,7 +1520,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RAFA MARÍN',
         destino: 'Villarreal CF',
         procedencia: 'NAPOLI',
@@ -1537,7 +1538,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'NATAN',
         destino: 'Real Betis',
         procedencia: 'NAPOLI',
@@ -1546,7 +1547,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'NAVARRO',
         destino: 'Athletic Club',
         procedencia: 'MALLORCA B',
@@ -1555,7 +1556,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Brazil',
+        pais: 'Brasil',
         jugador: 'LUIZ FELIPE',
         destino: 'Rayo Vallecano',
         procedencia: 'MARSEILLE',
@@ -1564,7 +1565,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'GUMBAU',
         destino: 'Rayo Vallecano',
         procedencia: 'Granada CF',
@@ -1573,7 +1574,7 @@ const fichajes = [
     {
         fecha: '31/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'COBA',
         destino: 'Getafe CF',
         procedencia: 'GETAFE CF B',
@@ -1582,7 +1583,7 @@ const fichajes = [
     {
         fecha: '30/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'RIQUELME',
         destino: 'Real Betis',
         procedencia: 'Atlético de Madrid',
@@ -1591,7 +1592,7 @@ const fichajes = [
     {
         fecha: '30/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'Á.VALLES',
         destino: 'Real Betis',
         procedencia: 'UD LAS PALMAS',
@@ -1600,7 +1601,7 @@ const fichajes = [
     {
         fecha: '30/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'R. TERRATS',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Villarreal CF',
@@ -1609,7 +1610,7 @@ const fichajes = [
     {
         fecha: '30/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'C. ROMERO',
         destino: 'Villarreal CF',
         procedencia: 'VILLARREAL B',
@@ -1618,7 +1619,7 @@ const fichajes = [
     {
         fecha: '28/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ASENCIO',
         destino: 'Real Madrid',
         procedencia: 'REAL MADRID CASTILLA',
@@ -1627,7 +1628,7 @@ const fichajes = [
     {
         fecha: '24/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'C.RIVERO',
         destino: 'Valencia CF',
         procedencia: 'ALBACETE BP',
@@ -1636,7 +1637,7 @@ const fichajes = [
     {
         fecha: '23/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ROBERTO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'BRAGA',
@@ -1654,7 +1655,7 @@ const fichajes = [
     {
         fecha: '22/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'A. CARRERAS',
         destino: 'Real Madrid',
         procedencia: 'Benfica',
@@ -1663,7 +1664,7 @@ const fichajes = [
     {
         fecha: '22/07/2025',
         competicion: 'LALIGA',
-        pais: 'United States',
+        pais: 'Estados Unidos',
         jugador: 'JOHNNY',
         destino: 'Atlético de Madrid',
         procedencia: 'Real Betis',
@@ -1672,7 +1673,7 @@ const fichajes = [
     {
         fecha: '21/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'MIGUEL RUBIO',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Granada CF',
@@ -1681,7 +1682,7 @@ const fichajes = [
     {
         fecha: '21/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'SALINAS',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Elche CF',
@@ -1690,7 +1691,7 @@ const fichajes = [
     {
         fecha: '21/07/2025',
         competicion: 'LALIGA',
-        pais: 'Italy',
+        pais: 'Italia',
         jugador: 'RUGGERI',
         destino: 'Atlético de Madrid',
         procedencia: 'Atalanta',
@@ -1708,7 +1709,7 @@ const fichajes = [
     {
         fecha: '21/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'KIKE G.',
         destino: 'RCD Espanyol de Barcelona',
         procedencia: 'Deportivo Alavés',
@@ -1717,7 +1718,7 @@ const fichajes = [
     {
         fecha: '17/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'JUANLU',
         destino: 'Sevilla FC',
         procedencia: 'Sevilla Atlético',
@@ -1726,7 +1727,7 @@ const fichajes = [
     {
         fecha: '10/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'ALEX. B',
         destino: 'Atlético de Madrid',
         procedencia: 'Villarreal CF',
@@ -1744,7 +1745,7 @@ const fichajes = [
     {
         fecha: '01/07/2025',
         competicion: 'LALIGA',
-        pais: 'United Kingdom',
+        pais: 'Reino Unido',
         jugador: 'ALEXANDER-ARNOLD',
         destino: 'Real Madrid',
         procedencia: 'Liverpool',
@@ -1753,7 +1754,7 @@ const fichajes = [
     {
         fecha: '01/07/2025',
         competicion: 'LALIGA',
-        pais: 'Spain',
+        pais: 'España',
         jugador: 'HUIJSEN',
         destino: 'Real Madrid',
         procedencia: 'Bournemouth',
@@ -1794,75 +1795,62 @@ function FichajesPage() {
         <section id="fichajes">
             <h1>ÚLTIMOS FICHAJES DE LALIGA EA SPORTS 2025/26</h1>
             <div id="fichajes-filtros" class="fichajes-filtros">
-                <div class="filtros-row">
+                <div class="filtros-row filtros-row-1">
                     <div class="filtro-group">
-                        <label for="filtro-fecha-desde">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div class="filtro-input-wrapper">
+                            <svg class="calendar-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 3h10v10H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M5 1v4M11 1v4M2 6h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
-                            Desde
-                        </label>
-                        <input type="date" id="filtro-fecha-desde" class="filtro-input" />
+                            <input type="text" id="filtro-fecha-desde" class="filtro-input" placeholder="Desde" />
+                        </div>
                     </div>
                     <div class="filtro-group">
-                        <label for="filtro-fecha-hasta">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div class="filtro-input-wrapper">
+                            <svg class="calendar-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 3h10v10H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M5 1v4M11 1v4M2 6h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
-                            Hasta
-                        </label>
-                        <input type="date" id="filtro-fecha-hasta" class="filtro-input" />
+                            <input type="text" id="filtro-fecha-hasta" class="filtro-input" placeholder="Hasta" />
+                        </div>
                     </div>
-                    <div class="filtro-group">
-                        <label for="filtro-nacionalidad">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M7.5 3v9M3.5 7.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <div class="filtro-group filtro-group-search">
+                        <div class="filtro-input-wrapper">
+                            <input type="text" id="filtro-nacionalidad" class="filtro-input" placeholder="Nacionalidad" />
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M11 11l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
-                            Nacionalidad
-                        </label>
-                        <input type="text" id="filtro-nacionalidad" class="filtro-input" placeholder="Buscar nacionalidad..." />
+                        </div>
+                    </div>
+                </div>
+                <div class="filtros-row filtros-row-2">
+                    <div class="filtro-group">
+                        <input type="text" id="filtro-jugador" class="filtro-input" placeholder="Jugador" />
                     </div>
                     <div class="filtro-group">
-                        <label for="filtro-jugador">
-                            Jugador
-                        </label>
-                        <input type="text" id="filtro-jugador" class="filtro-input" placeholder="Buscar jugador..." />
+                        <input type="text" id="filtro-destino" class="filtro-input" placeholder="Destino" />
                     </div>
                     <div class="filtro-group">
-                        <label for="filtro-destino">
-                            Destino
-                        </label>
-                        <input type="text" id="filtro-destino" class="filtro-input" placeholder="Buscar destino..." />
+                        <input type="text" id="filtro-procedencia" class="filtro-input" placeholder="Procedencia" />
                     </div>
                     <div class="filtro-group">
-                        <label for="filtro-procedencia">
-                            Procedencia
-                        </label>
-                        <input type="text" id="filtro-procedencia" class="filtro-input" placeholder="Buscar procedencia..." />
-                    </div>
-                    <div class="filtro-group">
-                        <label for="filtro-tipo">
-                            Tipo
-                        </label>
                         <select id="filtro-tipo" class="filtro-input filtro-select">
-                            <option value="">Todos</option>
+                            <option value="">Tipo</option>
                             <option value="Traspaso">Traspaso</option>
                             <option value="Cesión">Cesión</option>
                             <option value="Libre">Libre</option>
                             <option value="Pago cláusula">Pago cláusula</option>
                         </select>
                     </div>
-                </div>
-                <div class="filtros-actions">
-                    <button id="btn-limpiar-filtros" class="btn-limpiar-filtros">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Limpiar filtros
-                    </button>
+                    <div class="filtro-group filtro-group-button">
+                        <button id="btn-limpiar-filtros" class="btn-limpiar-filtros">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Limpiar filtros
+                        </button>
+                    </div>
                 </div>
             </div>
             <div id="fichajes-content">
@@ -1920,14 +1908,14 @@ function configurarFiltros() {
     }
     
     // Agregar event listeners para filtros en tiempo real
-    filtroFechaDesde.addEventListener('change', () => {
-        filtros.fechaDesde = filtroFechaDesde.value;
+    filtroFechaDesde.addEventListener('input', () => {
+        filtros.fechaDesde = filtroFechaDesde.value.trim();
         paginaActual = 1;
         cargarFichajes();
     });
     
-    filtroFechaHasta.addEventListener('change', () => {
-        filtros.fechaHasta = filtroFechaHasta.value;
+    filtroFechaHasta.addEventListener('input', () => {
+        filtros.fechaHasta = filtroFechaHasta.value.trim();
         paginaActual = 1;
         cargarFichajes();
     });
@@ -1958,9 +1946,20 @@ function configurarFiltros() {
     
     filtroTipo.addEventListener('change', () => {
         filtros.tipo = filtroTipo.value;
+        // Actualizar estilo del select según si tiene valor o no
+        if (filtroTipo.value === '') {
+            filtroTipo.style.color = '#999';
+        } else {
+            filtroTipo.style.color = '#333';
+        }
         paginaActual = 1;
         cargarFichajes();
     });
+    
+    // Inicializar color del select según su valor inicial
+    if (filtroTipo.value === '') {
+        filtroTipo.style.color = '#999';
+    }
     
     // Botón limpiar filtros
     btnLimpiar.addEventListener('click', limpiarFiltros);
@@ -1992,7 +1991,10 @@ function limpiarFiltros() {
     if (filtroJugador) filtroJugador.value = '';
     if (filtroDestino) filtroDestino.value = '';
     if (filtroProcedencia) filtroProcedencia.value = '';
-    if (filtroTipo) filtroTipo.value = '';
+    if (filtroTipo) {
+        filtroTipo.value = '';
+        filtroTipo.style.color = '#999'; // Resetear color a placeholder
+    }
     
     paginaActual = 1;
     cargarFichajes();
@@ -2003,7 +2005,8 @@ function aplicarFiltros() {
         // Filtro por fecha desde
         if (filtros.fechaDesde) {
             const fechaFichaje = convertirFechaFormato(fichaje.fecha);
-            if (!fechaFichaje || fechaFichaje < filtros.fechaDesde) {
+            const fechaDesde = convertirFechaFormato(filtros.fechaDesde);
+            if (!fechaFichaje || !fechaDesde || fechaFichaje < fechaDesde) {
                 return false;
             }
         }
@@ -2011,7 +2014,8 @@ function aplicarFiltros() {
         // Filtro por fecha hasta
         if (filtros.fechaHasta) {
             const fechaFichaje = convertirFechaFormato(fichaje.fecha);
-            if (!fechaFichaje || fechaFichaje > filtros.fechaHasta) {
+            const fechaHasta = convertirFechaFormato(filtros.fechaHasta);
+            if (!fechaFichaje || !fechaHasta || fechaFichaje > fechaHasta) {
                 return false;
             }
         }
@@ -2061,15 +2065,25 @@ function aplicarFiltros() {
 
 function convertirFechaFormato(fechaString) {
     // Convertir formato DD/MM/YYYY a YYYY-MM-DD para comparación
+    // También maneja YYYY-MM-DD directamente
     if (!fechaString) return null;
     
-    const partes = fechaString.split('/');
+    const fecha = fechaString.trim();
+    
+    // Si ya está en formato YYYY-MM-DD, devolverlo directamente
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+        return fecha;
+    }
+    
+    // Si está en formato DD/MM/YYYY, convertirlo
+    const partes = fecha.split('/');
     if (partes.length === 3) {
         const dia = partes[0].padStart(2, '0');
         const mes = partes[1].padStart(2, '0');
         const año = partes[2];
         return `${año}-${mes}-${dia}`;
     }
+    
     return null;
 }
 
