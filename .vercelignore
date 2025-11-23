@@ -1,0 +1,8 @@
+# Ignorar archivos PHP ya que Vercel no los ejecuta
+# Usaremos funciones serverless de Node.js en su lugar
+api/*.php
+*.php
+
+# Mantener solo las funciones serverless de Node.js
+!api/*.php.js
+
