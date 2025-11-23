@@ -5,6 +5,9 @@
     },
     "api/login.php.js": {
       "memory": 1024
+    },
+    "api/registro.php.js": {
+      "memory": 1024
     }
   },
   "rewrites": [
@@ -17,8 +20,8 @@
       "destination": "/api/login.php.js"
     },
     {
-      "source": "/(?!api|styles|js|images).*",
-      "destination": "/index.html"
+      "source": "/api/registro.php",
+      "destination": "/api/registro.php.js"
     }
   ],
   "headers": [
