@@ -17,6 +17,9 @@
     },
     "api/partidos.php.js": {
       "memory": 1024
+    },
+    "api/eventos_partido.php.js": {
+      "memory": 1024
     }
   },
   "rewrites": [
@@ -43,6 +46,14 @@
     {
       "source": "/api/partidos.php",
       "destination": "/api/partidos.php.js"
+    },
+    {
+      "source": "/api/eventos_partido.php",
+      "destination": "/api/eventos_partido.php.js"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
     }
   ],
   "headers": [
