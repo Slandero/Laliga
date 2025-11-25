@@ -618,85 +618,121 @@ async function handleEstadisticas(req, res, body, cookies, query) {
         // Obtener goleadores (excluyendo autogoles) con equipo y dorsal
         const [goleadores] = await connection.execute(
             `SELECT 
-                ep.jugador_nombre as jugador,
-                ep.jugador_dorsal as dorsal,
-                COUNT(*) as total,
+                ep.jugador_nombre,
+                ep.jugador_dorsal,
+                COUNT(*) as total_goles,
                 CASE 
                     WHEN ep.equipo = 'local' THEN p.equipo_local
                     ELSE p.equipo_visitante
-                END as equipo
+                END as equipo_nombre
              FROM eventos_partido ep
              INNER JOIN partidos p ON ep.partido_id = p.id
              WHERE ep.tipo_evento = 'gol' 
                AND (ep.es_autogol IS NULL OR ep.es_autogol = 0)
-             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
-             ORDER BY total DESC, ep.jugador_nombre ASC 
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, 
+                      CASE 
+                          WHEN ep.equipo = 'local' THEN p.equipo_local
+                          ELSE p.equipo_visitante
+                      END
+             ORDER BY total_goles DESC, ep.jugador_nombre ASC 
              LIMIT 10`
         );
         
         // Obtener asistencias con equipo y dorsal
         const [asistencias] = await connection.execute(
             `SELECT 
-                ep.jugador_asistencia_nombre as jugador,
-                ep.jugador_asistencia_dorsal as dorsal,
-                COUNT(*) as total,
+                ep.jugador_asistencia_nombre as jugador_nombre,
+                ep.jugador_asistencia_dorsal as jugador_dorsal,
+                COUNT(*) as total_asistencias,
                 CASE 
                     WHEN ep.equipo = 'local' THEN p.equipo_local
                     ELSE p.equipo_visitante
-                END as equipo
+                END as equipo_nombre
              FROM eventos_partido ep
              INNER JOIN partidos p ON ep.partido_id = p.id
              WHERE ep.tipo_evento = 'gol' 
                AND ep.jugador_asistencia_nombre IS NOT NULL 
                AND ep.jugador_asistencia_nombre != ''
-             GROUP BY ep.jugador_asistencia_nombre, ep.jugador_asistencia_dorsal, equipo
-             ORDER BY total DESC, ep.jugador_asistencia_nombre ASC 
+             GROUP BY ep.jugador_asistencia_nombre, ep.jugador_asistencia_dorsal,
+                      CASE 
+                          WHEN ep.equipo = 'local' THEN p.equipo_local
+                          ELSE p.equipo_visitante
+                      END
+             ORDER BY total_asistencias DESC, ep.jugador_asistencia_nombre ASC 
              LIMIT 10`
         );
         
         // Obtener tarjetas amarillas con equipo y dorsal
         const [tarjetasAmarillas] = await connection.execute(
             `SELECT 
-                ep.jugador_nombre as jugador,
-                ep.jugador_dorsal as dorsal,
-                COUNT(*) as total,
+                ep.jugador_nombre,
+                ep.jugador_dorsal,
+                COUNT(*) as total_tarjetas,
                 CASE 
                     WHEN ep.equipo = 'local' THEN p.equipo_local
                     ELSE p.equipo_visitante
-                END as equipo
+                END as equipo_nombre
              FROM eventos_partido ep
              INNER JOIN partidos p ON ep.partido_id = p.id
              WHERE ep.tipo_evento = 'tarjeta_amarilla'
-             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
-             ORDER BY total DESC, ep.jugador_nombre ASC 
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal,
+                      CASE 
+                          WHEN ep.equipo = 'local' THEN p.equipo_local
+                          ELSE p.equipo_visitante
+                      END
+             ORDER BY total_tarjetas DESC, ep.jugador_nombre ASC 
              LIMIT 10`
         );
         
         // Obtener tarjetas rojas con equipo y dorsal
         const [tarjetasRojas] = await connection.execute(
             `SELECT 
-                ep.jugador_nombre as jugador,
-                ep.jugador_dorsal as dorsal,
-                COUNT(*) as total,
+                ep.jugador_nombre,
+                ep.jugador_dorsal,
+                COUNT(*) as total_tarjetas,
                 CASE 
                     WHEN ep.equipo = 'local' THEN p.equipo_local
                     ELSE p.equipo_visitante
-                END as equipo
+                END as equipo_nombre
              FROM eventos_partido ep
              INNER JOIN partidos p ON ep.partido_id = p.id
              WHERE ep.tipo_evento = 'tarjeta_roja'
-             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
-             ORDER BY total DESC, ep.jugador_nombre ASC 
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal,
+                      CASE 
+                          WHEN ep.equipo = 'local' THEN p.equipo_local
+                          ELSE p.equipo_visitante
+                      END
+             ORDER BY total_tarjetas DESC, ep.jugador_nombre ASC 
              LIMIT 10`
         );
         
         await connection.end();
         return res.status(200).json({
             success: true,
-            goleadores: goleadores.map(g => ({ ...g, total: parseInt(g.total) })),
-            asistencias: asistencias.map(a => ({ ...a, total: parseInt(a.total) })),
-            tarjetas_amarillas: tarjetasAmarillas.map(t => ({ ...t, total: parseInt(t.total) })),
-            tarjetas_rojas: tarjetasRojas.map(t => ({ ...t, total: parseInt(t.total) }))
+            goleadores: goleadores.map(g => ({
+                jugador: g.jugador_nombre || '',
+                dorsal: g.jugador_dorsal || null,
+                equipo: g.equipo_nombre || '',
+                total: parseInt(g.total_goles) || 0
+            })),
+            asistencias: asistencias.map(a => ({
+                jugador: a.jugador_nombre || '',
+                dorsal: a.jugador_dorsal || null,
+                equipo: a.equipo_nombre || '',
+                total: parseInt(a.total_asistencias) || 0
+            })),
+            tarjetas_amarillas: tarjetasAmarillas.map(t => ({
+                jugador: t.jugador_nombre || '',
+                dorsal: t.jugador_dorsal || null,
+                equipo: t.equipo_nombre || '',
+                total: parseInt(t.total_tarjetas) || 0
+            })),
+            tarjetas_rojas: tarjetasRojas.map(t => ({
+                jugador: t.jugador_nombre || '',
+                dorsal: t.jugador_dorsal || null,
+                equipo: t.equipo_nombre || '',
+                total: parseInt(t.total_tarjetas) || 0
+            }))
         });
     } catch (error) {
         if (connection) await connection.end();
