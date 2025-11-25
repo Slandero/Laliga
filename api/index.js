@@ -431,6 +431,280 @@ async function handleEventosPartido(req, res, body, cookies, query) {
     return await eventosHandler(req, res);
 }
 
+// Handler para noticias
+async function handleNoticias(req, res, body, cookies, query) {
+    const usuarioId = cookies.usuario_id ? parseInt(cookies.usuario_id) : null;
+    const usuarioLogueado = !!usuarioId;
+    
+    let connection;
+    try {
+        connection = await mysql.createConnection(DB_CONFIG);
+        
+        if (req.method === 'GET') {
+            // Obtener todas las noticias ordenadas por fecha de creación descendente
+            const [noticias] = await connection.execute(
+                `SELECT n.*, u.username, u.nombre_completo 
+                 FROM noticias n 
+                 INNER JOIN usuarios u ON n.usuario_id = u.id 
+                 ORDER BY n.fecha_creacion DESC 
+                 LIMIT 10`
+            );
+            
+            // Formatear resultados
+            const resultados = noticias.map(noticia => {
+                const fecha = new Date(noticia.fecha_creacion);
+                const fechaFormateada = fecha.toLocaleString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                return {
+                    id: parseInt(noticia.id),
+                    titulo: noticia.titulo,
+                    contenido: noticia.contenido,
+                    imagen_url: noticia.imagen_url,
+                    usuario_id: parseInt(noticia.usuario_id),
+                    usuario_nombre: noticia.nombre_completo || noticia.username,
+                    fecha_creacion: fechaFormateada,
+                    fecha_iso: noticia.fecha_creacion
+                };
+            });
+            
+            await connection.end();
+            return res.status(200).json({
+                success: true,
+                noticias: resultados,
+                total: resultados.length
+            });
+            
+        } else if (req.method === 'POST') {
+            // Crear nueva noticia (requiere autenticación)
+            if (!usuarioLogueado) {
+                await connection.end();
+                return res.status(401).json({
+                    success: false,
+                    error: 'Debes iniciar sesión para agregar noticias'
+                });
+            }
+            
+            const titulo = (body.titulo || '').trim();
+            const contenido = (body.contenido || '').trim();
+            const imagenUrl = (body.imagen_url || '').trim() || null;
+            
+            // Validaciones
+            if (!titulo || titulo.length < 3) {
+                await connection.end();
+                return res.status(400).json({
+                    success: false,
+                    error: 'El título debe tener al menos 3 caracteres'
+                });
+            }
+            
+            if (!contenido || contenido.length < 10) {
+                await connection.end();
+                return res.status(400).json({
+                    success: false,
+                    error: 'El contenido debe tener al menos 10 caracteres'
+                });
+            }
+            
+            // Insertar noticia
+            const [result] = await connection.execute(
+                `INSERT INTO noticias (titulo, contenido, imagen_url, usuario_id) 
+                 VALUES (?, ?, ?, ?)`,
+                [titulo, contenido, imagenUrl, usuarioId]
+            );
+            
+            await connection.end();
+            return res.status(200).json({
+                success: true,
+                message: 'Noticia agregada correctamente',
+                id: result.insertId
+            });
+            
+        } else if (req.method === 'DELETE') {
+            // Eliminar noticia (requiere autenticación)
+            if (!usuarioLogueado) {
+                await connection.end();
+                return res.status(401).json({
+                    success: false,
+                    error: 'Debes iniciar sesión para eliminar noticias'
+                });
+            }
+            
+            const noticiaId = query.id ? parseInt(query.id) : null;
+            if (!noticiaId) {
+                await connection.end();
+                return res.status(400).json({
+                    success: false,
+                    error: 'ID de noticia requerido'
+                });
+            }
+            
+            // Verificar que la noticia pertenezca al usuario o que sea admin
+            const [noticias] = await connection.execute(
+                'SELECT usuario_id FROM noticias WHERE id = ?',
+                [noticiaId]
+            );
+            
+            if (noticias.length === 0) {
+                await connection.end();
+                return res.status(404).json({
+                    success: false,
+                    error: 'Noticia no encontrada'
+                });
+            }
+            
+            // Verificar permisos (solo el autor o admin pueden eliminar)
+            const [usuarios] = await connection.execute(
+                'SELECT rol FROM usuarios WHERE id = ?',
+                [usuarioId]
+            );
+            const esAdmin = usuarios.length > 0 && usuarios[0].rol === 'admin';
+            const esAutor = noticias[0].usuario_id === usuarioId;
+            
+            if (!esAdmin && !esAutor) {
+                await connection.end();
+                return res.status(403).json({
+                    success: false,
+                    error: 'No tienes permiso para eliminar esta noticia'
+                });
+            }
+            
+            // Eliminar noticia
+            await connection.execute('DELETE FROM noticias WHERE id = ?', [noticiaId]);
+            await connection.end();
+            return res.status(200).json({
+                success: true,
+                message: 'Noticia eliminada correctamente'
+            });
+        } else {
+            await connection.end();
+            return res.status(405).json({ success: false, error: 'Método no permitido' });
+        }
+    } catch (error) {
+        if (connection) await connection.end();
+        console.error('Error en noticias:', error);
+        return res.status(500).json({ success: false, error: 'Error de base de datos', message: error.message });
+    }
+}
+
+// Handler para estadísticas
+async function handleEstadisticas(req, res, body, cookies, query) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ success: false, error: 'Método no permitido' });
+    }
+    
+    let connection;
+    try {
+        connection = await mysql.createConnection(DB_CONFIG);
+        
+        // Verificar que la tabla exista
+        const [tablas] = await connection.execute("SHOW TABLES LIKE 'eventos_partido'");
+        if (tablas.length === 0) {
+            await connection.end();
+            return res.status(200).json({
+                success: true,
+                goleadores: [],
+                asistencias: [],
+                tarjetas_amarillas: [],
+                tarjetas_rojas: []
+            });
+        }
+        
+        // Obtener goleadores (excluyendo autogoles) con equipo y dorsal
+        const [goleadores] = await connection.execute(
+            `SELECT 
+                ep.jugador_nombre as jugador,
+                ep.jugador_dorsal as dorsal,
+                COUNT(*) as total,
+                CASE 
+                    WHEN ep.equipo = 'local' THEN p.equipo_local
+                    ELSE p.equipo_visitante
+                END as equipo
+             FROM eventos_partido ep
+             INNER JOIN partidos p ON ep.partido_id = p.id
+             WHERE ep.tipo_evento = 'gol' 
+               AND (ep.es_autogol IS NULL OR ep.es_autogol = 0)
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
+             ORDER BY total DESC, ep.jugador_nombre ASC 
+             LIMIT 10`
+        );
+        
+        // Obtener asistencias con equipo y dorsal
+        const [asistencias] = await connection.execute(
+            `SELECT 
+                ep.jugador_asistencia_nombre as jugador,
+                ep.jugador_asistencia_dorsal as dorsal,
+                COUNT(*) as total,
+                CASE 
+                    WHEN ep.equipo = 'local' THEN p.equipo_local
+                    ELSE p.equipo_visitante
+                END as equipo
+             FROM eventos_partido ep
+             INNER JOIN partidos p ON ep.partido_id = p.id
+             WHERE ep.tipo_evento = 'gol' 
+               AND ep.jugador_asistencia_nombre IS NOT NULL 
+               AND ep.jugador_asistencia_nombre != ''
+             GROUP BY ep.jugador_asistencia_nombre, ep.jugador_asistencia_dorsal, equipo
+             ORDER BY total DESC, ep.jugador_asistencia_nombre ASC 
+             LIMIT 10`
+        );
+        
+        // Obtener tarjetas amarillas con equipo y dorsal
+        const [tarjetasAmarillas] = await connection.execute(
+            `SELECT 
+                ep.jugador_nombre as jugador,
+                ep.jugador_dorsal as dorsal,
+                COUNT(*) as total,
+                CASE 
+                    WHEN ep.equipo = 'local' THEN p.equipo_local
+                    ELSE p.equipo_visitante
+                END as equipo
+             FROM eventos_partido ep
+             INNER JOIN partidos p ON ep.partido_id = p.id
+             WHERE ep.tipo_evento = 'tarjeta_amarilla'
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
+             ORDER BY total DESC, ep.jugador_nombre ASC 
+             LIMIT 10`
+        );
+        
+        // Obtener tarjetas rojas con equipo y dorsal
+        const [tarjetasRojas] = await connection.execute(
+            `SELECT 
+                ep.jugador_nombre as jugador,
+                ep.jugador_dorsal as dorsal,
+                COUNT(*) as total,
+                CASE 
+                    WHEN ep.equipo = 'local' THEN p.equipo_local
+                    ELSE p.equipo_visitante
+                END as equipo
+             FROM eventos_partido ep
+             INNER JOIN partidos p ON ep.partido_id = p.id
+             WHERE ep.tipo_evento = 'tarjeta_roja'
+             GROUP BY ep.jugador_nombre, ep.jugador_dorsal, equipo
+             ORDER BY total DESC, ep.jugador_nombre ASC 
+             LIMIT 10`
+        );
+        
+        await connection.end();
+        return res.status(200).json({
+            success: true,
+            goleadores: goleadores.map(g => ({ ...g, total: parseInt(g.total) })),
+            asistencias: asistencias.map(a => ({ ...a, total: parseInt(a.total) })),
+            tarjetas_amarillas: tarjetasAmarillas.map(t => ({ ...t, total: parseInt(t.total) })),
+            tarjetas_rojas: tarjetasRojas.map(t => ({ ...t, total: parseInt(t.total) }))
+        });
+    } catch (error) {
+        if (connection) await connection.end();
+        console.error('Error en estadísticas:', error);
+        return res.status(500).json({ success: false, error: 'Error de base de datos', message: error.message });
+    }
+}
+
 // Mapa de endpoints a handlers
 const handlers = {
     'jugadores': handleJugadores,
@@ -439,7 +713,9 @@ const handlers = {
     'check_session': handleCheckSession,
     'logout': handleLogout,
     'partidos': handlePartidos,
-    'eventos_partido': handleEventosPartido
+    'eventos_partido': handleEventosPartido,
+    'noticias': handleNoticias,
+    'estadisticas': handleEstadisticas
 };
 
 // Función principal exportada
