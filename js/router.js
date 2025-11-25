@@ -7,6 +7,29 @@ class Router {
         this.currentRoute = '';
         this.initialized = false;
     }
+    
+    // Mostrar u ocultar el sidebar según la página
+    mostrarOcultarSidebar(routeName) {
+        const sidebar = document.getElementById('sidebar-clasificacion');
+        if (!sidebar) return;
+        
+        // Solo mostrar el sidebar en la página de inicio
+        if (routeName === 'inicio' || routeName === '') {
+            sidebar.style.display = 'flex';
+            // Asegurar que el wrapper tenga la clase has-sidebar si el sidebar no está colapsado
+            const mainWrapper = document.querySelector('.main-wrapper');
+            if (mainWrapper && !sidebar.classList.contains('collapsed')) {
+                mainWrapper.classList.add('has-sidebar');
+            }
+        } else {
+            sidebar.style.display = 'none';
+            // Remover la clase has-sidebar del wrapper cuando el sidebar está oculto
+            const mainWrapper = document.querySelector('.main-wrapper');
+            if (mainWrapper) {
+                mainWrapper.classList.remove('has-sidebar');
+            }
+        }
+    }
 
     init() {
         if (this.initialized) return;
@@ -93,6 +116,9 @@ class Router {
 
     async loadPage(pageName) {
         try {
+            // Mostrar/ocultar sidebar según la página
+            this.mostrarOcultarSidebar(pageName);
+            
             const main = document.querySelector('main') || document.querySelector('#app-content');
             
             if (!main) {
@@ -192,6 +218,9 @@ class Router {
     }
 
     async loadEquipoPage(equipoTabla) {
+        // Ocultar sidebar en página de equipo
+        this.mostrarOcultarSidebar('equipo');
+        
         try {
             const main = document.querySelector('main') || document.querySelector('#app-content');
             

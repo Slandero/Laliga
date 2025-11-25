@@ -92,10 +92,391 @@ body {
     color: #ffffff;
 }
 
+/* Wrapper principal con sidebar */
+.main-wrapper {
+    display: flex;
+    gap: 0;
+    min-height: calc(100vh - 200px);
+    position: relative;
+}
+
 /* Contenido Principal */
 main {
+    flex: 1;
     min-height: calc(100vh - 200px);
     padding: 2rem;
+    transition: margin-right 0.3s ease;
+}
+
+/* Sidebar de Clasificación */
+.sidebar-clasificacion {
+    width: 320px;
+    background: white;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    right: 0;
+    top: 70px; /* Empezar justo debajo del navbar */
+    bottom: 0;
+    padding-top: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-clasificacion.collapsed {
+    transform: translateX(calc(100% - 50px));
+    overflow: hidden !important;
+    width: 50px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-top: 0 !important;
+}
+
+.sidebar-clasificacion.collapsed .sidebar-content {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+.sidebar-clasificacion.collapsed .sidebar-header {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    position: fixed !important;
+    top: 0 !important; /* En la parte superior, alineado con el navbar */
+    right: 0 !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    margin: 0 !important;
+    z-index: 1002 !important; /* Por encima del navbar (z-index: 1000) */
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #FF4B44 !important;
+    border-radius: 0 !important;
+    box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2) !important;
+    overflow: visible !important;
+}
+
+.sidebar-clasificacion.collapsed .sidebar-titulo {
+    display: none;
+}
+
+.sidebar-clasificacion.collapsed .btn-toggle-sidebar {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    max-width: 50px !important;
+    max-height: 50px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1002 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    color: white !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+.sidebar-clasificacion.collapsed .btn-toggle-sidebar:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-clasificacion.collapsed .sidebar-header {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    background: #FF4B44 !important;
+}
+
+.sidebar-clasificacion.collapsed .icono-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    color: white !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sidebar-header {
+    background: #FF4B44;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0; /* En la parte superior del sidebar */
+    z-index: 10;
+    margin-top: 0; /* Sin margen superior */
+    flex-shrink: 0;
+    height: auto;
+    min-height: 50px;
+}
+
+.sidebar-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-titulo-link {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    display: block;
+}
+
+.sidebar-titulo-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.btn-toggle-sidebar {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+    color: white !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    border-radius: 4px;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.3s ease;
+    padding: 0 !important;
+    flex-shrink: 0;
+    z-index: 1002 !important;
+    position: relative !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.btn-toggle-sidebar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-toggle-sidebar:active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.icono-toggle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.sidebar-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.sidebar-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.sidebar-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.sidebar-table thead {
+    background: #f5f5f5;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.sidebar-table th {
+    padding: 0.5rem 0.25rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #666;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.sidebar-table th:nth-child(1) {
+    width: 35px;
+    text-align: center;
+}
+
+.sidebar-table th:nth-child(2) {
+    flex: 1;
+}
+
+.sidebar-table th:nth-child(3) {
+    width: 40px;
+    text-align: center;
+}
+
+.sidebar-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.sidebar-table tbody td {
+    padding: 0.5rem 0.25rem;
+    vertical-align: middle;
+}
+
+.sidebar-posicion {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #333;
+    width: 35px;
+    position: relative;
+}
+
+.sidebar-equipo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.sidebar-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sidebar-nombre-equipo {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-puntos {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #FF4B44;
+    width: 40px;
+}
+
+/* Colores según posición */
+.sidebar-table tbody tr.fila-champions {
+    background-color: #e3f2fd;
+}
+
+.sidebar-table tbody tr.fila-europa {
+    background-color: #fff3e0;
+}
+
+.sidebar-table tbody tr.fila-conference {
+    background-color: #e8f5e9;
+}
+
+.sidebar-table tbody tr.fila-descenso {
+    background-color: #ffebee;
+}
+
+.sidebar-loading,
+.sidebar-vacio,
+.sidebar-error {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.sidebar-error {
+    color: #dc3545;
+}
+
+/* Ajustar margen del main cuando hay sidebar (se manejará con JavaScript) */
+.main-wrapper.has-sidebar main {
+    margin-right: 320px;
+}
+
+/* Responsive para sidebar */
+@media (max-width: 1200px) {
+    .sidebar-clasificacion {
+        width: 280px;
+    }
+    
+    .main-wrapper.has-sidebar main {
+        margin-right: 280px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar-clasificacion {
+        width: 260px;
+    }
+    
+    .main-wrapper.has-sidebar main {
+        margin-right: 260px;
+    }
+    
+    .sidebar-table {
+        font-size: 0.8rem;
+    }
+    
+    .sidebar-logo {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-clasificacion {
+        transform: translateX(calc(100% - 40px));
+        width: 280px;
+    }
+    
+    .sidebar-clasificacion:not(.collapsed) {
+        transform: translateX(0);
+    }
+    
+    .main-wrapper.has-sidebar main {
+        margin-right: 0;
+    }
+    
+    main {
+        padding: 1rem;
+    }
 }
 
 /* Footer */
@@ -2870,6 +3251,1087 @@ footer p {
 
     .paginacion-info {
         font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   Carruseles de Noticias y Próximos Partidos
+   ============================================ */
+
+.carruseles-section {
+    margin-bottom: 2rem;
+}
+
+.carrusel-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+}
+
+.carrusel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.carrusel-titulo {
+    color: #FF4B44;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-agregar-noticia {
+    background-color: #FF4B44;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-agregar-noticia:hover {
+    background-color: #e6392e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 75, 68, 0.3);
+}
+
+.btn-agregar-noticia:active {
+    transform: translateY(0);
+}
+
+.carrusel-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    min-height: 450px;
+}
+
+.carrusel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 1rem;
+}
+
+.carrusel-slide {
+    min-width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    display: none;
+    height: 100%;
+}
+
+.carrusel-slide.active {
+    opacity: 1;
+    display: block;
+}
+
+.carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 75, 68, 0.8);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.carrusel-btn:hover {
+    background-color: #FF4B44;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carrusel-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.carrusel-btn-prev {
+    left: 10px;
+}
+
+.carrusel-btn-next {
+    right: 10px;
+}
+
+.carrusel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background-color: #FF4B44;
+    transform: scale(1.2);
+}
+
+.indicator:hover {
+    background-color: #999;
+}
+
+/* Tarjetas de Noticias */
+.noticia-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 400px;
+}
+
+.noticia-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.noticia-imagen {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    object-position: center;
+    background-color: #f0f0f0;
+    display: block;
+}
+
+.noticia-contenido {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.noticia-titulo {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.noticia-texto {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.noticia-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.noticia-autor {
+    font-weight: 500;
+}
+
+.noticia-fecha {
+    font-style: italic;
+}
+
+.btn-eliminar-noticia {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-eliminar-noticia:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Tarjetas de Partidos - Diseño Moderno */
+.partido-card-moderno {
+    background: #1a1a1a;
+    color: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.partido-card-moderno:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.partido-header-moderno {
+    background: #2a2a2a;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.partido-fecha-moderna {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.partido-hora-moderna {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.partido-contenido-moderno {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    position: relative;
+}
+
+.partido-info-moderna {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.partido-equipo-moderno {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.equipo-abrev-moderna {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.equipo-logo-moderno {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.partido-marcador-moderno {
+    flex: 0 0 auto;
+    min-width: 80px;
+    text-align: center;
+}
+
+.marcador-vacio {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.2rem;
+}
+
+.partido-hashtag-moderno {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #a855f7;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.partido-menu-moderno {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-left: 1px solid #333;
+    padding-left: 1rem;
+}
+
+.menu-item-moderno {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item-moderno:hover {
+    background-color: #333;
+}
+
+.menu-icono-moderno {
+    font-size: 1.2rem;
+}
+
+.menu-texto-moderno {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.partido-footer-moderno {
+    background: #FF4B44;
+    padding: 1rem;
+    text-align: center;
+}
+
+.btn-ver-laliga {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-ver-laliga:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tarjetas de Partidos - Estilo antiguo (mantener por compatibilidad) */
+.partido-card {
+    background: linear-gradient(135deg, #FF4B44 0%, #e6392e 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(255, 75, 68, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partido-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(255, 75, 68, 0.4);
+}
+
+.partido-fecha {
+    margin-bottom: 1.5rem;
+}
+
+.partido-dia {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.partido-hora {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.partido-equipos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.partido-equipo {
+    flex: 1;
+}
+
+.equipo-nombre {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: block;
+    line-height: 1.4;
+}
+
+.partido-vs {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0 1rem;
+}
+
+.partido-jornada {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sin-contenido,
+.error-mensaje {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    font-size: 1rem;
+}
+
+.error-mensaje {
+    color: #dc3545;
+}
+
+.carrusel-loading {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+}
+
+/* Modal para agregar noticia */
+.modal-noticia {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-noticia-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-noticia-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-noticia-close:hover {
+    color: #FF4B44;
+}
+
+.modal-noticia-content h2 {
+    color: #FF4B44;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.modal-noticia-content .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-noticia-content label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.modal-noticia-content input,
+.modal-noticia-content textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.modal-noticia-content textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.modal-noticia-content input:focus,
+.modal-noticia-content textarea:focus {
+    outline: none;
+    border-color: #FF4B44;
+    box-shadow: 0 0 0 2px rgba(255, 75, 68, 0.2);
+}
+
+.modal-noticia-content .btn-submit {
+    background-color: #FF4B44;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.modal-noticia-content .btn-submit:hover {
+    background-color: #e6392e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 75, 68, 0.3);
+}
+
+.modal-noticia-content .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Contenido de inicio */
+.inicio-content {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.inicio-content h1 {
+    color: #FF4B44;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.inicio-content p {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive para carruseles */
+@media (max-width: 768px) {
+    .carrusel-container {
+        padding: 1rem;
+    }
+    
+    .carrusel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .carrusel-titulo {
+        font-size: 1.2rem;
+    }
+    
+    .btn-agregar-noticia {
+        width: 100%;
+    }
+    
+    .carrusel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+    
+    .noticia-contenido {
+        padding: 1rem;
+    }
+    
+    .noticia-titulo {
+        font-size: 1.1rem;
+    }
+    
+    .noticia-imagen {
+        max-height: 250px;
+        height: auto;
+    }
+    
+    .noticia-card {
+        min-height: 380px;
+    }
+    
+    .partido-card-moderno {
+        min-width: 100%;
+    }
+    
+    .partido-header-moderno {
+        padding: 0.75rem 1rem;
+    }
+    
+    .partido-contenido-moderno {
+        padding: 1rem;
+        gap: 0.75rem;
+        grid-template-columns: 1fr;
+    }
+    
+    .partido-info-moderna {
+        gap: 0.5rem;
+    }
+    
+    .equipo-logo-moderno {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .equipo-abrev-moderna {
+        font-size: 1rem;
+    }
+    
+    .marcador-vacio {
+        font-size: 1.5rem;
+    }
+    
+    .partido-menu-moderno {
+        grid-column: 1 / -1;
+        position: relative;
+        right: auto;
+        top: auto;
+        flex-direction: row;
+        justify-content: center;
+        border-left: none;
+        border-top: 1px solid #333;
+        padding-left: 0;
+        padding-top: 0.75rem;
+        margin-top: 0.5rem;
+    }
+    
+    .menu-item-moderno {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    
+    .partido-hashtag-moderno {
+        margin-top: 0;
+    }
+    
+    .partido-card {
+        padding: 1.5rem;
+    }
+    
+    .partido-equipos {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .partido-vs {
+        padding: 0.5rem 0;
+    }
+    
+    .modal-noticia-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .carrusel-titulo {
+        font-size: 1rem;
+    }
+    
+    .noticia-imagen {
+        max-height: 200px;
+        height: auto;
+    }
+    
+    .noticia-card {
+        min-height: 350px;
+    }
+    
+    .partido-card {
+        padding: 1rem;
+    }
+    
+    .partido-hora {
+        font-size: 1.2rem;
+    }
+    
+    .equipo-nombre {
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================
+   Estadísticas de La Liga
+   ============================================ */
+
+.estadisticas-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.estadisticas-titulo {
+    color: #FF4B44;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.estadistica-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.estadistica-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.estadistica-header {
+    border-bottom: 2px solid #FF4B44;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.estadistica-nombre {
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+}
+
+.estadistica-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: none;
+    transition: max-height 0.3s ease;
+}
+
+.estadistica-lista:not(.expandido) .estadistica-item:nth-child(n+6) {
+    display: none;
+}
+
+.estadistica-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.estadistica-item:hover {
+    background-color: #f0f0f0;
+}
+
+.estadistica-imagen-container {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e0e0;
+}
+
+.estadistica-imagen-jugador {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.estadistica-posicion {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0;
+    color: #666;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.estadistica-posicion.badge-oro {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+.estadistica-posicion.badge-plata {
+    background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+}
+
+.estadistica-posicion.badge-bronce {
+    background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+}
+
+.estadistica-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.estadistica-jugador {
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+}
+
+.estadistica-equipo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.estadistica-escudo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.estadistica-equipo-nombre {
+    font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.estadistica-valor {
+    color: #FF4B44;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.estadistica-loading,
+.estadistica-vacio,
+.estadistica-error {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.estadistica-error {
+    color: #dc3545;
+}
+
+.btn-expandir-estadistica {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-expandir-estadistica:hover {
+    background-color: #e0e0e0;
+    border-color: #FF4B44;
+    color: #FF4B44;
+}
+
+.btn-expandir-estadistica:active {
+    transform: scale(0.98);
+}
+
+.flecha-expandir {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-expandir-estadistica.expandido .flecha-expandir {
+    transform: rotate(180deg);
+}
+
+.texto-expandir {
+    font-size: 0.9rem;
+}
+
+/* Responsive para estadísticas */
+@media (max-width: 768px) {
+    .estadisticas-container {
+        padding: 1.5rem;
+    }
+    
+    .estadisticas-titulo {
+        font-size: 1.5rem;
+    }
+    
+    .estadisticas-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .estadistica-card {
+        padding: 1rem;
+    }
+    
+    .estadistica-nombre {
+        font-size: 1.1rem;
+    }
+    
+    .estadistica-item {
+        padding: 0.6rem;
+        gap: 0.75rem;
+    }
+    
+    .estadistica-posicion {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .estadistica-imagen-container {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .estadistica-jugador {
+        font-size: 0.9rem;
+    }
+    
+    .estadistica-equipo {
+        font-size: 0.8rem;
+    }
+    
+    .estadistica-escudo {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .estadistica-valor {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .estadisticas-container {
+        padding: 1rem;
+    }
+    
+    .estadisticas-titulo {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .estadistica-card {
+        padding: 0.75rem;
+    }
+    
+    .estadistica-nombre {
+        font-size: 1rem;
+    }
+    
+    .estadistica-item {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+    
+    .estadistica-imagen-container {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .estadistica-escudo {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .estadistica-equipo {
+        font-size: 0.75rem;
     }
 }
 

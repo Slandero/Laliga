@@ -3,6 +3,7 @@
 
 import router from './router.js';
 import { cargarNavbar } from './navbar.js';
+import { crearSidebarClasificacion, inicializarSidebarClasificacion } from './sidebar-clasificacion.js';
 
 // Suprimir advertencias de extensiones del navegador (runtime.lastError)
 // Estos errores provienen de extensiones (adblockers, DevTools, etc.) y no afectan la aplicación
@@ -28,10 +29,37 @@ function inicializarAplicacion() {
     // Cargar el navbar primero
     cargarNavbar();
     
+    // Cargar el sidebar de clasificación
+    let mainWrapper = document.querySelector('.main-wrapper');
+    if (!mainWrapper) {
+        // Si no existe main-wrapper, crearlo
+        const main = document.querySelector('main');
+        if (main && main.parentElement) {
+            mainWrapper = document.createElement('div');
+            mainWrapper.className = 'main-wrapper';
+            main.parentElement.insertBefore(mainWrapper, main);
+            mainWrapper.appendChild(main);
+        } else if (main) {
+            // Si main existe pero no tiene parent, crear wrapper y mover main
+            mainWrapper = document.createElement('div');
+            mainWrapper.className = 'main-wrapper';
+            main.parentNode.insertBefore(mainWrapper, main);
+            mainWrapper.appendChild(main);
+        }
+    }
+    
+    if (mainWrapper) {
+        mainWrapper.insertAdjacentHTML('beforeend', crearSidebarClasificacion());
+    }
+    
+    // Hacer el router disponible globalmente
+    window.router = router;
+    
     // Inicializar el router después de que el navbar esté cargado
     // El router.init() ya maneja la carga inicial de la página
     setTimeout(() => {
         router.init();
+        inicializarSidebarClasificacion();
         console.log('Aplicación inicializada - Router activo');
     }, 100);
 }
