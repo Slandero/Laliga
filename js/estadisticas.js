@@ -1,3 +1,5 @@
+
+
 // Componente de estadísticas de la liga
 
 // Mapeo de nombres de equipos a carpetas de imágenes (igual que en resultados.js)
