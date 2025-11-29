@@ -720,13 +720,13 @@ function mostrarPartidosEnCarrusel(partidos) {
         track.style.display = 'flex';
         track.style.visibility = 'visible';
         track.style.opacity = '1';
-        track.style.height = '500px';
-        track.style.maxHeight = '500px';
+        track.style.height = 'auto';
+        track.style.maxHeight = 'none';
         
         // Configurar wrapper
         if (wrapper) {
-            wrapper.style.height = '500px';
-            wrapper.style.maxHeight = '500px';
+            wrapper.style.height = 'auto';
+            wrapper.style.maxHeight = 'none';
             wrapper.style.overflow = 'hidden';
             wrapper.style.width = '100%';
         }
