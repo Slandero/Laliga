@@ -446,8 +446,7 @@ async function handleNoticias(req, res, body, cookies, query) {
                 `SELECT n.*, u.username, u.nombre_completo 
                  FROM noticias n 
                  INNER JOIN usuarios u ON n.usuario_id = u.id 
-                 ORDER BY n.fecha_creacion DESC 
-                 LIMIT 10`
+                 ORDER BY n.fecha_creacion DESC`
             );
             
             // Formatear resultados
@@ -466,6 +465,7 @@ async function handleNoticias(req, res, body, cookies, query) {
                     titulo: noticia.titulo,
                     contenido: noticia.contenido,
                     imagen_url: noticia.imagen_url,
+                    jornada: noticia.jornada ? parseInt(noticia.jornada) : null,
                     usuario_id: parseInt(noticia.usuario_id),
                     usuario_nombre: noticia.nombre_completo || noticia.username,
                     fecha_creacion: fechaFormateada,

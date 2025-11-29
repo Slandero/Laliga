@@ -60,12 +60,14 @@ try {
           `titulo` VARCHAR(200) NOT NULL,
           `contenido` TEXT NOT NULL,
           `imagen_url` VARCHAR(500) DEFAULT NULL,
+          `jornada` INT(11) DEFAULT NULL,
           `usuario_id` INT(11) NOT NULL,
           `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           `fecha_actualizacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           PRIMARY KEY (`id`),
           KEY `idx_usuario` (`usuario_id`),
-          KEY `idx_fecha_creacion` (`fecha_creacion`)
+          KEY `idx_fecha_creacion` (`fecha_creacion`),
+          KEY `idx_jornada` (`jornada`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ";
         $pdo->exec($createTableSQL);
@@ -88,8 +90,7 @@ try {
             $sql = "SELECT n.*, u.username, u.nombre_completo 
                     FROM noticias n 
                     INNER JOIN usuarios u ON n.usuario_id = u.id 
-                    ORDER BY n.fecha_creacion DESC 
-                    LIMIT 10";
+                    ORDER BY n.fecha_creacion DESC";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -105,6 +106,7 @@ try {
                     'titulo' => $noticia['titulo'],
                     'contenido' => $noticia['contenido'],
                     'imagen_url' => $noticia['imagen_url'],
+                    'jornada' => isset($noticia['jornada']) ? intval($noticia['jornada']) : null,
                     'usuario_id' => intval($noticia['usuario_id']),
                     'usuario_nombre' => $noticia['nombre_completo'] ? $noticia['nombre_completo'] : $noticia['username'],
                     'fecha_creacion' => $fechaFormateada,
@@ -137,6 +139,10 @@ try {
             $titulo = isset($input['titulo']) ? trim($input['titulo']) : null;
             $contenido = isset($input['contenido']) ? trim($input['contenido']) : null;
             $imagenUrl = isset($input['imagen_url']) ? trim($input['imagen_url']) : null;
+            $jornada = isset($input['jornada']) ? intval($input['jornada']) : null;
+            if ($jornada !== null && (!is_int($jornada) || $jornada <= 0)) {
+                $jornada = null;
+            }
             
             // Validaciones
             if (!$titulo || strlen($titulo) < 3) {
@@ -160,13 +166,14 @@ try {
             }
             
             // Insertar noticia
-            $sql = "INSERT INTO noticias (titulo, contenido, imagen_url, usuario_id) 
-                    VALUES (:titulo, :contenido, :imagen_url, :usuario_id)";
+            $sql = "INSERT INTO noticias (titulo, contenido, imagen_url, jornada, usuario_id) 
+                    VALUES (:titulo, :contenido, :imagen_url, :jornada, :usuario_id)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':titulo' => $titulo,
                 ':contenido' => $contenido,
                 ':imagen_url' => $imagenUrl ? $imagenUrl : null,
+                ':jornada' => $jornada,
                 ':usuario_id' => $usuarioId
             ]);
             
