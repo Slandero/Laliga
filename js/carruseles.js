@@ -297,63 +297,79 @@ function mostrarPartidosEnCarrusel(partidos) {
         return;
     }
     
-    track.innerHTML = partidos.map((partido, index) => {
-        const carpetaLocal = obtenerCarpetaEquipoPartido(partido.local);
-        const carpetaVisitante = obtenerCarpetaEquipoPartido(partido.visitante);
-        const rutaLogoLocal = carpetaLocal ? `images/${carpetaLocal}/escudo.png` : 'images/LaligaLogo.jpg';
-        const rutaLogoVisitante = carpetaVisitante ? `images/${carpetaVisitante}/escudo.png` : 'images/LaligaLogo.jpg';
-        
-        const abrevLocal = obtenerAbreviaturaEquipo(partido.local);
-        const abrevVisitante = obtenerAbreviaturaEquipo(partido.visitante);
-        
-        const fechaFormateada = formatearFecha(partido.fecha_iso);
-        const hashtag = `#${partido.local.replace(/\s+/g, '')}${partido.visitante.replace(/\s+/g, '')}`;
-        
-        return `
-        <div class="carrusel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-            <div class="partido-card-moderno">
-                <div class="partido-header-moderno">
-                    <div class="partido-fecha-moderna">${fechaFormateada}</div>
-                    <div class="partido-hora-moderna">${partido.horario}</div>
-                </div>
-                <div class="partido-contenido-moderno">
-                    <div class="partido-info-moderna">
-                        <div class="partido-equipo-moderno">
-                            <div class="equipo-abrev-moderna">${abrevLocal}</div>
-                            <img src="${rutaLogoLocal}" 
-                                 alt="${escapeHtml(partido.local)}" 
-                                 class="equipo-logo-moderno"
-                                 onerror="this.onerror=null; this.src='images/LaligaLogo.jpg';">
+    const partidosPorSlide = 3;
+    const totalSlides = Math.ceil(partidos.length / partidosPorSlide);
+
+    let html = '';
+    for (let i = 0; i < totalSlides; i++) {
+        const inicio = i * partidosPorSlide;
+        const grupo = partidos.slice(inicio, inicio + partidosPorSlide);
+
+        html += `
+        <div class="carrusel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+            <div class="partidos-slide-grid">
+        `;
+
+        grupo.forEach((partido) => {
+            const carpetaLocal = obtenerCarpetaEquipoPartido(partido.local);
+            const carpetaVisitante = obtenerCarpetaEquipoPartido(partido.visitante);
+            const rutaLogoLocal = carpetaLocal ? `images/${carpetaLocal}/escudo.png` : 'images/LaligaLogo.jpg';
+            const rutaLogoVisitante = carpetaVisitante ? `images/${carpetaVisitante}/escudo.png` : 'images/LaligaLogo.jpg';
+            
+            const abrevLocal = obtenerAbreviaturaEquipo(partido.local);
+            const abrevVisitante = obtenerAbreviaturaEquipo(partido.visitante);
+            
+            const fechaFormateada = formatearFecha(partido.fecha_iso);
+            const hashtag = `#${partido.local.replace(/\s+/g, '')}${partido.visitante.replace(/\s+/g, '')}`;
+
+            html += `
+                <div class="partido-card-moderno">
+                    <div class="partido-header-moderno">
+                        <div class="partido-fecha-moderna">${fechaFormateada}</div>
+                        <div class="partido-hora-moderna">${partido.horario}</div>
+                    </div>
+                    <div class="partido-contenido-moderno">
+                        <div class="partido-info-moderna">
+                            <div class="partido-equipo-moderno">
+                                <div class="equipo-abrev-moderna">${abrevLocal}</div>
+                                <img src="${rutaLogoLocal}" 
+                                     alt="${escapeHtml(partido.local)}" 
+                                     class="equipo-logo-moderno"
+                                     onerror="this.onerror=null; this.src='images/LaligaLogo.jpg';">
+                            </div>
+                            <div class="partido-marcador-moderno">
+                                <span class="marcador-vacio">-</span>
+                            </div>
+                            <div class="partido-equipo-moderno">
+                                <div class="equipo-abrev-moderna">${abrevVisitante}</div>
+                                <img src="${rutaLogoVisitante}" 
+                                     alt="${escapeHtml(partido.visitante)}" 
+                                     class="equipo-logo-moderno"
+                                     onerror="this.onerror=null; this.src='images/LaligaLogo.jpg';">
+                            </div>
                         </div>
-                        <div class="partido-marcador-moderno">
-                            <span class="marcador-vacio">-</span>
-                        </div>
-                        <div class="partido-equipo-moderno">
-                            <div class="equipo-abrev-moderna">${abrevVisitante}</div>
-                            <img src="${rutaLogoVisitante}" 
-                                 alt="${escapeHtml(partido.visitante)}" 
-                                 class="equipo-logo-moderno"
-                                 onerror="this.onerror=null; this.src='images/LaligaLogo.jpg';">
+                        <div class="partido-hashtag-moderno">${hashtag}</div>
+                        <div class="partido-menu-moderno">
+                            <div class="menu-item-moderno" data-partido-id="${partido.id}" data-partido-jornada="${partido.jornada}" onclick="navegarAResultadoPartido(${partido.id}, ${partido.jornada})">
+                                <span class="menu-icono-moderno">⚽</span>
+                                <span class="menu-texto-moderno">Resultado</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="partido-hashtag-moderno">${hashtag}</div>
-                    <div class="partido-menu-moderno">
-                        <div class="menu-item-moderno" data-partido-id="${partido.id}" data-partido-jornada="${partido.jornada}" onclick="navegarAResultadoPartido(${partido.id}, ${partido.jornada})">
-                            <span class="menu-icono-moderno">⚽</span>
-                            <span class="menu-texto-moderno">Resultado</span>
-                        </div>
-                    </div>
                 </div>
-                <div class="partido-footer-moderno">
-                    <button class="btn-ver-laliga">DÓNDE VER LALIGA</button>
-                </div>
+            `;
+        });
+
+        html += `
             </div>
         </div>
-    `;
-    }).join('');
+        `;
+    }
+
+    track.innerHTML = html;
     
-    actualizarIndicadores('partidos', partidos.length);
-    inicializarCarrusel('partidos', partidos.length);
+    actualizarIndicadores('partidos', totalSlides);
+    inicializarCarrusel('partidos', totalSlides);
 }
 
 // Mostrar mensaje cuando no hay partidos
@@ -400,21 +416,36 @@ function inicializarCarrusel(tipo, totalSlides) {
         return;
     }
     
-    let currentIndex = 0;
-    
     btnPrev.addEventListener('click', () => {
+        const slides = track.querySelectorAll('.carrusel-slide');
+        const currentIndex = Array.from(slides).findIndex(slide => slide.classList.contains('active'));
         if (currentIndex > 0) {
-            currentIndex--;
-            actualizarCarrusel(tipo, currentIndex);
+            actualizarCarrusel(tipo, currentIndex - 1);
         }
     });
     
     btnNext.addEventListener('click', () => {
+        const slides = track.querySelectorAll('.carrusel-slide');
+        const currentIndex = Array.from(slides).findIndex(slide => slide.classList.contains('active'));
         if (currentIndex < totalSlides - 1) {
-            currentIndex++;
-            actualizarCarrusel(tipo, currentIndex);
+            actualizarCarrusel(tipo, currentIndex + 1);
         }
     });
+
+    // Auto-avance cada 10 segundos
+    if (!window.__carruselTimers) {
+        window.__carruselTimers = {};
+    }
+    if (window.__carruselTimers[tipo]) {
+        clearInterval(window.__carruselTimers[tipo]);
+    }
+    window.__carruselTimers[tipo] = setInterval(() => {
+        const slides = track.querySelectorAll('.carrusel-slide');
+        if (!slides.length) return;
+        const currentIndex = Array.from(slides).findIndex(slide => slide.classList.contains('active'));
+        const nextIndex = (currentIndex + 1) % totalSlides;
+        actualizarCarrusel(tipo, nextIndex);
+    }, 10000);
 }
 
 // Actualizar posición del carrusel
@@ -435,6 +466,11 @@ function actualizarCarrusel(tipo, index) {
     
     if (btnPrev) btnPrev.style.opacity = index === 0 ? '0.5' : '1';
     if (btnNext) btnNext.style.opacity = index === slides.length - 1 ? '0.5' : '1';
+
+    // Desplazar el track para crear efecto de movimiento
+    if (track) {
+        track.style.transform = `translateX(-${index * 100}%)`;
+    }
 }
 
 // Actualizar indicadores del carrusel

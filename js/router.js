@@ -42,6 +42,7 @@ class Router {
             'resultados': 'resultados',
             'clasificacion': 'clasificacion',
             'clubes': 'clubes',
+            'noticias': 'noticias',
             'fichajes': 'fichajes'
         };
 
@@ -198,6 +199,7 @@ class Router {
             'resultados': 'Resultados',
             'clasificacion': 'Clasificación',
             'clubes': 'Clubes',
+            'noticias': 'Noticias',
             'fichajes': 'Fichajes'
         };
         return titles[pageName] || 'Inicio';

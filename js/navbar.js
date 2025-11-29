@@ -10,18 +10,27 @@ function cargarNavbar() {
 
     const navbarHTML = `
         <nav class="navbar">
-            <div class="logo-container">
-                <a href="#" data-route="inicio" class="logo-button" title="Ir al inicio">
-                    <img src="images/LaligaLogo.jpg" alt="Logo La Liga" id="logo-navbar">
-                </a>
+            <div class="nav-section nav-section-left">
+                <ul class="nav-menu nav-menu-left">
+                    <li><a href="#" data-route="clubes">Clubes</a></li>
+                    <li><a href="#" data-route="clasificacion">Clasificación</a></li>
+                    <li><a href="#" data-route="resultados">Resultados</a></li>
+                </ul>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#" data-route="calendario">Calendario</a></li>
-                <li><a href="#" data-route="resultados">Resultados</a></li>
-                <li><a href="#" data-route="clasificacion">Clasificación</a></li>
-                <li><a href="#" data-route="clubes">Clubes</a></li>
-                <li><a href="#" data-route="fichajes">Fichajes</a></li>
-            </ul>
+            <div class="nav-section nav-section-center">
+                <div class="logo-container">
+                    <a href="#" data-route="inicio" class="logo-button" title="Ir al inicio">
+                        <img src="images/LaligaLogo.jpg" alt="Logo La Liga" id="logo-navbar">
+                    </a>
+                </div>
+            </div>
+            <div class="nav-section nav-section-right">
+                <ul class="nav-menu nav-menu-right">
+                    <li><a href="#" data-route="calendario">Calendario</a></li>
+                    <li><a href="#" data-route="noticias">Noticias</a></li>
+                    <li><a href="#" data-route="fichajes">Fichajes</a></li>
+                </ul>
+            </div>
         </nav>
     `;
 

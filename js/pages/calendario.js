@@ -347,7 +347,17 @@ function renderizarEvento(evento) {
     const texto = evento.competicion 
         ? `${evento.jornada} ${evento.competicion}` 
         : evento.jornada;
-    
+
+    // Solo las jornadas de LaLiga deben ser botones navegables
+    const esLaLiga = evento.tipo === 'laliga' || String(evento.competicion).toUpperCase() === 'LALIGA';
+    if (esLaLiga) {
+        // Extraer número de jornada (e.g. 'J12' -> 12)
+        const numJornada = parseInt(String(evento.jornada).replace(/\D/g, ''), 10);
+        const onClickAttr = Number.isFinite(numJornada) ? `onclick="window.irAJornadaResultados(${numJornada})"` : '';
+        return `<button type="button" class="${clases}" ${onClickAttr}>${texto}</button>`;
+    }
+
+    // Para Supercopa, Copa del Rey, etc., mantener solo una etiqueta no interactiva
     return `<div class="${clases}">${texto}</div>`;
 }
 
@@ -395,8 +405,49 @@ function cambiarMes(direccion) {
     }
 }
 
+// Navegar a la página de resultados y seleccionar la jornada indicada
+function irAJornadaResultados(jornada) {
+    try {
+        const numeroJornada = parseInt(jornada, 10);
+        if (!Number.isFinite(numeroJornada) || numeroJornada <= 0) {
+            console.warn('Jornada inválida para navegación desde calendario:', jornada);
+            return;
+        }
+
+        // Navegar a la página de resultados
+        if (window.router) {
+            window.router.navigate('resultados');
+        } else {
+            window.location.hash = '#resultados';
+        }
+
+        const seleccionarJornada = () => {
+            const jornadaSelect = document.getElementById('jornada-select');
+            if (jornadaSelect) {
+                jornadaSelect.value = String(numeroJornada);
+                const event = new Event('change', { bubbles: true });
+                jornadaSelect.dispatchEvent(event);
+                return true;
+            }
+            return false;
+        };
+
+        // Intentar inmediatamente y reintentar si aún no se ha montado la página
+        if (!seleccionarJornada()) {
+            setTimeout(() => {
+                if (!seleccionarJornada()) {
+                    setTimeout(seleccionarJornada, 800);
+                }
+            }, 400);
+        }
+    } catch (error) {
+        console.error('Error al navegar a la jornada desde el calendario:', error);
+    }
+}
+
 // Hacer funciones accesibles globalmente
 window.cambiarMes = cambiarMes;
+window.irAJornadaResultados = irAJornadaResultados;
 
 export default CalendarioPage;
 export { init };

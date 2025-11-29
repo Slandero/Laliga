@@ -1970,6 +1970,12 @@ function FichajesPage() {
                         </select>
                     </div>
                     <div class="filtro-group filtro-group-button">
+                        <button id="btn-nuevo-fichaje" class="btn-limpiar-filtros btn-nuevo-fichaje">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Nuevo fichaje
+                        </button>
                         <button id="btn-limpiar-filtros" class="btn-limpiar-filtros">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -2002,6 +2008,60 @@ function FichajesPage() {
                     <!-- Los controles de paginación se cargarán aquí -->
                 </div>
             </div>
+            <!-- Modal flotante para crear nuevo fichaje -->
+            <div id="modal-fichaje" class="modal-fichaje-overlay" style="display: none;">
+                <div class="modal-fichaje">
+                    <div class="modal-fichaje-header">
+                        <h2>Nuevo fichaje</h2>
+                        <button type="button" id="btn-cerrar-modal-fichaje" class="modal-fichaje-close">&times;</button>
+                    </div>
+                    <form id="form-nuevo-fichaje" class="modal-fichaje-body">
+                        <div class="modal-fichaje-row">
+                            <label for="fichaje-fecha">Fecha</label>
+                            <input type="text" id="fichaje-fecha" class="filtro-input" placeholder="DD/MM/YYYY" required />
+                        </div>
+                        <div class="modal-fichaje-row">
+                            <label for="fichaje-competicion">Competición</label>
+                            <input type="text" id="fichaje-competicion" class="filtro-input" value="LALIGA" required />
+                        </div>
+                        <div class="modal-fichaje-row">
+                            <label for="fichaje-pais">País (en inglés, ej: Spain, France)</label>
+                            <input type="text" id="fichaje-pais" class="filtro-input" required />
+                        </div>
+                        <div class="modal-fichaje-row">
+                            <label for="fichaje-jugador">Jugador</label>
+                            <input type="text" id="fichaje-jugador" class="filtro-input" required />
+                        </div>
+                        <div class="modal-fichaje-row modal-fichaje-row-two-cols">
+                            <div>
+                                <label for="fichaje-destino">Destino</label>
+                                <input type="text" id="fichaje-destino" class="filtro-input" required />
+                            </div>
+                            <div>
+                                <label for="fichaje-procedencia">Procedencia</label>
+                                <input type="text" id="fichaje-procedencia" class="filtro-input" required />
+                            </div>
+                        </div>
+                        <div class="modal-fichaje-row">
+                            <label for="fichaje-tipo">Tipo</label>
+                            <select id="fichaje-tipo" class="filtro-input filtro-select" required>
+                                <option value="Traspaso">Traspaso</option>
+                                <option value="Cesión">Cesión</option>
+                                <option value="Libre">Libre</option>
+                                <option value="Pago cláusula">Pago cláusula</option>
+                            </select>
+                        </div>
+                        <div class="modal-fichaje-footer">
+                            <button type="button" id="btn-cancelar-fichaje" class="btn-limpiar-filtros modal-fichaje-btn-cancelar">
+                                Cancelar
+                            </button>
+                            <button type="submit" id="btn-guardar-fichaje" class="btn-limpiar-filtros modal-fichaje-btn-guardar">
+                                Guardar fichaje
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
     `;
 }
@@ -2011,8 +2071,156 @@ function init() {
     // Cargar los fichajes después de un pequeño delay para asegurar que el DOM esté listo
     setTimeout(() => {
         configurarFiltros();
+        configurarBotonNuevoFichaje();
+        configurarModalFichaje();
         cargarFichajes();
     }, 200);
+}
+
+function configurarBotonNuevoFichaje() {
+    const btnNuevo = document.getElementById('btn-nuevo-fichaje');
+    if (!btnNuevo) {
+        console.warn('No se encontró el botón de nuevo fichaje, reintentando...');
+        setTimeout(configurarBotonNuevoFichaje, 100);
+        return;
+    }
+
+    btnNuevo.addEventListener('click', () => {
+        crearNuevoFichajeInteractivo();
+    });
+}
+
+function configurarModalFichaje() {
+    const modal = document.getElementById('modal-fichaje');
+    const btnCerrar = document.getElementById('btn-cerrar-modal-fichaje');
+    const btnCancelar = document.getElementById('btn-cancelar-fichaje');
+    const form = document.getElementById('form-nuevo-fichaje');
+
+    if (!modal || !btnCerrar || !btnCancelar || !form) {
+        console.warn('No se encontraron todos los elementos del modal de fichaje, reintentando...');
+        setTimeout(configurarModalFichaje, 100);
+        return;
+    }
+
+    const cerrarModal = () => {
+        modal.style.display = 'none';
+    };
+
+    btnCerrar.addEventListener('click', cerrarModal);
+    btnCancelar.addEventListener('click', (e) => {
+        e.preventDefault();
+        cerrarModal();
+    });
+
+    // Cerrar al hacer click fuera del contenido
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            cerrarModal();
+        }
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const fecha = document.getElementById('fichaje-fecha').value.trim();
+        const competicion = document.getElementById('fichaje-competicion').value.trim() || 'LALIGA';
+        const pais = document.getElementById('fichaje-pais').value.trim();
+        const jugador = document.getElementById('fichaje-jugador').value.trim();
+        const destino = document.getElementById('fichaje-destino').value.trim();
+        const procedencia = document.getElementById('fichaje-procedencia').value.trim();
+        const tipo = document.getElementById('fichaje-tipo').value.trim() || 'Traspaso';
+
+        if (!fecha || !pais || !jugador || !destino || !procedencia) {
+            alert('Por favor, rellena todos los campos obligatorios.');
+            return;
+        }
+
+        // Validar que la fecha esté dentro del periodo de mercado
+        if (!esFechaDentroDePeriodoDeFichajes(fecha)) {
+            mostrarMensajeMercadoCerrado();
+            return;
+        }
+
+        const nuevoFichaje = {
+            fecha,
+            competicion,
+            pais,
+            jugador,
+            destino,
+            procedencia,
+            tipo
+        };
+
+        // Añadir al principio para que aparezca primero
+        fichajes.unshift(nuevoFichaje);
+        paginaActual = 1;
+        cargarFichajes();
+        cerrarModal();
+        form.reset();
+        document.getElementById('fichaje-competicion').value = 'LALIGA';
+        document.getElementById('fichaje-tipo').value = 'Traspaso';
+    });
+}
+
+// Comprueba si la fecha (DD/MM/YYYY o YYYY-MM-DD) está dentro del periodo 02/01/2026 - 02/02/2026
+function esFechaDentroDePeriodoDeFichajes(fechaString) {
+    const iso = convertirFechaFormato(fechaString);
+    if (!iso) {
+        return false;
+    }
+    const fecha = new Date(iso);
+    const inicio = new Date('2026-01-02');
+    const fin = new Date('2026-02-02');
+    return fecha >= inicio && fecha <= fin;
+}
+
+// Muestra un mensaje flotante indicando que el mercado está cerrado
+function mostrarMensajeMercadoCerrado() {
+    let toast = document.getElementById('toast-mercado-cerrado');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-mercado-cerrado';
+        toast.className = 'toast-mercado-cerrado';
+        toast.textContent = 'El mercado de transferencias está cerrado';
+        document.body.appendChild(toast);
+    }
+
+    toast.classList.add('visible');
+
+    setTimeout(() => {
+        toast.classList.remove('visible');
+    }, 3000);
+}
+
+function crearNuevoFichajeInteractivo() {
+    // Comprobar si el usuario está logueado usando el botón global de auth
+    const btnAcceder = document.getElementById('btn-acceder');
+    const estaLogueado = btnAcceder && btnAcceder.dataset.loggedIn === 'true';
+
+    if (!estaLogueado) {
+        alert('Debes iniciar sesión para agregar un nuevo fichaje.');
+        // Abrir el modal de login si existe (simulando click en "Acceder")
+        if (btnAcceder) {
+            btnAcceder.click();
+        }
+        return;
+    }
+
+    // Abrir el formulario flotante (modal) y poner valores por defecto
+    const modal = document.getElementById('modal-fichaje');
+    const form = document.getElementById('form-nuevo-fichaje');
+    if (!modal || !form) {
+        console.error('No se encontró el modal de fichaje');
+        return;
+    }
+
+    form.reset();
+    const inputCompeticion = document.getElementById('fichaje-competicion');
+    const selectTipo = document.getElementById('fichaje-tipo');
+    if (inputCompeticion) inputCompeticion.value = 'LALIGA';
+    if (selectTipo) selectTipo.value = 'Traspaso';
+
+    modal.style.display = 'flex';
 }
 
 function configurarFiltros() {
