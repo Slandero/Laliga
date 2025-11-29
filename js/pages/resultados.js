@@ -111,18 +111,65 @@ function inicializarResultados() {
         // Cargar resultados de la jornada seleccionada
         cargarResultados(parseInt(jornadaSelect.value));
         
+        // Detectar si es un dispositivo móvil
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         (window.innerWidth <= 768 && 'ontouchstart' in window);
+        
         // Configurar comportamiento del select: mostrar 5 opciones con scroll
         jornadaSelect.size = 1; // Por defecto como dropdown
         
-        jornadaSelect.addEventListener('focus', () => {
-            jornadaSelect.size = 5; // Mostrar 5 opciones al abrir
-        });
+        let blurTimeout = null;
+        let isChanging = false;
         
-        jornadaSelect.addEventListener('blur', () => {
-            setTimeout(() => {
-                jornadaSelect.size = 1; // Volver a dropdown al cerrar
-            }, 200);
-        });
+        // Guardar posición del scroll antes de abrir el select
+        let scrollPositionBeforeSelect = 0;
+        
+        // En móviles, no cambiar el size del select para evitar problemas de selección
+        if (!isMobile) {
+            jornadaSelect.addEventListener('focus', () => {
+                // Guardar posición del scroll antes de abrir
+                scrollPositionBeforeSelect = window.pageYOffset || document.documentElement.scrollTop;
+                jornadaSelect.size = 5; // Mostrar 5 opciones al abrir solo en desktop
+                
+                // Prevenir scroll automático
+                requestAnimationFrame(() => {
+                    window.scrollTo({
+                        top: scrollPositionBeforeSelect,
+                        behavior: 'instant'
+                    });
+                });
+            });
+            
+            jornadaSelect.addEventListener('blur', () => {
+                blurTimeout = setTimeout(() => {
+                    if (!isChanging) {
+                        jornadaSelect.size = 1; // Volver a dropdown al cerrar
+                        // Restaurar posición del scroll
+                        requestAnimationFrame(() => {
+                            window.scrollTo({
+                                top: scrollPositionBeforeSelect,
+                                behavior: 'instant'
+                            });
+                        });
+                    }
+                }, 200);
+            });
+        } else {
+            // En móviles, también prevenir scroll al abrir
+            jornadaSelect.addEventListener('focus', () => {
+                scrollPositionBeforeSelect = window.pageYOffset || document.documentElement.scrollTop;
+            });
+            
+            jornadaSelect.addEventListener('blur', () => {
+                // Restaurar posición del scroll en móviles
+                requestAnimationFrame(() => {
+                    window.scrollTo({
+                        top: scrollPositionBeforeSelect,
+                        behavior: 'instant'
+                    });
+                });
+            });
+        }
         
         // Función para limpiar todos los estilos de hover
         const limpiarEstilosHover = () => {
@@ -172,17 +219,39 @@ function inicializarResultados() {
             }
         });
         
-        // Limpiar estilos cuando se cierra el select
-        jornadaSelect.addEventListener('blur', () => {
-            limpiarEstilosHover();
-        });
+        // Limpiar estilos cuando se cierra el select (solo en desktop)
+        if (!isMobile) {
+            jornadaSelect.addEventListener('blur', () => {
+                limpiarEstilosHover();
+            });
+        }
         
         // Event listener para cambio de jornada
         jornadaSelect.addEventListener('change', (e) => {
+            isChanging = true;
+            if (blurTimeout) {
+                clearTimeout(blurTimeout);
+            }
+            
             const jornada = parseInt(e.target.value);
+            
+            // Prevenir scroll automático del select
+            jornadaSelect.blur();
+            
+            // Cargar resultados y actualizar título
+            // cargarResultados ya maneja el scroll internamente
             cargarResultados(jornada);
             actualizarTituloJornada(jornada);
-            jornadaSelect.size = 1; // Cerrar después de seleccionar
+            
+            // Cerrar después de seleccionar solo en desktop
+            if (!isMobile) {
+                setTimeout(() => {
+                    jornadaSelect.size = 1;
+                    isChanging = false;
+                }, 100);
+            } else {
+                isChanging = false;
+            }
         });
     }
     
@@ -236,6 +305,9 @@ async function cargarResultados(jornada = 1) {
         return;
     }
 
+    // Guardar posición del scroll antes de cargar
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
     // Mostrar estado de carga
     tbody.innerHTML = `
         <tr>
@@ -249,6 +321,16 @@ async function cargarResultados(jornada = 1) {
         const resultados = await obtenerResultados(jornada);
         resultadosActuales = resultados; // Guardar resultados actuales
         renderizarResultados(resultados);
+        
+        // Restaurar posición del scroll después de renderizar
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: scrollPosition,
+                behavior: 'instant'
+            });
+        });
+        
+        return Promise.resolve();
     } catch (error) {
         console.error('Error al cargar resultados:', error);
         tbody.innerHTML = `
@@ -258,6 +340,16 @@ async function cargarResultados(jornada = 1) {
                 </td>
             </tr>
         `;
+        
+        // Restaurar posición del scroll incluso si hay error
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: scrollPosition,
+                behavior: 'instant'
+            });
+        });
+        
+        return Promise.reject(error);
     }
 }
 

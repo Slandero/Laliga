@@ -248,13 +248,19 @@ function mostrarNoticiasEnTrack(track, noticias, usuarioActual) {
             (parseInt(usuarioActual.id, 10) === parseInt(noticia.usuario_id, 10) || usuarioActual.rol === 'admin');
         
         const tieneImagen = noticia.imagen_url && noticia.imagen_url.trim() !== '' ? true : false;
+        const contenidoCompleto = escapeHtml(noticia.contenido || 'Sin contenido');
         return `
         <div class="carrusel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-            <div class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}">
+            <div class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}" data-noticia-id="${noticia.id}">
                 ${tieneImagen ? `<div class="noticia-imagen-container"><img src="${noticia.imagen_url}" alt="${escapeHtml(noticia.titulo)}" class="noticia-imagen"></div>` : ''}
                 <div class="noticia-contenido">
                     <h3 class="noticia-titulo">${escapeHtml(noticia.titulo || 'Sin título')}</h3>
-                    <p class="noticia-texto">${escapeHtml(noticia.contenido || 'Sin contenido')}</p>
+                    <div class="noticia-texto-wrapper">
+                        <p class="noticia-texto noticia-texto-preview">${contenidoCompleto}</p>
+                        <p class="noticia-texto noticia-texto-completo" style="display: none;">${contenidoCompleto}</p>
+                    </div>
+                    <button class="btn-ver-mas-noticia" style="display: none;">Ver más</button>
+                    <button class="btn-ver-menos-noticia" style="display: none;">Ver menos</button>
                     <div class="noticia-footer">
                         <span class="noticia-autor">Por: ${escapeHtml(noticia.usuario_nombre || 'Desconocido')}</span>
                         <span class="noticia-fecha">${noticia.fecha_creacion || ''}</span>
@@ -376,6 +382,11 @@ function mostrarNoticiasEnTrack(track, noticias, usuarioActual) {
         // Inicializar indicadores y carrusel
         actualizarIndicadores('noticias', noticias.length);
         inicializarCarrusel('noticias', noticias.length);
+        
+        // Configurar funcionalidad de expandir/colapsar en móviles después de renderizar
+        setTimeout(() => {
+            configurarNoticiasExpandibles();
+        }, 300);
         
         // Forzar posición 0 después de inicializar (con un pequeño delay para asegurar que todo esté listo)
         setTimeout(() => {
@@ -1095,6 +1106,71 @@ export function inicializarCarruseles() {
         mostrarErrorNoticias();
         mostrarErrorPartidos();
     }
+}
+
+// Configurar funcionalidad de expandir/colapsar noticias en móviles
+function configurarNoticiasExpandibles() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     (window.innerWidth <= 768 && 'ontouchstart' in window);
+    
+    if (!isMobile) {
+        return; // Solo en móviles
+    }
+    
+    // Esperar a que el DOM se actualice
+    setTimeout(() => {
+        const noticiasCards = document.querySelectorAll('.noticia-card');
+        
+        noticiasCards.forEach(card => {
+            const textoPreview = card.querySelector('.noticia-texto-preview');
+            const textoCompleto = card.querySelector('.noticia-texto-completo');
+            const btnVerMas = card.querySelector('.btn-ver-mas-noticia');
+            const btnVerMenos = card.querySelector('.btn-ver-menos-noticia');
+            
+            if (!textoPreview || !textoCompleto || !btnVerMas || !btnVerMenos) {
+                return;
+            }
+            
+            const textoOriginal = textoPreview.textContent;
+            const maxLength = 150; // Caracteres a mostrar en preview
+            
+            // Si el texto es corto, no mostrar botones
+            if (textoOriginal.length <= maxLength) {
+                btnVerMas.style.display = 'none';
+                btnVerMenos.style.display = 'none';
+                textoCompleto.style.display = 'none';
+                return;
+            }
+            
+            // Truncar texto para preview
+            const textoTruncado = textoOriginal.substring(0, maxLength) + '...';
+            textoPreview.textContent = textoTruncado;
+            textoCompleto.textContent = textoOriginal;
+            
+            // Mostrar botón "Ver más" inicialmente
+            btnVerMas.style.display = 'block';
+            btnVerMenos.style.display = 'none';
+            textoCompleto.style.display = 'none';
+            
+            // Event listener para "Ver más"
+            btnVerMas.addEventListener('click', (e) => {
+                e.stopPropagation();
+                textoPreview.style.display = 'none';
+                textoCompleto.style.display = 'block';
+                btnVerMas.style.display = 'none';
+                btnVerMenos.style.display = 'block';
+            });
+            
+            // Event listener para "Ver menos"
+            btnVerMenos.addEventListener('click', (e) => {
+                e.stopPropagation();
+                textoPreview.style.display = 'block';
+                textoCompleto.style.display = 'none';
+                btnVerMas.style.display = 'block';
+                btnVerMenos.style.display = 'none';
+            });
+        });
+    }, 200);
 }
 
 // Exportar funciones para uso en otros módulos

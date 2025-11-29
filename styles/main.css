@@ -117,6 +117,93 @@ body {
     }
 }
 
+/* Media query para móviles - navbar más compacto */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.4rem 0.5rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .nav-section-center {
+        margin-bottom: 0.3rem;
+    }
+    
+    .logo-button img {
+        height: 30px;
+        max-width: 120px;
+    }
+    
+    .nav-menu {
+        gap: 0.3rem;
+        margin-top: 0.4rem;
+    }
+    
+    .nav-menu a {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.3px;
+    }
+    
+    .nav-section-left .nav-menu,
+    .nav-section-right .nav-menu {
+        gap: 0.3rem;
+    }
+    
+    .sidebar-clasificacion {
+        top: 55px; /* Ajustado para navbar más pequeño en móviles */
+    }
+    
+    /* Botón más grande en móviles pequeños para facilitar el toque */
+    .btn-toggle-sidebar {
+        width: 45px !important;
+        height: 45px !important;
+        min-width: 45px !important;
+        min-height: 45px !important;
+    }
+    
+    .sidebar-clasificacion.collapsed .btn-toggle-sidebar {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        min-height: 50px !important;
+    }
+    
+    .icono-toggle {
+        font-size: 1.6rem !important;
+    }
+    
+    .sidebar-clasificacion.collapsed .icono-toggle {
+        font-size: 2rem !important;
+    }
+}
+
+/* Media query para móviles muy pequeños */
+@media (max-width: 360px) {
+    .navbar {
+        padding: 0.35rem 0.4rem;
+    }
+    
+    .logo-button img {
+        height: 28px;
+        max-width: 100px;
+    }
+    
+    .nav-menu a {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    .nav-menu {
+        gap: 0.25rem;
+    }
+    
+    .sidebar-clasificacion {
+        top: 50px; /* Ajustado para navbar más pequeño en móviles pequeños */
+    }
+}
+
 .nav-menu li {
     position: relative;
 }
@@ -288,6 +375,7 @@ main {
     flex-shrink: 0;
     height: auto;
     min-height: 50px;
+    overflow: visible !important;
 }
 
 .sidebar-titulo {
@@ -518,8 +606,9 @@ main {
 
 @media (max-width: 768px) {
     .sidebar-clasificacion {
-        transform: translateX(calc(100% - 40px));
+        transform: translateX(calc(100% - 50px));
         width: 280px;
+        top: 60px; /* Ajustado para navbar más pequeño */
     }
     
     .sidebar-clasificacion:not(.collapsed) {
@@ -529,6 +618,99 @@ main {
     .main-wrapper.has-sidebar main {
         margin-right: 0;
     }
+    
+    /* Asegurar que el botón de toggle sea visible y accesible en móviles */
+    .sidebar-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1003 !important;
+        background: #FF4B44 !important;
+        padding: 0.75rem 0.5rem 0.75rem 1rem !important;
+        overflow: visible !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        min-height: 60px !important;
+    }
+    
+    .sidebar-clasificacion:not(.collapsed) .sidebar-header {
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .btn-toggle-sidebar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        min-height: 50px !important;
+        max-width: 50px !important;
+        max-height: 50px !important;
+        z-index: 1005 !important;
+        background: rgba(255, 255, 255, 0.4) !important;
+        border-radius: 50% !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        border: 3px solid white !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+        order: 2 !important;
+    }
+    
+    .btn-toggle-sidebar:hover,
+    .btn-toggle-sidebar:active,
+    .btn-toggle-sidebar:focus {
+        background: rgba(255, 255, 255, 0.6) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .icono-toggle {
+        font-size: 2rem !important;
+        font-weight: bold !important;
+        color: #FF4B44 !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    
+    /* Cuando está colapsado, el botón debe ser aún más visible */
+    .sidebar-clasificacion.collapsed .btn-toggle-sidebar {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        min-height: 50px !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        border: 3px solid white !important;
+    }
+    
+    .sidebar-clasificacion.collapsed .btn-toggle-sidebar:hover {
+        background: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    .sidebar-clasificacion.collapsed .icono-toggle {
+        font-size: 2.2rem !important;
+        color: white !important;
+    }
+    
+    /* Asegurar que el título no oculte el botón */
+    .sidebar-titulo {
+        flex: 1 !important;
+        margin-right: 0.75rem !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        order: 1 !important;
+    }
+    
+    .sidebar-titulo-link {
+        font-size: 0.9rem !important;
+    }
+}
     
     main {
         padding: 1rem;
@@ -827,23 +1009,26 @@ footer p {
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
-        padding: 1rem;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .nav-menu {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
     }
 
     .nav-menu a {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
     }
 
     .logo-button img {
-        height: 40px;
+        height: 35px;
     }
 }
 
@@ -1570,6 +1755,22 @@ footer p {
     outline: none;
     border-bottom: 1px solid black;
     background-color: transparent !important;
+    scroll-margin: 0;
+}
+
+/* Prevenir scroll automático al abrir el select en móviles */
+@media (max-width: 768px) {
+    .jornada-select {
+        scroll-margin: 0;
+    }
+    
+    .jornada-select:focus {
+        scroll-margin: 0;
+    }
+    
+    .jornada-select-wrapper {
+        scroll-margin: 0;
+    }
 }
 
 /* Barra informativa gris */
@@ -4074,6 +4275,48 @@ footer p {
     max-height: none;
 }
 
+.noticia-texto-wrapper {
+    position: relative;
+}
+
+.noticia-texto-preview {
+    display: block;
+}
+
+.noticia-texto-completo {
+    display: none;
+}
+
+.btn-ver-mas-noticia,
+.btn-ver-menos-noticia {
+    background-color: #FF4B44;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: none;
+}
+
+.btn-ver-mas-noticia:hover,
+.btn-ver-menos-noticia:hover {
+    background-color: #e6392e;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(255, 75, 68, 0.3);
+}
+
+.btn-ver-mas-noticia:active,
+.btn-ver-menos-noticia:active {
+    transform: translateY(0);
+}
+
 .noticia-footer {
     display: flex;
     justify-content: space-between;
@@ -4808,6 +5051,22 @@ footer p {
     .noticia-card {
         flex-direction: column;
         min-height: 350px;
+    }
+    
+    .noticia-texto-preview {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-clamp: 4;
+    }
+    
+    .btn-ver-mas-noticia,
+    .btn-ver-menos-noticia {
+        display: block;
+        width: 100%;
+        margin: 0.75rem 0;
     }
     
     .noticia-imagen-container {
