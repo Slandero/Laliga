@@ -661,6 +661,7 @@ function renderizarEventos(partidoId, eventos) {
         ${botonAgregar}
         <div class="timeline-container">
             <div class="timeline-line"></div>
+            <div class="timeline-line-vertical"></div>
             <div class="timeline-events">
                 <div class="timeline-team timeline-team-local">
                     <div class="team-logo-container">
