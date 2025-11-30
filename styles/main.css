@@ -3861,28 +3861,48 @@ footer p {
         min-height: auto;
     }
     
-    /* Cambiar a timeline vertical en móvil */
+    /* Cambiar a timeline vertical en móvil con doble línea */
     .timeline-line {
         display: none;
     }
     
     .timeline-line-vertical {
-        display: block;
+        display: none;
+    }
+    
+    /* Línea vertical para equipo local (izquierda) */
+    .timeline-container::before {
+        content: '';
         position: absolute;
-        left: 50%;
+        left: 25%;
         top: 0;
         bottom: 0;
         width: 4px;
-        background: linear-gradient(to bottom, #1a237e 0%, #1a237e 50%, #FF4B44 50%, #FF4B44 100%);
+        background: #1a237e;
         transform: translateX(-50%);
         z-index: 1;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 8px rgba(26, 35, 126, 0.3);
+    }
+    
+    /* Línea vertical para equipo visitante (derecha) */
+    .timeline-container::after {
+        content: '';
+        position: absolute;
+        left: 75%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: #FF4B44;
+        transform: translateX(-50%);
+        z-index: 1;
+        box-shadow: 0 0 8px rgba(255, 75, 68, 0.3);
     }
     
     .timeline-events {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
+        padding: 0 0.5rem;
     }
     
     .timeline-minutes {
@@ -3890,8 +3910,8 @@ footer p {
     }
     
     .timeline-team {
-        flex-direction: row;
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: stretch;
         margin: 0;
         padding: 0;
         background: transparent;
@@ -3901,21 +3921,41 @@ footer p {
     }
     
     .timeline-team-local {
-        margin-bottom: 1rem;
+        margin-bottom: 0;
         padding-left: 0;
+        padding-right: 0.5rem;
     }
     
     .timeline-team-visitante {
-        margin-top: 1rem;
+        margin-top: 0;
         padding-right: 0;
+        padding-left: 0.5rem;
     }
     
     .team-logo-container {
-        width: 50px;
-        height: 50px;
-        margin-right: 1rem;
+        width: 100%;
+        height: auto;
+        margin-bottom: 0.75rem;
+        margin-right: 0;
         position: relative;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .timeline-team-local .team-logo-container {
+        border-left: 4px solid #1a237e;
+        background: linear-gradient(to right, rgba(26, 35, 126, 0.05) 0%, white 20%);
+    }
+    
+    .timeline-team-visitante .team-logo-container {
+        border-right: 4px solid #FF4B44;
+        background: linear-gradient(to left, rgba(255, 75, 68, 0.05) 0%, white 20%);
     }
     
     .team-events {
@@ -3933,18 +3973,19 @@ footer p {
         left: auto !important;
         transform: none !important;
         bottom: auto;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
         border-left: 4px solid #1a237e;
         background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 20%);
+        padding-left: 0.75rem;
     }
     
     .timeline-team-local .evento-item::before {
         content: 'LOCAL';
         position: absolute;
-        top: -10px;
+        top: -8px;
         left: 8px;
         background: #1a237e;
         color: white;
@@ -3961,18 +4002,19 @@ footer p {
         left: auto !important;
         transform: none !important;
         top: auto;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
         border-right: 4px solid #FF4B44;
         background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 20%);
+        padding-right: 0.75rem;
     }
     
     .timeline-team-visitante .evento-item::before {
         content: 'VISITANTE';
         position: absolute;
-        top: -10px;
+        top: -8px;
         right: 8px;
         background: #FF4B44;
         color: white;
@@ -3984,20 +4026,42 @@ footer p {
         z-index: 1;
     }
     
+    .timeline-team-center {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin: 1rem 0;
+    }
+    
     .timeline-team-center .evento-item {
         position: relative;
         left: auto !important;
         transform: none !important;
-        margin: 0.5rem 0;
-        max-width: 100%;
-        width: 100%;
+        margin: 0.5rem auto;
+        max-width: 80%;
+        width: auto;
         border: 2px solid #FF4B44;
         background: linear-gradient(to right, rgba(255, 75, 68, 0.1) 0%, rgba(255, 75, 68, 0.1) 100%);
     }
     
     .team-name-label {
-        font-size: 0.6rem;
-        max-width: 50px;
+        font-size: 0.65rem;
+        max-width: 100%;
+        margin-top: 0.25rem;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .timeline-team-local .team-name-label {
+        color: #1a237e;
+    }
+    
+    .timeline-team-visitante .team-name-label {
+        color: #FF4B44;
+    }
+    
+    .team-logo-timeline {
+        width: 40px;
+        height: 40px;
     }
     
     .timeline-team-local {
