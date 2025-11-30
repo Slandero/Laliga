@@ -1780,6 +1780,9 @@ footer p {
     padding: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .calendario-header {
@@ -1825,6 +1828,8 @@ footer p {
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
     margin-bottom: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .dia-semana {
@@ -1839,6 +1844,8 @@ footer p {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .calendario-dia {
@@ -1850,6 +1857,9 @@ footer p {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .calendario-dia.dia-otro-mes {
@@ -1885,6 +1895,8 @@ footer p {
     flex-direction: column;
     gap: 0.25rem;
     overflow: hidden;
+    width: 100%;
+    min-width: 0;
 }
 
 .evento {
@@ -1896,6 +1908,9 @@ footer p {
     text-overflow: ellipsis;
     font-weight: 500;
     line-height: 1.2;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Colores de eventos según competición */
@@ -1942,6 +1957,7 @@ footer p {
 @media (max-width: 768px) {
     .calendario-container {
         padding: 1rem;
+        margin: 0 0.5rem;
     }
     
     .calendario-header {
@@ -1953,29 +1969,83 @@ footer p {
         font-size: 1.2rem;
     }
     
-    .calendario-dia {
-        min-height: 80px;
-        padding: 0.4rem;
+    .calendario-grid {
+        gap: 0.25rem;
     }
     
-    .evento {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.3rem;
+    .calendario-dias-semana {
+        gap: 0.25rem;
     }
-}
-
-@media (max-width: 480px) {
+    
     .calendario-dia {
-        min-height: 60px;
+        min-height: 80px;
+        padding: 0.3rem;
+    }
+    
+    .dia-numero {
+        font-size: 0.85rem;
     }
     
     .evento {
         font-size: 0.6rem;
+        padding: 0.15rem 0.25rem;
+        line-height: 1.1;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendario-container {
+        padding: 0.75rem;
+        margin: 0 0.25rem;
+    }
+    
+    .calendario-header {
+        padding: 0.5rem 0.75rem;
+        margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+    }
+    
+    .calendario-titulo {
+        font-size: 1rem;
+    }
+    
+    .calendario-nav-btn {
+        font-size: 1.2rem;
+        padding: 0.4rem 0.75rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .calendario-grid {
+        gap: 0.15rem;
+    }
+    
+    .calendario-dias-semana {
+        gap: 0.15rem;
+    }
+    
+    .calendario-dia {
+        min-height: 70px;
+        padding: 0.25rem;
+    }
+    
+    .dia-numero {
+        font-size: 0.8rem;
+        margin-bottom: 0.15rem;
     }
     
     .dia-semana {
-        font-size: 0.8rem;
-        padding: 0.4rem;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.2rem;
+    }
+    
+    .evento {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.2rem;
+        line-height: 1;
+    }
+    
+    .dia-eventos {
+        gap: 0.15rem;
     }
 }
 
