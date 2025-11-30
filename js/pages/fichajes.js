@@ -2526,28 +2526,28 @@ function cargarFichajes() {
 
         html += `
             <tr>
-                <td>${fichaje.fecha}</td>
-                <td>
+                <td data-label="Fecha">${fichaje.fecha}</td>
+                <td data-label="Competición">
                     <div class="fichaje-competicion">
                         <img src="images/Laliga.jpg" alt="${fichaje.competicion}" class="logo-competicion" 
                              onerror="this.style.display='none'">
                     </div>
                 </td>
-                <td class="fichaje-pais">${abreviaturaPais}</td>
-                <td class="fichaje-jugador">${fichaje.jugador}</td>
-                <td>
+                <td class="fichaje-pais" data-label="País">${abreviaturaPais}</td>
+                <td class="fichaje-jugador" data-label="Jugador">${fichaje.jugador}</td>
+                <td data-label="Destino">
                     <div class="fichaje-equipo">
                         ${logoDestinoHTML}
                         <span>${fichaje.destino}</span>
                     </div>
                 </td>
-                <td>
+                <td data-label="Procedencia">
                     <div class="fichaje-equipo">
                         ${logoProcedenciaHTML}
                         <span>${fichaje.procedencia}</span>
                     </div>
                 </td>
-                <td class="fichaje-tipo">${fichaje.tipo}</td>
+                <td class="fichaje-tipo" data-label="Tipo">${fichaje.tipo}</td>
             </tr>
         `;
     });

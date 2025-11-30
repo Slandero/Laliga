@@ -223,22 +223,22 @@ function mostrarClasificacion(content, clasificacion) {
         const rutaLogo = obtenerRutaLogo(equipo.equipo);
         html += `
             <tr>
-                <td class="posicion">${posicion}</td>
-                <td class="equipo">
+                <td class="posicion" data-label="Posición">${posicion}</td>
+                <td class="equipo" data-label="Equipo">
                     <div class="equipo-con-logo">
                         <img src="${rutaLogo}" alt="${equipo.equipo}" class="equipo-logo" 
                              onerror="this.src='images/LaligaLogo.jpg'">
                         <span class="equipo-nombre">${equipo.equipo}</span>
                     </div>
                 </td>
-                <td class="puntos">${equipo.PUNTOS}</td>
-                <td>${equipo.PJ}</td>
-                <td>${equipo.PG}</td>
-                <td>${equipo.PE}</td>
-                <td>${equipo.PP}</td>
-                <td>${equipo.GF}</td>
-                <td>${equipo.GC}</td>
-                <td class="${equipo.DG >= 0 ? 'dg-positivo' : 'dg-negativo'}">${equipo.DG > 0 ? '+' : ''}${equipo.DG}</td>
+                <td class="puntos" data-label="Puntos">${equipo.PUNTOS}</td>
+                <td data-label="PJ">${equipo.PJ}</td>
+                <td data-label="PG">${equipo.PG}</td>
+                <td data-label="PE">${equipo.PE}</td>
+                <td data-label="PP">${equipo.PP}</td>
+                <td data-label="GF">${equipo.GF}</td>
+                <td data-label="GC">${equipo.GC}</td>
+                <td class="${equipo.DG >= 0 ? 'dg-positivo' : 'dg-negativo'}" data-label="DG">${equipo.DG > 0 ? '+' : ''}${equipo.DG}</td>
             </tr>
         `;
     });

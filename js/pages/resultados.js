@@ -1537,9 +1537,9 @@ async function renderizarResultados(resultados) {
         row.className = 'partido-row';
         row.setAttribute('data-partido-id', partido.id || '');
         row.innerHTML = `
-            <td class="fecha-col">${partido.fecha}</td>
-            <td class="horario-col">${partido.horario}</td>
-            <td class="partido-col">
+            <td class="fecha-col" data-label="Fecha">${partido.fecha}</td>
+            <td class="horario-col" data-label="Hora">${partido.horario}</td>
+            <td class="partido-col" data-label="Partido">
                 <div class="partido-info">
                     <div class="equipo-local">
                         <img src="${rutaLogoLocal}" 
