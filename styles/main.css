@@ -3020,8 +3020,8 @@ footer p {
 .timeline-container {
     position: relative;
     width: 100%;
-    padding: 2rem 1rem;
-    min-height: 300px;
+    padding: 2.5rem 1rem;
+    min-height: 350px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -3364,9 +3364,9 @@ footer p {
 
 .timeline-team {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
     position: relative;
     z-index: 2;
 }
@@ -3476,8 +3476,9 @@ footer p {
 .team-events {
     flex: 1;
     position: relative;
-    min-height: 80px;
+    min-height: 120px;
     margin: 0 0.5rem;
+    padding: 0.5rem 0;
 }
 
 .evento-item {
@@ -3488,15 +3489,16 @@ footer p {
     transform: translateX(-50%);
     z-index: 3;
     background: white;
-    padding: 0.5rem;
+    padding: 0.6rem 0.75rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
+    min-width: 130px;
     max-width: 200px;
     transition: all 0.3s ease;
     cursor: pointer;
     flex-shrink: 0;
     flex-grow: 0;
+    white-space: nowrap;
 }
 
 .evento-item:hover {
@@ -3526,9 +3528,10 @@ footer p {
 }
 
 .timeline-team-local .evento-item {
-    bottom: 0;
+    bottom: 10px;
     border-left: 4px solid #1a237e;
     background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 15%);
+    margin-bottom: 0;
 }
 
 .timeline-team-local .evento-item::before {
@@ -3547,9 +3550,10 @@ footer p {
 }
 
 .timeline-team-visitante .evento-item {
-    top: 0;
+    top: 10px;
     border-right: 4px solid #FF4B44;
     background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 15%);
+    margin-top: 0;
 }
 
 .timeline-team-visitante .evento-item::before {

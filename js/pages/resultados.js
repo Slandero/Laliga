@@ -697,6 +697,54 @@ function renderizarEventos(partidoId, eventos) {
     
     container.innerHTML = html;
     
+    // Organizar eventos para evitar superposiciones
+    setTimeout(() => {
+        // Agrupar eventos por posición horizontal (minuto)
+        const eventosPorPosicion = {};
+        const eventoItems = container.querySelectorAll('.evento-item');
+        
+        eventoItems.forEach(item => {
+            const left = parseFloat(item.style.left);
+            const posicionRedondeada = Math.round(left * 10) / 10; // Redondear a 1 decimal
+            
+            if (!eventosPorPosicion[posicionRedondeada]) {
+                eventosPorPosicion[posicionRedondeada] = [];
+            }
+            eventosPorPosicion[posicionRedondeada].push(item);
+        });
+        
+        // Ajustar posición vertical para eventos en la misma posición horizontal
+        Object.keys(eventosPorPosicion).forEach(posicion => {
+            const eventos = eventosPorPosicion[posicion];
+            if (eventos.length > 1) {
+                eventos.forEach((item, index) => {
+                    const esLocal = item.closest('.timeline-team-local');
+                    const esVisitante = item.closest('.timeline-team-visitante');
+                    
+                    if (esLocal) {
+                        item.style.bottom = `${10 + (index * 45)}px`;
+                    } else if (esVisitante) {
+                        item.style.top = `${10 + (index * 45)}px`;
+                    }
+                });
+            }
+        });
+        
+        // Ajustar altura mínima del contenedor según eventos
+        const teamEventsContainers = container.querySelectorAll('.team-events');
+        teamEventsContainers.forEach(container => {
+            const eventos = container.querySelectorAll('.evento-item');
+            if (eventos.length > 0) {
+                const maxBottom = Math.max(...Array.from(eventos).map(e => {
+                    const bottom = parseFloat(e.style.bottom) || 0;
+                    const height = e.offsetHeight || 50;
+                    return bottom + height;
+                }));
+                container.style.minHeight = `${maxBottom + 20}px`;
+            }
+        });
+    }, 100);
+    
     // Agregar event listeners para mover eventos al centro con click
     setTimeout(() => {
         const eventoItems = container.querySelectorAll('.evento-item');
