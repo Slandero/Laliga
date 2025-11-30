@@ -3033,58 +3033,42 @@ footer p {
 }
 
 .timeline-line {
-    position: absolute;
-    top: 50%;
-    left: 2rem;
-    right: 2rem;
-    height: 4px;
-    background: linear-gradient(to right, #1a237e 0%, #1a237e 50%, #FF4B44 50%, #FF4B44 100%);
-    transform: translateY(-50%);
-    z-index: 1;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none;
 }
 
-.timeline-line::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 14px;
-    height: 14px;
-    background: #1a237e;
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 2px 6px rgba(26, 35, 126, 0.3);
-}
-
-.timeline-line::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 14px;
-    height: 14px;
-    background: #FF4B44;
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 2px 6px rgba(255, 75, 68, 0.3);
-}
-
-/* Timeline vertical - solo visible en móvil */
+/* Timeline vertical - siempre visible */
 .timeline-line-vertical {
     display: none;
+}
+
+/* Línea vertical para equipo local (izquierda) */
+.timeline-container::before {
+    content: '';
     position: absolute;
     left: 50%;
     top: 0;
     bottom: 0;
-    width: 4px;
-    background: linear-gradient(to bottom, #1a237e 0%, #1a237e 50%, #FF4B44 50%, #FF4B44 100%);
-    transform: translateX(-50%);
+    width: 3px;
+    background: #1a237e;
+    transform: translateX(-100%);
+    margin-left: -0.75rem;
     z-index: 1;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(26, 35, 126, 0.3);
+}
+
+/* Línea vertical para equipo visitante (derecha) */
+.timeline-container::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #FF4B44;
+    transform: translateX(0);
+    margin-left: 0.75rem;
+    z-index: 1;
+    box-shadow: 0 0 8px rgba(255, 75, 68, 0.3);
 }
 
 .timeline-events-vertical {
@@ -3362,54 +3346,56 @@ footer p {
     position: relative;
     width: 100%;
     max-width: 100%;
-    padding: 0 2rem;
+    padding: 0 1rem;
     box-sizing: border-box;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
 .timeline-team {
     display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-    margin: 2rem 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 1200px;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .timeline-team-local {
-    margin-bottom: 2.5rem;
-    padding-left: 0;
+    grid-column: 1;
+    margin: 0;
+    padding: 0;
 }
 
 .timeline-team-visitante {
-    margin-top: 2.5rem;
-    padding-right: 0;
+    grid-column: 2;
+    margin: 0;
+    padding: 0;
 }
 
 .timeline-team-center {
+    grid-column: 1 / -1;
     position: relative;
     left: 0;
     right: 0;
-    margin: 2rem 0 0 0;
+    margin: 1.5rem 0 0 0;
     z-index: 4;
     pointer-events: auto;
     width: 100%;
     display: flex;
     justify-content: center;
+    padding-top: 1rem;
+    border-top: 2px dashed #ccc;
 }
 
 .timeline-fin-partido {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 2px dashed #ccc;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 .timeline-team-center .team-events {
@@ -3421,13 +3407,32 @@ footer p {
     position: relative;
     left: auto;
     transform: none;
-    background: #FF4B44;
-    color: white;
+    background: linear-gradient(to right, rgba(255, 75, 68, 0.1) 0%, rgba(255, 75, 68, 0.1) 100%);
+    border: 2px solid #FF4B44;
+    color: #333;
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(255, 75, 68, 0.4);
     pointer-events: auto;
     margin: 0 auto;
-    max-width: 300px;
+    max-width: 90%;
+    width: auto;
+}
+
+.timeline-team-center .evento-item::before {
+    content: 'FIN PARTIDO';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF4B44;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    z-index: 1;
+    white-space: nowrap;
 }
 
 .timeline-team-center .evento-item:hover {
@@ -3444,8 +3449,8 @@ footer p {
 }
 
 .team-logo-container {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -3458,6 +3463,7 @@ footer p {
     padding: 0.3rem;
     position: relative;
     z-index: 5;
+    margin-bottom: 1rem;
 }
 
 .team-name-label {
@@ -3490,43 +3496,37 @@ footer p {
 }
 
 .team-events {
-    flex: 1;
     position: relative;
-    min-height: 150px;
-    margin: 0 1rem;
-    padding: 1rem 0;
-    max-width: calc(100% - 120px);
     width: 100%;
+    min-height: 100px;
+    margin: 0;
+    padding: 0.5rem 0;
 }
 
 .evento-item {
-    position: absolute;
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    transform: translateX(-50%);
     z-index: 3;
     background: white;
     padding: 0.75rem 1rem;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-    min-width: 140px;
-    max-width: 220px;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
-    flex-shrink: 0;
-    flex-grow: 0;
-    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .evento-item:hover {
     z-index: 10;
-    transform: translateX(-50%) scale(1.15);
+    transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     background: #fff;
-    padding: 0.75rem;
-    min-width: 140px;
-    max-width: 250px;
 }
 
 .evento-item.evento-hover-center {
@@ -3546,17 +3546,16 @@ footer p {
 }
 
 .timeline-team-local .evento-item {
-    bottom: 15px;
-    border-left: 5px solid #1a237e;
-    background: linear-gradient(to right, rgba(26, 35, 126, 0.1) 0%, white 20%);
-    margin-bottom: 0;
+    border-left: 4px solid #1a237e;
+    background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 20%);
+    padding-left: 0.75rem;
 }
 
 .timeline-team-local .evento-item::before {
     content: 'LOCAL';
     position: absolute;
-    top: -12px;
-    left: 10px;
+    top: -8px;
+    left: 8px;
     background: #1a237e;
     color: white;
     font-size: 0.65rem;
@@ -3565,21 +3564,20 @@ footer p {
     border-radius: 4px;
     letter-spacing: 0.5px;
     z-index: 1;
-    box-shadow: 0 2px 4px rgba(26, 35, 126, 0.3);
 }
 
 .timeline-team-visitante .evento-item {
-    top: 15px;
-    border-right: 5px solid #FF4B44;
-    background: linear-gradient(to left, rgba(255, 75, 68, 0.1) 0%, white 20%);
-    margin-top: 0;
+    border-right: 4px solid #FF4B44;
+    background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 20%);
+    padding-right: 0.75rem;
+    flex-direction: row-reverse;
 }
 
 .timeline-team-visitante .evento-item::before {
     content: 'VISITANTE';
     position: absolute;
-    top: -12px;
-    right: 10px;
+    top: -8px;
+    right: 8px;
     background: #FF4B44;
     color: white;
     font-size: 0.65rem;
@@ -3588,7 +3586,6 @@ footer p {
     border-radius: 4px;
     letter-spacing: 0.5px;
     z-index: 1;
-    box-shadow: 0 2px 4px rgba(255, 75, 68, 0.3);
 }
 
 .evento-icono {
@@ -3607,6 +3604,11 @@ footer p {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.timeline-team-visitante .evento-contenido {
+    align-items: flex-end;
+    text-align: right;
 }
 
 .evento-nombre {
@@ -3730,27 +3732,11 @@ footer p {
 }
 
 .timeline-minutes {
-    position: absolute;
-    top: 50%;
-    left: 2rem;
-    right: 2rem;
-    transform: translateY(-50%);
-    z-index: 2;
-    pointer-events: none;
+    display: none;
 }
 
 .timeline-minute {
-    position: absolute;
-    top: -18px;
-    transform: translateX(-50%);
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #1a237e;
-    background: white;
-    padding: 0.3rem 0.6rem;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e0e0e0;
+    display: none;
 }
 
 .modal-evento-content {
@@ -3902,53 +3888,9 @@ footer p {
         background: transparent;
     }
     
-    /* Cambiar a timeline vertical en móvil con doble línea */
-    .timeline-line {
-        display: none;
-    }
-    
-    .timeline-line-vertical {
-        display: none;
-    }
-    
-    /* Línea vertical para equipo local (izquierda) */
-    .timeline-container::before {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: #1a237e;
-        transform: translateX(-100%);
-        margin-left: -0.75rem;
-        z-index: 1;
-        box-shadow: 0 0 8px rgba(26, 35, 126, 0.3);
-    }
-    
-    /* Línea vertical para equipo visitante (derecha) */
-    .timeline-container::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: #FF4B44;
-        transform: translateX(0);
-        margin-left: 0.75rem;
-        z-index: 1;
-        box-shadow: 0 0 8px rgba(255, 75, 68, 0.3);
-    }
-    
     .timeline-events {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
-        max-width: 100%;
-        width: 100%;
-        box-sizing: border-box;
+        gap: 1rem;
+        padding: 0 0.5rem;
     }
     
     .timeline-minutes {

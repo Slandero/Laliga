@@ -660,8 +660,6 @@ function renderizarEventos(partidoId, eventos) {
     let html = `
         ${botonAgregar}
         <div class="timeline-container">
-            <div class="timeline-line"></div>
-            <div class="timeline-line-vertical"></div>
             <div class="timeline-events">
                 <div class="timeline-team timeline-team-local">
                     <div class="team-logo-container">
@@ -671,9 +669,6 @@ function renderizarEventos(partidoId, eventos) {
                     <div class="team-events">
                         ${eventosLocal.map(evento => renderizarEvento(evento, 'local', partidoId, todosMinutos)).join('')}
                     </div>
-                </div>
-                <div class="timeline-minutes">
-                    ${todosMinutos.map(min => `<div class="timeline-minute" style="left: ${calcularPosicionMinuto(min, todosMinutos)}%">${min}'</div>`).join('')}
                 </div>
                 <div class="timeline-team timeline-team-visitante">
                     <div class="team-logo-container">
@@ -697,96 +692,10 @@ function renderizarEventos(partidoId, eventos) {
     
     container.innerHTML = html;
     
-    // Organizar eventos para evitar superposiciones (solo en desktop)
-    setTimeout(() => {
-        if (window.innerWidth > 768) {
-            // Agrupar eventos por posición horizontal (minuto)
-            const eventosPorPosicion = {};
-            const eventoItems = container.querySelectorAll('.evento-item:not(.timeline-team-center .evento-item)');
-            
-            eventoItems.forEach(item => {
-                const left = parseFloat(item.style.left);
-                if (isNaN(left)) return;
-                const posicionRedondeada = Math.round(left * 10) / 10; // Redondear a 1 decimal
-                
-                if (!eventosPorPosicion[posicionRedondeada]) {
-                    eventosPorPosicion[posicionRedondeada] = [];
-                }
-                eventosPorPosicion[posicionRedondeada].push(item);
-            });
-            
-            // Ajustar posición vertical para eventos en la misma posición horizontal
-            Object.keys(eventosPorPosicion).forEach(posicion => {
-                const eventos = eventosPorPosicion[posicion];
-                if (eventos.length > 1) {
-                    eventos.forEach((item, index) => {
-                        const esLocal = item.closest('.timeline-team-local');
-                        const esVisitante = item.closest('.timeline-team-visitante');
-                        
-                        if (esLocal) {
-                            item.style.bottom = `${15 + (index * 50)}px`;
-                        } else if (esVisitante) {
-                            item.style.top = `${15 + (index * 50)}px`;
-                        }
-                    });
-                }
-            });
-            
-            // Ajustar altura mínima del contenedor según eventos
-            const teamEventsContainers = container.querySelectorAll('.team-events');
-            teamEventsContainers.forEach(containerEl => {
-                const eventos = containerEl.querySelectorAll('.evento-item');
-                if (eventos.length > 0) {
-                    let maxBottom = 0;
-                    eventos.forEach(e => {
-                        const bottom = parseFloat(e.style.bottom) || 0;
-                        const height = e.offsetHeight || 60;
-                        maxBottom = Math.max(maxBottom, bottom + height);
-                    });
-                    if (maxBottom > 0) {
-                        containerEl.style.minHeight = `${maxBottom + 30}px`;
-                    }
-                }
-            });
-        }
-    }, 150);
-    
     // Agregar event listeners para mover eventos al centro con click
     setTimeout(() => {
         const eventoItems = container.querySelectorAll('.evento-item');
         eventoItems.forEach(item => {
-            // Guardar posición original desde el atributo data o el estilo actual
-            // IMPORTANTE: Guardar ANTES de cualquier modificación
-            const originalLeft = item.getAttribute('data-original-left') || item.style.left || '';
-            
-            // Detectar si es local o visitante para guardar top/bottom correcto
-            const parentTeam = item.closest('.timeline-team-local, .timeline-team-visitante, .timeline-team-center');
-            let originalTop = '';
-            let originalBottom = '';
-            
-            if (parentTeam) {
-                if (parentTeam.classList.contains('timeline-team-local')) {
-                    originalBottom = '0';
-                } else if (parentTeam.classList.contains('timeline-team-visitante')) {
-                    originalTop = '0';
-                }
-            } else {
-                // Si no se encuentra el parent, usar los valores del estilo
-                originalTop = item.style.top || '';
-                originalBottom = item.style.bottom || '';
-            }
-            
-            const originalPosition = 'absolute';
-            const originalTransform = 'translateX(-50%)';
-            const originalZIndex = '';
-            
-            // Guardar en dataset para uso posterior
-            item.dataset.originalLeft = originalLeft;
-            item.dataset.originalTop = originalTop;
-            item.dataset.originalBottom = originalBottom;
-            item.dataset.originalPosition = originalPosition;
-            item.dataset.originalTransform = originalTransform;
-            item.dataset.originalZIndex = originalZIndex;
             item.dataset.isCentered = 'false';
             
             item.addEventListener('click', function(e) {
@@ -800,16 +709,22 @@ function renderizarEventos(partidoId, eventos) {
                 const isCentered = this.dataset.isCentered === 'true';
                 
                 if (!isCentered) {
-                    // Guardar dimensiones originales antes de cambiar
+                    // Guardar dimensiones y posición originales antes de cambiar
+                    const originalPosition = this.style.position || 'relative';
                     const originalWidth = this.style.width || '';
                     const originalHeight = this.style.height || '';
                     const originalMaxWidth = this.style.maxWidth || '';
                     const originalMaxHeight = this.style.maxHeight || '';
+                    const originalTransform = this.style.transform || '';
+                    const originalZIndex = this.style.zIndex || '';
                     
+                    this.dataset.originalPosition = originalPosition;
                     this.dataset.originalWidth = originalWidth;
                     this.dataset.originalHeight = originalHeight;
                     this.dataset.originalMaxWidth = originalMaxWidth;
                     this.dataset.originalMaxHeight = originalMaxHeight;
+                    this.dataset.originalTransform = originalTransform;
+                    this.dataset.originalZIndex = originalZIndex;
                     
                     // Calcular posición centrada en la ventana
                     const viewportWidth = window.innerWidth;
@@ -826,7 +741,6 @@ function renderizarEventos(partidoId, eventos) {
                     this.style.position = 'fixed';
                     this.style.left = centerX + 'px';
                     this.style.top = centerY + 'px';
-                    this.style.bottom = '';
                     this.style.transform = 'translate(0, 0)';
                     this.style.zIndex = '1000';
                     this.style.width = 'auto';
@@ -835,35 +749,16 @@ function renderizarEventos(partidoId, eventos) {
                     this.classList.add('evento-hover-center');
                     this.dataset.isCentered = 'true';
                 } else {
-                    // Restaurar posición original - usar los valores guardados
-                    const origLeft = this.dataset.originalLeft || this.getAttribute('data-original-left') || '';
-                    const origTop = this.dataset.originalTop || '';
-                    const origBottom = this.dataset.originalBottom || '';
-                    
-                    // Asegurarse de que left tenga el formato correcto (porcentaje)
-                    const leftValue = origLeft.includes('%') ? origLeft : origLeft + '%';
-                    
-                    // Restaurar todos los estilos
-                    this.style.position = 'absolute';
-                    this.style.left = leftValue;
-                    if (origTop) {
-                        this.style.top = origTop;
-                        this.style.bottom = '';
-                    } else if (origBottom) {
-                        this.style.bottom = origBottom;
-                        this.style.top = '';
-                    } else {
-                        this.style.top = '';
-                        this.style.bottom = '';
-                    }
-                    this.style.transform = 'translateX(-50%)';
-                    this.style.zIndex = '';
-                    
-                    // Restaurar dimensiones originales
+                    // Restaurar posición original
+                    this.style.position = this.dataset.originalPosition || 'relative';
                     this.style.width = this.dataset.originalWidth || '';
                     this.style.height = this.dataset.originalHeight || '';
                     this.style.maxWidth = this.dataset.originalMaxWidth || '';
                     this.style.maxHeight = this.dataset.originalMaxHeight || '';
+                    this.style.transform = this.dataset.originalTransform || '';
+                    this.style.zIndex = this.dataset.originalZIndex || '';
+                    this.style.left = '';
+                    this.style.top = '';
                     
                     this.classList.remove('evento-hover-center');
                     this.dataset.isCentered = 'false';
@@ -898,9 +793,8 @@ function calcularPosicionMinuto(minuto, todosMinutos) {
     return ((minutoNum - min) / (max - min)) * 100;
 }
 
-// Función para renderizar un evento individual (versión horizontal original - mantener para compatibilidad)
+// Función para renderizar un evento individual (versión vertical)
 function renderizarEvento(evento, equipo, partidoId, todosMinutos) {
-    const posicion = calcularPosicionMinuto(evento.minuto, todosMinutos);
     let icono = '';
     let clase = '';
     
@@ -978,7 +872,7 @@ function renderizarEvento(evento, equipo, partidoId, todosMinutos) {
     }
     
     return `
-        <div class="evento-item ${clase}" data-event-id="${evento.id}" data-original-left="${posicion}" style="left: ${posicion}%">
+        <div class="evento-item ${clase}" data-event-id="${evento.id}">
             <div class="evento-icono">${icono}</div>
             <div class="evento-contenido">
                 ${contenido}
