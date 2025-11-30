@@ -293,7 +293,7 @@ async function cargarNoticiasPagina(usuarioActual = null) {
         content.innerHTML = html;
         
         // Guardar noticias en variable global para acceso desde modal
-        window.todasLasNoticias = [...noticias];
+        window.todasLasNoticias = todasLasNoticias || [];
         
         // Configurar eventos para acordeón de jornadas
         configurarAcordeonJornadas();
