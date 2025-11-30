@@ -3337,10 +3337,12 @@ footer p {
 
 .timeline-team-local {
     margin-bottom: 2rem;
+    padding-left: 1rem;
 }
 
 .timeline-team-visitante {
     margin-top: 2rem;
+    padding-right: 1rem;
 }
 
 .timeline-team-center {
@@ -3387,11 +3389,36 @@ footer p {
     height: 60px;
     flex-shrink: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: white;
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    gap: 0.25rem;
+    padding: 0.25rem;
+}
+
+.team-name-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    line-height: 1;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.timeline-team-local .team-logo-container {
+    border: 3px solid #1a237e;
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.1) 0%, white 100%);
+}
+
+.timeline-team-visitante .team-logo-container {
+    border: 3px solid #FF4B44;
+    background: linear-gradient(135deg, rgba(255, 75, 68, 0.1) 0%, white 100%);
 }
 
 .team-logo-timeline {
@@ -3453,10 +3480,44 @@ footer p {
 
 .timeline-team-local .evento-item {
     bottom: 0;
+    border-left: 4px solid #1a237e;
+    background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 15%);
+}
+
+.timeline-team-local .evento-item::before {
+    content: 'LOCAL';
+    position: absolute;
+    top: -10px;
+    left: 8px;
+    background: #1a237e;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    z-index: 1;
 }
 
 .timeline-team-visitante .evento-item {
     top: 0;
+    border-right: 4px solid #FF4B44;
+    background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 15%);
+}
+
+.timeline-team-visitante .evento-item::before {
+    content: 'VISITANTE';
+    position: absolute;
+    top: -10px;
+    right: 8px;
+    background: #FF4B44;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    z-index: 1;
 }
 
 .evento-icono {
@@ -3485,6 +3546,14 @@ footer p {
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.3s ease;
+}
+
+.timeline-team-local .evento-nombre {
+    color: #1a237e;
+}
+
+.timeline-team-visitante .evento-nombre {
+    color: #FF4B44;
 }
 
 .evento-item:hover .evento-nombre {

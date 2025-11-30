@@ -632,22 +632,18 @@ function renderizarEventos(partidoId, eventos) {
         return parseInt(str) || 0;
     };
     
-    // Combinar todos los eventos y ordenarlos cronológicamente
-    const todosEventos = eventos.map(e => ({
-        ...e,
-        minutoNum: convertirMinutoANumero(e.minuto)
-    })).sort((a, b) => {
-        // Primero por minuto
-        if (a.minutoNum !== b.minutoNum) {
-            return a.minutoNum - b.minutoNum;
-        }
-        // Si es el mismo minuto, fin_partido al final
-        if (a.tipo_evento === 'fin_partido') return 1;
-        if (b.tipo_evento === 'fin_partido') return -1;
-        return 0;
+    // Separar eventos por equipo y fin_partido
+    const eventosLocal = eventos.filter(e => e.equipo === 'local' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    });
+    const eventosVisitante = eventos.filter(e => e.equipo === 'visitante' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    });
+    const eventosFinPartido = eventos.filter(e => e.tipo_evento === 'fin_partido').sort((a, b) => {
+        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
     });
     
-    // Obtener todos los minutos únicos y ordenarlos
+    // Obtener todos los minutos únicos y ordenarlos (usando la función ya definida arriba)
     const todosMinutos = [...new Set(eventos.map(e => e.minuto))].sort((a, b) => {
         return convertirMinutoANumero(a) - convertirMinutoANumero(b);
     });
@@ -663,34 +659,46 @@ function renderizarEventos(partidoId, eventos) {
     
     let html = `
         ${botonAgregar}
-        <div class="timeline-container timeline-vertical">
-            <div class="timeline-line-vertical"></div>
-            <div class="timeline-events-vertical">
-                <div class="timeline-header-teams">
-                    <div class="timeline-team-header timeline-team-header-local">
-                        <img src="${rutaLogoLocal}" alt="${partido.local}" class="team-logo-timeline-header" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
-                        <span class="team-name-timeline">${partido.local}</span>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-events">
+                <div class="timeline-team timeline-team-local">
+                    <div class="team-logo-container">
+                        <img src="${rutaLogoLocal}" alt="${partido.local}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                        <span class="team-name-label">${partido.local}</span>
                     </div>
-                    <div class="timeline-team-header timeline-team-header-visitante">
-                        <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline-header" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
-                        <span class="team-name-timeline">${partido.visitante}</span>
+                    <div class="team-events">
+                        ${eventosLocal.map(evento => renderizarEvento(evento, 'local', partidoId, todosMinutos)).join('')}
                     </div>
                 </div>
-                ${todosEventos.map(evento => {
-                    const esLocal = evento.equipo === 'local';
-                    const esVisitante = evento.equipo === 'visitante';
-                    const esFinPartido = evento.tipo_evento === 'fin_partido';
-                    return renderizarEventoVertical(evento, esLocal ? 'local' : (esVisitante ? 'visitante' : 'center'), partidoId, todosMinutos);
-                }).join('')}
+                <div class="timeline-minutes">
+                    ${todosMinutos.map(min => `<div class="timeline-minute" style="left: ${calcularPosicionMinuto(min, todosMinutos)}%">${min}'</div>`).join('')}
+                </div>
+                ${eventosFinPartido.length > 0 ? `
+                <div class="timeline-team timeline-team-center">
+                    <div class="team-events">
+                        ${eventosFinPartido.map(evento => renderizarEvento(evento, 'center', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                <div class="timeline-team timeline-team-visitante">
+                    <div class="team-logo-container">
+                        <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                        <span class="team-name-label">${partido.visitante}</span>
+                    </div>
+                    <div class="team-events">
+                        ${eventosVisitante.map(evento => renderizarEvento(evento, 'visitante', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
             </div>
         </div>
     `;
     
     container.innerHTML = html;
     
-    // Agregar event listeners solo para eventos horizontales (no verticales)
+    // Agregar event listeners para mover eventos al centro con click
     setTimeout(() => {
-        const eventoItems = container.querySelectorAll('.evento-item:not(.evento-item-vertical)');
+        const eventoItems = container.querySelectorAll('.evento-item');
         eventoItems.forEach(item => {
             // Guardar posición original desde el atributo data o el estilo actual
             // IMPORTANTE: Guardar ANTES de cualquier modificación
