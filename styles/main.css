@@ -2305,27 +2305,30 @@ footer p {
 }
 
 .resultados-table thead {
-    background-color: #f9f9f9;
-    border-bottom: 2px solid #e0e0e0;
+    background: linear-gradient(135deg, #FF4B44 0%, #d32f2f 100%);
+    border-bottom: 3px solid #FF4B44;
 }
 
 .resultados-table th {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     text-align: left;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #666;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .resultados-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #e8e8e8;
+    transition: all 0.2s ease;
 }
 
 .resultados-table tbody tr:hover {
-    background-color: #f9f9f9;
+    background-color: #fff5f5;
+    transform: scale(1.005);
 }
 
 .resultados-table tbody td {
@@ -2466,28 +2469,33 @@ footer p {
         border-radius: 8px;
     }
 
-    /* Ocultar tabla en móvil */
+    /* Mostrar tabla como cards en móvil */
     .resultados-table {
-        display: none;
+        display: block;
+        width: 100%;
     }
     
     /* Mostrar cards en móvil */
     .resultados-table tbody {
         display: block;
+        width: 100%;
     }
     
     .resultados-table tbody tr {
         display: block;
         background: white;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
-        border: none;
+        margin-bottom: 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 1.25rem;
+        border: 1px solid #e8e8e8;
+        transition: all 0.3s ease;
     }
     
     .resultados-table tbody tr:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+        border-color: #FF4B44;
     }
     
     .resultados-table thead {
@@ -2496,20 +2504,27 @@ footer p {
     
     .resultados-table tbody td {
         display: block;
-        padding: 0.5rem 0;
+        padding: 0.75rem 0;
         text-align: left;
         border: none;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .resultados-table tbody td:last-child {
+        border-bottom: none;
     }
     
     .resultados-table tbody td:before {
         content: attr(data-label);
-        font-weight: 600;
-        color: #666;
-        display: block;
-        margin-bottom: 0.25rem;
-        font-size: 0.8rem;
+        font-weight: 700;
+        color: #FF4B44;
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 80px;
     }
     
     .fecha-col:before {
@@ -3404,6 +3419,29 @@ footer p {
    TABLA DE CLASIFICACIÓN
    ============================================ */
 
+#clasificacion {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 2rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+#clasificacion h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#clasificacion-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .clasificacion-container {
     background-color: white;
     border-radius: 10px;
@@ -3418,18 +3456,18 @@ footer p {
 }
 
 .clasificacion-table thead {
-    background-color: #f0f0f0;
-    border-bottom: 2px solid #e0e0e0;
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+    border-bottom: 3px solid #1a237e;
 }
 
 .clasificacion-table th {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     text-align: center;
     font-weight: 700;
-    font-size: 0.85rem;
-    color: #1a237e;
+    font-size: 0.9rem;
+    color: white;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .clasificacion-table th:first-child {
@@ -3442,12 +3480,18 @@ footer p {
 }
 
 .clasificacion-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #e8e8e8;
+    transition: all 0.2s ease;
 }
 
 .clasificacion-table tbody tr:hover {
-    background-color: #f9f9f9;
+    background-color: #f8f9ff;
+    transform: scale(1.01);
+}
+
+.clasificacion-table tbody tr:hover {
+    background-color: #f8f9ff;
+    transform: scale(1.01);
 }
 
 .clasificacion-table tbody tr:nth-child(1),
@@ -3458,11 +3502,12 @@ footer p {
 }
 
 .clasificacion-table tbody td {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     font-size: 0.95rem;
     color: #333;
     text-align: center;
     vertical-align: middle;
+    font-weight: 500;
 }
 
 .clasificacion-table tbody td.posicion {
@@ -3624,34 +3669,47 @@ footer p {
 }
 
 @media (max-width: 768px) {
+    #clasificacion {
+        padding: 1rem;
+    }
+    
+    #clasificacion h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
     .clasificacion-container {
         overflow-x: visible;
         margin: 1rem 0.5rem;
     }
     
-    /* Ocultar tabla en móvil */
+    /* Mostrar tabla como cards en móvil */
     .clasificacion-table {
-        display: none;
+        display: block;
+        width: 100%;
     }
     
     /* Mostrar cards en móvil */
     .clasificacion-table tbody {
         display: block;
+        width: 100%;
     }
     
     .clasificacion-table tbody tr {
         display: block;
         background: white;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
-        border: none;
+        margin-bottom: 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 1.25rem;
+        border: 1px solid #e8e8e8;
         position: relative;
+        transition: all 0.3s ease;
     }
     
     .clasificacion-table tbody tr:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
     }
     
     .clasificacion-table thead {
@@ -3660,21 +3718,30 @@ footer p {
     
     .clasificacion-table tbody td {
         display: block;
-        padding: 0.5rem 0;
+        padding: 0.75rem 0;
         text-align: left;
         border: none;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .clasificacion-table tbody td:last-child {
+        border-bottom: none;
     }
     
     .clasificacion-table tbody td.posicion {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #1a237e;
-        padding-bottom: 0.75rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 2px solid #e0e0e0;
+        padding: 1rem 0;
+        margin-bottom: 0.75rem;
+        border-bottom: 3px solid #e0e0e0;
         padding-left: 0;
         width: auto;
+        background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
     }
     
     .clasificacion-table tbody td.posicion::before {
@@ -3744,6 +3811,15 @@ footer p {
 }
 
 @media (max-width: 480px) {
+    #clasificacion {
+        padding: 0.75rem;
+    }
+    
+    #clasificacion h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
     .clasificacion-container {
         margin: 0.75rem 0.25rem;
     }
@@ -4461,9 +4537,10 @@ footer p {
         box-sizing: border-box;
     }
     
-    /* Ocultar tabla en móvil */
+    /* Mostrar tabla como cards en móvil */
     .fichajes-table {
-        display: none;
+        display: block;
+        width: 100%;
     }
     
     /* Mostrar cards en móvil */
@@ -4475,18 +4552,21 @@ footer p {
     .fichajes-table tbody tr {
         display: block;
         background: white;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1rem;
-        border: none;
+        margin-bottom: 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 1.25rem;
+        border: 1px solid #e8e8e8;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+        transition: all 0.3s ease;
     }
     
     .fichajes-table tbody tr:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+        border-color: #1a237e;
     }
     
     .fichajes-table thead {
@@ -4495,25 +4575,32 @@ footer p {
     
     .fichajes-table tbody td {
         display: block;
-        padding: 0.5rem 0;
+        padding: 0.75rem 0;
         text-align: left;
         border: none;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .fichajes-table tbody td:last-child {
+        border-bottom: none;
     }
     
     .fichajes-table tbody td:before {
         content: attr(data-label);
-        font-weight: 600;
-        color: #666;
-        display: block;
-        margin-bottom: 0.25rem;
-        font-size: 0.8rem;
+        font-weight: 700;
+        color: #1a237e;
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 100px;
     }
     
     .fichaje-competicion {
@@ -4620,19 +4707,21 @@ footer p {
 }
 
 .fichajes-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #e8e8e8;
+    transition: all 0.2s ease;
 }
 
 .fichajes-table tbody tr:hover {
-    background-color: #f9f9f9;
+    background-color: #f8f9ff;
+    transform: scale(1.005);
 }
 
 .fichajes-table tbody td {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     font-size: 0.95rem;
     color: #333;
     vertical-align: middle;
+    font-weight: 500;
 }
 
 .fichajes-table tbody tr.empty-row {
