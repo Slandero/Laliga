@@ -632,18 +632,22 @@ function renderizarEventos(partidoId, eventos) {
         return parseInt(str) || 0;
     };
     
-    // Separar eventos por equipo y fin_partido
-    const eventosLocal = eventos.filter(e => e.equipo === 'local' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
-        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
-    });
-    const eventosVisitante = eventos.filter(e => e.equipo === 'visitante' && e.tipo_evento !== 'fin_partido').sort((a, b) => {
-        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
-    });
-    const eventosFinPartido = eventos.filter(e => e.tipo_evento === 'fin_partido').sort((a, b) => {
-        return convertirMinutoANumero(a.minuto) - convertirMinutoANumero(b.minuto);
+    // Combinar todos los eventos y ordenarlos cronológicamente
+    const todosEventos = eventos.map(e => ({
+        ...e,
+        minutoNum: convertirMinutoANumero(e.minuto)
+    })).sort((a, b) => {
+        // Primero por minuto
+        if (a.minutoNum !== b.minutoNum) {
+            return a.minutoNum - b.minutoNum;
+        }
+        // Si es el mismo minuto, fin_partido al final
+        if (a.tipo_evento === 'fin_partido') return 1;
+        if (b.tipo_evento === 'fin_partido') return -1;
+        return 0;
     });
     
-    // Obtener todos los minutos únicos y ordenarlos (usando la función ya definida arriba)
+    // Obtener todos los minutos únicos y ordenarlos
     const todosMinutos = [...new Set(eventos.map(e => e.minuto))].sort((a, b) => {
         return convertirMinutoANumero(a) - convertirMinutoANumero(b);
     });
@@ -659,44 +663,34 @@ function renderizarEventos(partidoId, eventos) {
     
     let html = `
         ${botonAgregar}
-        <div class="timeline-container">
-            <div class="timeline-line"></div>
-            <div class="timeline-events">
-                <div class="timeline-team timeline-team-local">
-                    <div class="team-logo-container">
-                        <img src="${rutaLogoLocal}" alt="${partido.local}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+        <div class="timeline-container timeline-vertical">
+            <div class="timeline-line-vertical"></div>
+            <div class="timeline-events-vertical">
+                <div class="timeline-header-teams">
+                    <div class="timeline-team-header timeline-team-header-local">
+                        <img src="${rutaLogoLocal}" alt="${partido.local}" class="team-logo-timeline-header" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                        <span class="team-name-timeline">${partido.local}</span>
                     </div>
-                    <div class="team-events">
-                        ${eventosLocal.map(evento => renderizarEvento(evento, 'local', partidoId, todosMinutos)).join('')}
-                    </div>
-                </div>
-                <div class="timeline-minutes">
-                    ${todosMinutos.map(min => `<div class="timeline-minute" style="left: ${calcularPosicionMinuto(min, todosMinutos)}%">${min}'</div>`).join('')}
-                </div>
-                ${eventosFinPartido.length > 0 ? `
-                <div class="timeline-team timeline-team-center">
-                    <div class="team-events">
-                        ${eventosFinPartido.map(evento => renderizarEvento(evento, 'center', partidoId, todosMinutos)).join('')}
+                    <div class="timeline-team-header timeline-team-header-visitante">
+                        <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline-header" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
+                        <span class="team-name-timeline">${partido.visitante}</span>
                     </div>
                 </div>
-                ` : ''}
-                <div class="timeline-team timeline-team-visitante">
-                    <div class="team-logo-container">
-                        <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
-                    </div>
-                    <div class="team-events">
-                        ${eventosVisitante.map(evento => renderizarEvento(evento, 'visitante', partidoId, todosMinutos)).join('')}
-                    </div>
-                </div>
+                ${todosEventos.map(evento => {
+                    const esLocal = evento.equipo === 'local';
+                    const esVisitante = evento.equipo === 'visitante';
+                    const esFinPartido = evento.tipo_evento === 'fin_partido';
+                    return renderizarEventoVertical(evento, esLocal ? 'local' : (esVisitante ? 'visitante' : 'center'), partidoId, todosMinutos);
+                }).join('')}
             </div>
         </div>
     `;
     
     container.innerHTML = html;
     
-    // Agregar event listeners para mover eventos al centro con click
+    // Agregar event listeners solo para eventos horizontales (no verticales)
     setTimeout(() => {
-        const eventoItems = container.querySelectorAll('.evento-item');
+        const eventoItems = container.querySelectorAll('.evento-item:not(.evento-item-vertical)');
         eventoItems.forEach(item => {
             // Guardar posición original desde el atributo data o el estilo actual
             // IMPORTANTE: Guardar ANTES de cualquier modificación
@@ -841,7 +835,7 @@ function calcularPosicionMinuto(minuto, todosMinutos) {
     return ((minutoNum - min) / (max - min)) * 100;
 }
 
-// Función para renderizar un evento individual
+// Función para renderizar un evento individual (versión horizontal original - mantener para compatibilidad)
 function renderizarEvento(evento, equipo, partidoId, todosMinutos) {
     const posicion = calcularPosicionMinuto(evento.minuto, todosMinutos);
     let icono = '';
@@ -928,6 +922,103 @@ function renderizarEvento(evento, equipo, partidoId, todosMinutos) {
                 <div class="evento-minuto">${evento.minuto}'</div>
             </div>
             ${botonEliminar}
+        </div>
+    `;
+}
+
+// Función para renderizar un evento individual en formato vertical
+function renderizarEventoVertical(evento, equipo, partidoId, todosMinutos) {
+    let icono = '';
+    let clase = '';
+    
+    switch (evento.tipo_evento) {
+        case 'gol':
+            icono = '⚽';
+            clase = 'evento-gol';
+            break;
+        case 'asistencia':
+            icono = '🎯';
+            clase = 'evento-asistencia';
+            break;
+        case 'tarjeta_amarilla':
+            icono = '🟨';
+            clase = 'evento-tarjeta-amarilla';
+            break;
+        case 'tarjeta_roja':
+            icono = '🟥';
+            clase = 'evento-tarjeta-roja';
+            break;
+        case 'sustitucion':
+            icono = '🔄';
+            clase = 'evento-sustitucion';
+            break;
+        case 'fin_partido':
+            icono = '🏁';
+            clase = 'evento-fin-partido';
+            break;
+    }
+    
+    const botonEliminar = usuarioLogueado ? `
+        <button class="btn-eliminar-evento" onclick="eliminarEvento(${evento.id}, ${partidoId})" title="Eliminar">×</button>
+    ` : '';
+    
+    // Función auxiliar para formatear nombre con dorsal
+    const formatearNombreConDorsal = (nombre, dorsal) => {
+        if (!nombre) return '';
+        if (dorsal) {
+            return `${dorsal}. ${nombre}`;
+        }
+        return nombre;
+    };
+    
+    let contenido = '';
+    if (evento.tipo_evento === 'gol') {
+        let tipoGol = '';
+        if (evento.es_penal) {
+            tipoGol = '<div class="evento-tipo-gol">(Penal)</div>';
+        } else if (evento.es_autogol) {
+            tipoGol = '<div class="evento-tipo-gol">(Autogol)</div>';
+        }
+        
+        const nombreJugador = formatearNombreConDorsal(evento.jugador_nombre, evento.jugador_dorsal);
+        const nombreAsistencia = evento.jugador_asistencia_nombre && !evento.es_penal && !evento.es_autogol 
+            ? formatearNombreConDorsal(evento.jugador_asistencia_nombre, evento.jugador_asistencia_dorsal)
+            : null;
+        
+        contenido = `
+            <div class="evento-nombre">${nombreJugador}</div>
+            ${tipoGol}
+            ${nombreAsistencia ? `<div class="evento-asistencia-text">Asistencia: ${nombreAsistencia}</div>` : ''}
+        `;
+    } else if (evento.tipo_evento === 'sustitucion') {
+        const nombreSale = formatearNombreConDorsal(evento.jugador_sale_nombre, evento.jugador_sale_dorsal);
+        const nombreEntra = formatearNombreConDorsal(evento.jugador_entra_nombre, evento.jugador_entra_dorsal);
+        contenido = `
+            <div class="evento-nombre">${nombreSale}</div>
+            <div class="evento-sustitucion-text">→ ${nombreEntra}</div>
+        `;
+    } else if (evento.tipo_evento === 'fin_partido') {
+        contenido = `<div class="evento-nombre">Fin del Partido</div>`;
+    } else {
+        const nombreJugador = formatearNombreConDorsal(evento.jugador_nombre, evento.jugador_dorsal);
+        contenido = `<div class="evento-nombre">${nombreJugador}</div>`;
+    }
+    
+    const esLocal = equipo === 'local';
+    const esVisitante = equipo === 'visitante';
+    const esCenter = equipo === 'center';
+    
+    return `
+        <div class="evento-item-vertical ${clase} ${esLocal ? 'evento-local' : (esVisitante ? 'evento-visitante' : 'evento-center')}" data-event-id="${evento.id}">
+            <div class="evento-marker"></div>
+            <div class="evento-content-wrapper ${esLocal ? 'evento-left' : (esVisitante ? 'evento-right' : 'evento-center-full')}">
+                <div class="evento-icono">${icono}</div>
+                <div class="evento-contenido">
+                    ${contenido}
+                    <div class="evento-minuto">${evento.minuto}'</div>
+                </div>
+                ${botonEliminar}
+            </div>
         </div>
     `;
 }

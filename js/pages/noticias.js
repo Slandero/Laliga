@@ -208,7 +208,7 @@ async function cargarNoticiasPagina(usuarioActual = null) {
                                         const tieneImagen = n.imagen_url ? true : false;
                                         
                                         return `
-                            <article class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}">
+                            <article class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}" data-noticia-id="${n.id}" onclick="mostrarNoticiaCompleta(${n.id})">
                                 ${tieneImagen ? `<div class="noticia-imagen-container"><img src="${n.imagen_url}" alt="${n.titulo}" class="noticia-imagen" onerror="this.style.display='none'"></div>` : ''}
                                 <div class="noticia-contenido">
                                     <div class="noticia-header">
@@ -218,7 +218,7 @@ async function cargarNoticiasPagina(usuarioActual = null) {
                                     <p class="noticia-texto">${n.contenido}</p>
                                     <div class="noticia-footer-card">
                                         <p class="noticia-autor">Por ${n.usuario_nombre}</p>
-                                        ${puedeEliminar ? `<button class="btn-eliminar-noticia" data-id="${n.id}">Eliminar</button>` : ''}
+                                        ${puedeEliminar ? `<button class="btn-eliminar-noticia" data-id="${n.id}" onclick="event.stopPropagation(); eliminarNoticia(${n.id})">Eliminar</button>` : ''}
                                     </div>
                                 </div>
                             </article>
@@ -266,7 +266,7 @@ async function cargarNoticiasPagina(usuarioActual = null) {
                                         const tieneImagen = n.imagen_url ? true : false;
                                         
                                         return `
-                            <article class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}">
+                            <article class="noticia-card ${!tieneImagen ? 'sin-imagen' : ''}" data-noticia-id="${n.id}" onclick="mostrarNoticiaCompleta(${n.id})">
                                 ${tieneImagen ? `<div class="noticia-imagen-container"><img src="${n.imagen_url}" alt="${n.titulo}" class="noticia-imagen" onerror="this.style.display='none'"></div>` : ''}
                                 <div class="noticia-contenido">
                                     <div class="noticia-header">
@@ -276,7 +276,7 @@ async function cargarNoticiasPagina(usuarioActual = null) {
                                     <p class="noticia-texto">${n.contenido}</p>
                                     <div class="noticia-footer-card">
                                         <p class="noticia-autor">Por ${n.usuario_nombre}</p>
-                                        ${puedeEliminar ? `<button class="btn-eliminar-noticia" data-id="${n.id}">Eliminar</button>` : ''}
+                                        ${puedeEliminar ? `<button class="btn-eliminar-noticia" data-id="${n.id}" onclick="event.stopPropagation(); eliminarNoticia(${n.id})">Eliminar</button>` : ''}
                                     </div>
                                 </div>
                             </article>
@@ -291,6 +291,9 @@ async function cargarNoticiasPagina(usuarioActual = null) {
         }
 
         content.innerHTML = html;
+        
+        // Guardar noticias en variable global para acceso desde modal
+        window.todasLasNoticias = [...noticias];
         
         // Configurar eventos para acordeón de jornadas
         configurarAcordeonJornadas();
@@ -352,8 +355,120 @@ function configurarBotonesEliminarNoticia(usuario) {
     });
 }
 
+// Mostrar noticia completa en modal
+async function mostrarNoticiaCompleta(noticiaId) {
+    const noticia = window.todasLasNoticias.find(n => n.id === noticiaId);
+    if (!noticia) {
+        console.error('Noticia no encontrada:', noticiaId);
+        return;
+    }
+    
+    // Verificar si el usuario puede eliminar esta noticia
+    try {
+        const sessionResponse = await fetch('api/check_session.php', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        const sessionData = await sessionResponse.json();
+        const usuarioActual = sessionData.success && sessionData.logged_in ? sessionData.usuario : null;
+        const esAutor = usuarioActual && parseInt(usuarioActual.id) === parseInt(noticia.usuario_id);
+        const esAdmin = usuarioActual && usuarioActual.rol === 'admin';
+        const puedeEliminar = esAutor || esAdmin;
+        
+        const modalHTML = `
+            <div class="modal-noticia-completa" id="modal-noticia-${noticiaId}">
+                <div class="modal-noticia-completa-content">
+                    <span class="modal-noticia-completa-close" onclick="cerrarNoticiaCompleta(${noticiaId})">&times;</span>
+                    ${noticia.imagen_url ? `<div class="modal-noticia-imagen-container"><img src="${noticia.imagen_url}" alt="${noticia.titulo}" class="modal-noticia-imagen" onerror="this.style.display='none'"></div>` : ''}
+                    <div class="modal-noticia-header">
+                        <h2>${noticia.titulo}</h2>
+                        <span class="modal-noticia-fecha">${noticia.fecha_creacion}</span>
+                    </div>
+                    <div class="modal-noticia-contenido">
+                        <p>${noticia.contenido}</p>
+                    </div>
+                    <div class="modal-noticia-footer">
+                        <p class="modal-noticia-autor">Por ${noticia.usuario_nombre}</p>
+                        ${puedeEliminar ? `<button class="btn-eliminar-noticia-modal" onclick="eliminarNoticia(${noticiaId})">Eliminar</button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remover modal anterior si existe
+        const modalAnterior = document.querySelector('.modal-noticia-completa');
+        if (modalAnterior) {
+            modalAnterior.remove();
+        }
+        
+        // Agregar modal al body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Cerrar al hacer clic fuera del modal
+        const modal = document.getElementById(`modal-noticia-${noticiaId}`);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                cerrarNoticiaCompleta(noticiaId);
+            }
+        });
+        
+        // Prevenir scroll del body cuando el modal está abierto
+        document.body.style.overflow = 'hidden';
+    } catch (error) {
+        console.error('Error al cargar sesión:', error);
+        // Mostrar modal sin verificación de permisos
+        const modalHTML = `
+            <div class="modal-noticia-completa" id="modal-noticia-${noticiaId}">
+                <div class="modal-noticia-completa-content">
+                    <span class="modal-noticia-completa-close" onclick="cerrarNoticiaCompleta(${noticiaId})">&times;</span>
+                    ${noticia.imagen_url ? `<div class="modal-noticia-imagen-container"><img src="${noticia.imagen_url}" alt="${noticia.titulo}" class="modal-noticia-imagen" onerror="this.style.display='none'"></div>` : ''}
+                    <div class="modal-noticia-header">
+                        <h2>${noticia.titulo}</h2>
+                        <span class="modal-noticia-fecha">${noticia.fecha_creacion}</span>
+                    </div>
+                    <div class="modal-noticia-contenido">
+                        <p>${noticia.contenido}</p>
+                    </div>
+                    <div class="modal-noticia-footer">
+                        <p class="modal-noticia-autor">Por ${noticia.usuario_nombre}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const modalAnterior = document.querySelector('.modal-noticia-completa');
+        if (modalAnterior) {
+            modalAnterior.remove();
+        }
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const modal = document.getElementById(`modal-noticia-${noticiaId}`);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                cerrarNoticiaCompleta(noticiaId);
+            }
+        });
+        
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Cerrar modal de noticia completa
+function cerrarNoticiaCompleta(noticiaId) {
+    const modal = document.getElementById(`modal-noticia-${noticiaId}`);
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
 // Eliminar noticia
 async function eliminarNoticia(id) {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta noticia?')) {
+        return;
+    }
+    
     try {
         const response = await fetch(`api/noticias.php?id=${id}`, {
             method: 'DELETE',
@@ -363,6 +478,12 @@ async function eliminarNoticia(id) {
         const data = await response.json();
         
         if (data.success) {
+            // Cerrar modal si está abierto
+            const modal = document.querySelector(`#modal-noticia-${id}`);
+            if (modal) {
+                cerrarNoticiaCompleta(id);
+            }
+            
             alert('Noticia eliminada correctamente');
             // Recargar noticias con el usuario actual
             const sessionResponse = await fetch('api/check_session.php', {
@@ -380,6 +501,11 @@ async function eliminarNoticia(id) {
         alert('Error al eliminar la noticia');
     }
 }
+
+// Hacer funciones globales para acceso desde HTML
+window.mostrarNoticiaCompleta = mostrarNoticiaCompleta;
+window.cerrarNoticiaCompleta = cerrarNoticiaCompleta;
+window.eliminarNoticia = eliminarNoticia;
 
 export default NoticiasPage;
 export { init };
