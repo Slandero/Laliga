@@ -2273,12 +2273,13 @@ footer p {
 /* Contenedor de la tabla */
 .resultados-table-container {
     background-color: white;
-    margin: 0 2rem 2rem 2rem;
+    margin: 0 auto 2rem auto;
+    max-width: 1400px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     overflow: hidden;
     display: block;
-    width: 100%;
+    width: calc(100% - 4rem);
     box-sizing: border-box;
 }
 
@@ -2432,7 +2433,8 @@ footer p {
     }
 
     .resultados-table-container {
-        margin: 0 1rem 1.5rem 1rem;
+        margin: 0 auto 1.5rem auto;
+        width: calc(100% - 2rem);
     }
 }
 
@@ -2469,7 +2471,8 @@ footer p {
     }
 
     .resultados-table-container {
-        margin: 0 0.5rem 1rem 0.5rem;
+        margin: 0 auto 1rem auto;
+        width: calc(100% - 1rem);
         overflow-x: visible;
         border-radius: 8px;
     }
@@ -3379,13 +3382,21 @@ footer p {
 }
 
 .timeline-team-center {
-    position: absolute;
+    position: relative;
     left: 0;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    margin: 2rem 0 0 0;
     z-index: 4;
-    pointer-events: none;
+    pointer-events: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.timeline-fin-partido {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px dashed #ccc;
 }
 
 .timeline-team-center .team-events {
@@ -3394,14 +3405,16 @@ footer p {
 }
 
 .timeline-team-center .evento-item {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    left: auto;
+    transform: none;
     background: #FF4B44;
     color: white;
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(255, 75, 68, 0.4);
     pointer-events: auto;
+    margin: 0 auto;
+    max-width: 300px;
 }
 
 .timeline-team-center .evento-item:hover {
@@ -4029,15 +4042,17 @@ footer p {
     .timeline-team-center {
         grid-column: 1 / -1;
         width: 100%;
-        margin: 1rem 0;
+        margin: 1.5rem 0 0 0;
+        padding-top: 1rem;
+        border-top: 2px dashed #ccc;
     }
     
     .timeline-team-center .evento-item {
         position: relative;
         left: auto !important;
         transform: none !important;
-        margin: 0.5rem auto;
-        max-width: 80%;
+        margin: 0 auto;
+        max-width: 90%;
         width: auto;
         border: 2px solid #FF4B44;
         background: linear-gradient(to right, rgba(255, 75, 68, 0.1) 0%, rgba(255, 75, 68, 0.1) 100%);

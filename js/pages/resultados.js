@@ -675,13 +675,6 @@ function renderizarEventos(partidoId, eventos) {
                 <div class="timeline-minutes">
                     ${todosMinutos.map(min => `<div class="timeline-minute" style="left: ${calcularPosicionMinuto(min, todosMinutos)}%">${min}'</div>`).join('')}
                 </div>
-                ${eventosFinPartido.length > 0 ? `
-                <div class="timeline-team timeline-team-center">
-                    <div class="team-events">
-                        ${eventosFinPartido.map(evento => renderizarEvento(evento, 'center', partidoId, todosMinutos)).join('')}
-                    </div>
-                </div>
-                ` : ''}
                 <div class="timeline-team timeline-team-visitante">
                     <div class="team-logo-container">
                         <img src="${rutaLogoVisitante}" alt="${partido.visitante}" class="team-logo-timeline" onerror="this.onerror=null; this.src='images/LaligaLogo.jpg'">
@@ -691,6 +684,13 @@ function renderizarEventos(partidoId, eventos) {
                         ${eventosVisitante.map(evento => renderizarEvento(evento, 'visitante', partidoId, todosMinutos)).join('')}
                     </div>
                 </div>
+                ${eventosFinPartido.length > 0 ? `
+                <div class="timeline-team timeline-team-center timeline-fin-partido">
+                    <div class="team-events">
+                        ${eventosFinPartido.map(evento => renderizarEvento(evento, 'center', partidoId, todosMinutos)).join('')}
+                    </div>
+                </div>
+                ` : ''}
             </div>
         </div>
     `;
