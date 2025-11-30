@@ -3020,19 +3020,23 @@ footer p {
 .timeline-container {
     position: relative;
     width: 100%;
-    padding: 2.5rem 1rem;
-    min-height: 350px;
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 3rem 2rem;
+    min-height: 400px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: #fafafa;
+    border-radius: 12px;
 }
 
 .timeline-line {
     position: absolute;
     top: 50%;
-    left: 1rem;
-    right: 1rem;
+    left: 2rem;
+    right: 2rem;
     height: 4px;
     background: linear-gradient(to right, #1a237e 0%, #1a237e 50%, #FF4B44 50%, #FF4B44 100%);
     transform: translateY(-50%);
@@ -3047,12 +3051,12 @@ footer p {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: #1a237e;
     border-radius: 50%;
     border: 3px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(26, 35, 126, 0.3);
 }
 
 .timeline-line::after {
@@ -3061,12 +3065,12 @@ footer p {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: #FF4B44;
     border-radius: 50%;
     border: 3px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(255, 75, 68, 0.3);
 }
 
 /* Timeline vertical - solo visible en móvil */
@@ -3358,26 +3362,35 @@ footer p {
     position: relative;
     width: 100%;
     max-width: 100%;
-    padding: 0 1rem;
+    padding: 0 2rem;
     box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .timeline-team {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    margin: 1.5rem 0;
+    gap: 1.5rem;
+    margin: 2rem 0;
     position: relative;
     z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .timeline-team-local {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding-left: 0;
 }
 
 .timeline-team-visitante {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     padding-right: 0;
 }
 
@@ -3418,7 +3431,7 @@ footer p {
 }
 
 .timeline-team-center .evento-item:hover {
-    transform: translateX(-50%) scale(1.15);
+    transform: scale(1.05);
     box-shadow: 0 8px 24px rgba(255, 75, 68, 0.6);
 }
 
@@ -3431,8 +3444,8 @@ footer p {
 }
 
 .team-logo-container {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -3440,21 +3453,24 @@ footer p {
     justify-content: center;
     background: white;
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    gap: 0.25rem;
-    padding: 0.25rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    gap: 0.3rem;
+    padding: 0.3rem;
+    position: relative;
+    z-index: 5;
 }
 
 .team-name-label {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: #333;
     text-align: center;
-    line-height: 1;
-    max-width: 60px;
+    line-height: 1.2;
+    max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-top: 0.2rem;
 }
 
 .timeline-team-local .team-logo-container {
@@ -3468,32 +3484,34 @@ footer p {
 }
 
 .team-logo-timeline {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     object-fit: contain;
 }
 
 .team-events {
     flex: 1;
     position: relative;
-    min-height: 120px;
-    margin: 0 0.5rem;
-    padding: 0.5rem 0;
+    min-height: 150px;
+    margin: 0 1rem;
+    padding: 1rem 0;
+    max-width: calc(100% - 120px);
+    width: 100%;
 }
 
 .evento-item {
     position: absolute;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     transform: translateX(-50%);
     z-index: 3;
     background: white;
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    min-width: 130px;
-    max-width: 200px;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    min-width: 140px;
+    max-width: 220px;
     transition: all 0.3s ease;
     cursor: pointer;
     flex-shrink: 0;
@@ -3528,47 +3546,49 @@ footer p {
 }
 
 .timeline-team-local .evento-item {
-    bottom: 10px;
-    border-left: 4px solid #1a237e;
-    background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 15%);
+    bottom: 15px;
+    border-left: 5px solid #1a237e;
+    background: linear-gradient(to right, rgba(26, 35, 126, 0.1) 0%, white 20%);
     margin-bottom: 0;
 }
 
 .timeline-team-local .evento-item::before {
     content: 'LOCAL';
     position: absolute;
-    top: -10px;
-    left: 8px;
+    top: -12px;
+    left: 10px;
     background: #1a237e;
     color: white;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
     letter-spacing: 0.5px;
     z-index: 1;
+    box-shadow: 0 2px 4px rgba(26, 35, 126, 0.3);
 }
 
 .timeline-team-visitante .evento-item {
-    top: 10px;
-    border-right: 4px solid #FF4B44;
-    background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 15%);
+    top: 15px;
+    border-right: 5px solid #FF4B44;
+    background: linear-gradient(to left, rgba(255, 75, 68, 0.1) 0%, white 20%);
     margin-top: 0;
 }
 
 .timeline-team-visitante .evento-item::before {
     content: 'VISITANTE';
     position: absolute;
-    top: -10px;
-    right: 8px;
+    top: -12px;
+    right: 10px;
     background: #FF4B44;
     color: white;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
     letter-spacing: 0.5px;
     z-index: 1;
+    box-shadow: 0 2px 4px rgba(255, 75, 68, 0.3);
 }
 
 .evento-icono {
@@ -3712,8 +3732,8 @@ footer p {
 .timeline-minutes {
     position: absolute;
     top: 50%;
-    left: 0;
-    right: 0;
+    left: 2rem;
+    right: 2rem;
     transform: translateY(-50%);
     z-index: 2;
     pointer-events: none;
@@ -3721,15 +3741,16 @@ footer p {
 
 .timeline-minute {
     position: absolute;
-    top: -15px;
+    top: -18px;
     transform: translateX(-50%);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: #1a237e;
     background: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
 }
 
 .modal-evento-content {
@@ -3874,8 +3895,11 @@ footer p {
     }
     
     .timeline-container {
-        padding: 1rem 0.5rem;
+        padding: 1.5rem 0.75rem;
         min-height: auto;
+        max-width: 100%;
+        margin: 1rem auto;
+        background: transparent;
     }
     
     /* Cambiar a timeline vertical en móvil con doble línea */
@@ -3891,12 +3915,13 @@ footer p {
     .timeline-container::before {
         content: '';
         position: absolute;
-        left: 25%;
+        left: 50%;
         top: 0;
         bottom: 0;
-        width: 4px;
+        width: 3px;
         background: #1a237e;
-        transform: translateX(-50%);
+        transform: translateX(-100%);
+        margin-left: -0.75rem;
         z-index: 1;
         box-shadow: 0 0 8px rgba(26, 35, 126, 0.3);
     }
@@ -3905,12 +3930,13 @@ footer p {
     .timeline-container::after {
         content: '';
         position: absolute;
-        left: 75%;
+        left: 50%;
         top: 0;
         bottom: 0;
-        width: 4px;
+        width: 3px;
         background: #FF4B44;
-        transform: translateX(-50%);
+        transform: translateX(0);
+        margin-left: 0.75rem;
         z-index: 1;
         box-shadow: 0 0 8px rgba(255, 75, 68, 0.3);
     }
@@ -3918,8 +3944,11 @@ footer p {
     .timeline-events {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        padding: 0 0.5rem;
+        gap: 1.5rem;
+        padding: 0 1rem;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .timeline-minutes {
@@ -3935,34 +3964,35 @@ footer p {
         border-radius: 0;
         position: relative;
         width: 100%;
+        gap: 0;
     }
     
     .timeline-team-local {
         margin-bottom: 0;
         padding-left: 0;
-        padding-right: 0.5rem;
+        padding-right: 0.75rem;
     }
     
     .timeline-team-visitante {
         margin-top: 0;
         padding-right: 0;
-        padding-left: 0.5rem;
+        padding-left: 0.75rem;
     }
     
     .team-logo-container {
         width: 100%;
         height: auto;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
         margin-right: 0;
         position: relative;
         z-index: 2;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0.5rem;
+        padding: 0.75rem;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     }
     
     .timeline-team-local .team-logo-container {
@@ -3982,7 +4012,8 @@ footer p {
         margin: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1rem;
+        width: 100%;
     }
     
     .timeline-team-local .evento-item {
@@ -3990,13 +4021,14 @@ footer p {
         left: auto !important;
         transform: none !important;
         bottom: auto;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        border-left: 4px solid #1a237e;
-        background: linear-gradient(to right, rgba(26, 35, 126, 0.08) 0%, white 20%);
-        padding-left: 0.75rem;
+        border-left: 5px solid #1a237e;
+        background: linear-gradient(to right, rgba(26, 35, 126, 0.1) 0%, white 25%);
+        padding: 0.875rem 1rem;
+        padding-left: 1rem;
     }
     
     .timeline-team-local .evento-item::before {
@@ -4019,13 +4051,14 @@ footer p {
         left: auto !important;
         transform: none !important;
         top: auto;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        border-right: 4px solid #FF4B44;
-        background: linear-gradient(to left, rgba(255, 75, 68, 0.08) 0%, white 20%);
-        padding-right: 0.75rem;
+        border-right: 5px solid #FF4B44;
+        background: linear-gradient(to left, rgba(255, 75, 68, 0.1) 0%, white 25%);
+        padding: 0.875rem 1rem;
+        padding-right: 1rem;
     }
     
     .timeline-team-visitante .evento-item::before {
@@ -4046,20 +4079,29 @@ footer p {
     .timeline-team-center {
         grid-column: 1 / -1;
         width: 100%;
-        margin: 1.5rem 0 0 0;
-        padding-top: 1rem;
+        margin: 2rem 0 0 0;
+        padding-top: 1.5rem;
         border-top: 2px dashed #ccc;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .timeline-team-center .team-events {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .timeline-team-center .evento-item {
         position: relative;
         left: auto !important;
         transform: none !important;
-        margin: 0 auto;
-        max-width: 90%;
+        margin: 0;
+        max-width: 85%;
         width: auto;
-        border: 2px solid #FF4B44;
-        background: linear-gradient(to right, rgba(255, 75, 68, 0.1) 0%, rgba(255, 75, 68, 0.1) 100%);
+        border: 3px solid #FF4B44;
+        background: linear-gradient(to right, rgba(255, 75, 68, 0.15) 0%, rgba(255, 75, 68, 0.15) 100%);
+        padding: 1rem 1.25rem;
     }
     
     .team-name-label {
