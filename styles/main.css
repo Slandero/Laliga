@@ -3407,11 +3407,11 @@ footer p {
     position: relative;
     left: auto;
     transform: none;
-    background: linear-gradient(to right, rgba(255, 75, 68, 0.1) 0%, rgba(255, 75, 68, 0.1) 100%);
-    border: 2px solid #FF4B44;
-    color: #333;
+    background: linear-gradient(to right, #DC2626 0%, #E6392E 100%);
+    border: 3px solid #B91C1C;
+    color: white;
     font-weight: bold;
-    box-shadow: 0 4px 12px rgba(255, 75, 68, 0.4);
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.5);
     pointer-events: auto;
     margin: 0 auto;
     max-width: 90%;
@@ -3424,7 +3424,7 @@ footer p {
     top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    background: #FF4B44;
+    background: #B91C1C;
     color: white;
     font-size: 0.65rem;
     font-weight: 700;
@@ -3433,19 +3433,27 @@ footer p {
     letter-spacing: 0.5px;
     z-index: 1;
     white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(185, 28, 28, 0.6);
 }
 
 .timeline-team-center .evento-item:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 24px rgba(255, 75, 68, 0.6);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.7);
+    background: linear-gradient(to right, #B91C1C 0%, #DC2626 100%);
 }
 
 .timeline-team-center .evento-nombre {
     color: white;
+    font-weight: 700;
 }
 
 .timeline-team-center .evento-minuto {
     color: white;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 .team-logo-container {
@@ -4041,9 +4049,10 @@ footer p {
         margin: 0;
         max-width: 85%;
         width: auto;
-        border: 3px solid #FF4B44;
-        background: linear-gradient(to right, rgba(255, 75, 68, 0.15) 0%, rgba(255, 75, 68, 0.15) 100%);
+        border: 3px solid #B91C1C;
+        background: linear-gradient(to right, #DC2626 0%, #E6392E 100%);
         padding: 1rem 1.25rem;
+        color: white;
     }
     
     .team-name-label {
