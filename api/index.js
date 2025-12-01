@@ -494,6 +494,15 @@ async function handleNoticias(req, res, body, cookies, query) {
             const titulo = (body.titulo || '').trim();
             const contenido = (body.contenido || '').trim();
             const imagenUrl = (body.imagen_url || '').trim() || null;
+
+            // Jornada opcional, pero si viene debe ser número válido
+            let jornada = null;
+            if (body.jornada !== undefined && body.jornada !== null && body.jornada !== '') {
+                const j = parseInt(body.jornada, 10);
+                if (Number.isFinite(j) && j > 0) {
+                    jornada = j;
+                }
+            }
             
             // Validaciones
             if (!titulo || titulo.length < 3) {
@@ -512,11 +521,11 @@ async function handleNoticias(req, res, body, cookies, query) {
                 });
             }
             
-            // Insertar noticia
+            // Insertar noticia (incluyendo jornada si existe)
             const [result] = await connection.execute(
-                `INSERT INTO noticias (titulo, contenido, imagen_url, usuario_id) 
-                 VALUES (?, ?, ?, ?)`,
-                [titulo, contenido, imagenUrl, usuarioId]
+                `INSERT INTO noticias (titulo, contenido, imagen_url, jornada, usuario_id) 
+                 VALUES (?, ?, ?, ?, ?)`,
+                [titulo, contenido, imagenUrl, jornada, usuarioId]
             );
             
             await connection.end();
