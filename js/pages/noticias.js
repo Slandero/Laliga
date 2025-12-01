@@ -252,17 +252,6 @@ async function cargarNoticiasPagina(usuarioActual = null) {
                                         const esAutor = usuarioActual && parseInt(usuarioActual.id) === parseInt(n.usuario_id);
                                         const esAdmin = usuarioActual && usuarioActual.rol === 'admin';
                                         const puedeEliminar = esAutor || esAdmin;
-                                        
-                                        // Debug: Solo loggear para la primera noticia
-                                        if (noticiasJornada.indexOf(n) === 0 && jornadasOrdenadas.indexOf(jornada) === 0) {
-                                            console.log('Debug primera noticia:', {
-                                                usuarioActual: usuarioActual ? {id: usuarioActual.id, rol: usuarioActual.rol} : null,
-                                                noticia: {id: n.id, usuario_id: n.usuario_id},
-                                                esAutor,
-                                                esAdmin,
-                                                puedeEliminar
-                                            });
-                                        }
                                         const tieneImagen = n.imagen_url ? true : false;
                                         
                                         return `
