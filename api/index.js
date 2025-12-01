@@ -14,6 +14,7 @@
 
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
+const { put } = require('@vercel/blob');
 
 // Configuración de Railway
 const DB_CONFIG = {
@@ -741,6 +742,42 @@ async function handleEstadisticas(req, res, body, cookies, query) {
     }
 }
 
+// Handler para subir imágenes a Vercel Blob
+async function handleUploadImagen(req, res, body, cookies, query) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ success: false, error: 'Método no permitido' });
+    }
+
+    try {
+        // Obtener nombre de archivo opcional de la query
+        let filename = (query && query.filename) || null;
+        if (!filename) {
+            filename = `noticia-${Date.now()}`;
+        }
+
+        // Asegurar carpeta lógica para organizar en Blob
+        const blobName = `noticias/${filename}`;
+
+        // Subir directamente el cuerpo de la petición al Blob
+        const blob = await put(blobName, req, {
+            access: 'public',
+            token: process.env.BLOB_READ_WRITE_TOKEN
+        });
+
+        return res.status(200).json({
+            success: true,
+            url: blob.url
+        });
+    } catch (error) {
+        console.error('Error al subir imagen a Vercel Blob:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Error al subir la imagen',
+            message: error.message
+        });
+    }
+}
+
 // Mapa de endpoints a handlers
 const handlers = {
     'jugadores': handleJugadores,
@@ -751,7 +788,8 @@ const handlers = {
     'partidos': handlePartidos,
     'eventos_partido': handleEventosPartido,
     'noticias': handleNoticias,
-    'estadisticas': handleEstadisticas
+    'estadisticas': handleEstadisticas,
+    'upload_imagen': handleUploadImagen
 };
 
 // Función principal exportada

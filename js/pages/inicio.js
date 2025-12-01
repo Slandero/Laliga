@@ -123,18 +123,10 @@ function configurarModalAgregarNoticia() {
     const imagenUrlInput = document.getElementById('noticia-imagen-url');
     const errorDiv = document.getElementById('noticia-error');
 
-    // En entorno Vercel no se puede usar upload_imagen.php (no hay PHP ni escritura en disco).
-    // Ocultamos y deshabilitamos el input de archivo para evitar llamadas que terminen en 404.
+    // Detectar si estamos en entorno Vercel
     const isVercelEnv = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app');
-    if (isVercelEnv && imagenFileInput) {
-        const fileGroup = imagenFileInput.closest('.form-group');
-        if (fileGroup) {
-            fileGroup.style.display = 'none';
-        }
-        imagenFileInput.disabled = true;
-    }
     
-    if (imagenFileInput && imagenPreview && imagenPreviewImg && imagenRemoveBtn && !isVercelEnv) {
+    if (imagenFileInput && imagenPreview && imagenPreviewImg && imagenRemoveBtn) {
         // Mostrar vista previa cuando se selecciona un archivo
         imagenFileInput.addEventListener('change', (e) => {
             const archivo = e.target.files[0];
@@ -221,28 +213,45 @@ function configurarModalAgregarNoticia() {
 
         let imagenUrl = null;
         
-        // Si NO estamos en Vercel y hay un archivo seleccionado, subirlo primero
-        const archivoImagen = !isVercelEnv && imagenFileInput && imagenFileInput.files.length > 0 ? imagenFileInput.files[0] : null;
+        // Si hay un archivo seleccionado, subirlo primero
+        const archivoImagen = imagenFileInput && imagenFileInput.files.length > 0 ? imagenFileInput.files[0] : null;
         
         if (archivoImagen) {
             try {
-                // Subir la imagen vía PHP (solo funcionará en XAMPP/entorno con PHP)
-                const formDataUpload = new FormData();
-                formDataUpload.append('imagen', archivoImagen);
-                
-                const uploadResponse = await fetch('api/upload_imagen.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formDataUpload
-                });
-                
-                const uploadResult = await uploadResponse.json();
-                
-                if (uploadResult.success) {
-                    imagenUrl = uploadResult.url;
+                if (isVercelEnv) {
+                    // En producción (Vercel): subir a Vercel Blob mediante la API serverless
+                    const uploadResponse = await fetch(`api/upload_imagen?filename=${encodeURIComponent(archivoImagen.name)}`, {
+                        method: 'POST',
+                        body: archivoImagen
+                    });
+                    
+                    const uploadResult = await uploadResponse.json();
+                    
+                    if (uploadResult.success) {
+                        imagenUrl = uploadResult.url;
+                    } else {
+                        errorDiv.textContent = uploadResult.error || 'Error al subir la imagen';
+                        return;
+                    }
                 } else {
-                    errorDiv.textContent = uploadResult.error || 'Error al subir la imagen';
-                    return;
+                    // En local/XAMPP: seguir usando el PHP upload_imagen.php
+                    const formDataUpload = new FormData();
+                    formDataUpload.append('imagen', archivoImagen);
+                    
+                    const uploadResponse = await fetch('api/upload_imagen.php', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formDataUpload
+                    });
+                    
+                    const uploadResult = await uploadResponse.json();
+                    
+                    if (uploadResult.success) {
+                        imagenUrl = uploadResult.url;
+                    } else {
+                        errorDiv.textContent = uploadResult.error || 'Error al subir la imagen';
+                        return;
+                    }
                 }
             } catch (error) {
                 errorDiv.textContent = 'Error de conexión al subir la imagen. Por favor, intenta de nuevo.';
@@ -250,7 +259,7 @@ function configurarModalAgregarNoticia() {
                 return;
             }
         } else {
-            // Si no hay archivo (o estamos en Vercel), usar la URL proporcionada
+            // Si no hay archivo, usar la URL proporcionada
             imagenUrl = imagenUrlInput ? imagenUrlInput.value.trim() || null : null;
         }
 
