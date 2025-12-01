@@ -122,8 +122,19 @@ function configurarModalAgregarNoticia() {
     const imagenRemoveBtn = document.getElementById('noticia-imagen-remove');
     const imagenUrlInput = document.getElementById('noticia-imagen-url');
     const errorDiv = document.getElementById('noticia-error');
+
+    // En entorno Vercel no se puede usar upload_imagen.php (no hay PHP ni escritura en disco).
+    // Ocultamos y deshabilitamos el input de archivo para evitar llamadas que terminen en 404.
+    const isVercelEnv = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app');
+    if (isVercelEnv && imagenFileInput) {
+        const fileGroup = imagenFileInput.closest('.form-group');
+        if (fileGroup) {
+            fileGroup.style.display = 'none';
+        }
+        imagenFileInput.disabled = true;
+    }
     
-    if (imagenFileInput && imagenPreview && imagenPreviewImg && imagenRemoveBtn) {
+    if (imagenFileInput && imagenPreview && imagenPreviewImg && imagenRemoveBtn && !isVercelEnv) {
         // Mostrar vista previa cuando se selecciona un archivo
         imagenFileInput.addEventListener('change', (e) => {
             const archivo = e.target.files[0];
@@ -208,40 +219,8 @@ function configurarModalAgregarNoticia() {
             return;
         }
 
-        let imagenUrl = null;
-        
-        // Si hay un archivo seleccionado, subirlo primero
-        const archivoImagen = imagenFileInput && imagenFileInput.files.length > 0 ? imagenFileInput.files[0] : null;
-        
-        if (archivoImagen) {
-            try {
-                // Subir la imagen
-                const formDataUpload = new FormData();
-                formDataUpload.append('imagen', archivoImagen);
-                
-                const uploadResponse = await fetch('api/upload_imagen.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formDataUpload
-                });
-                
-                const uploadResult = await uploadResponse.json();
-                
-                if (uploadResult.success) {
-                    imagenUrl = uploadResult.url;
-                } else {
-                    errorDiv.textContent = uploadResult.error || 'Error al subir la imagen';
-                    return;
-                }
-            } catch (error) {
-                errorDiv.textContent = 'Error de conexión al subir la imagen. Por favor, intenta de nuevo.';
-                console.error('Error:', error);
-                return;
-            }
-        } else {
-            // Si no hay archivo, usar la URL proporcionada
-            imagenUrl = imagenUrlInput ? imagenUrlInput.value.trim() || null : null;
-        }
+        // Siempre usar la URL de imagen (no se suben archivos en producción)
+        let imagenUrl = imagenUrlInput ? imagenUrlInput.value.trim() || null : null;
 
         const formData = {
             titulo: document.getElementById('noticia-titulo').value.trim(),
