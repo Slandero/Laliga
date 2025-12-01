@@ -219,8 +219,40 @@ function configurarModalAgregarNoticia() {
             return;
         }
 
-        // Siempre usar la URL de imagen (no se suben archivos en producción)
-        let imagenUrl = imagenUrlInput ? imagenUrlInput.value.trim() || null : null;
+        let imagenUrl = null;
+        
+        // Si NO estamos en Vercel y hay un archivo seleccionado, subirlo primero
+        const archivoImagen = !isVercelEnv && imagenFileInput && imagenFileInput.files.length > 0 ? imagenFileInput.files[0] : null;
+        
+        if (archivoImagen) {
+            try {
+                // Subir la imagen vía PHP (solo funcionará en XAMPP/entorno con PHP)
+                const formDataUpload = new FormData();
+                formDataUpload.append('imagen', archivoImagen);
+                
+                const uploadResponse = await fetch('api/upload_imagen.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formDataUpload
+                });
+                
+                const uploadResult = await uploadResponse.json();
+                
+                if (uploadResult.success) {
+                    imagenUrl = uploadResult.url;
+                } else {
+                    errorDiv.textContent = uploadResult.error || 'Error al subir la imagen';
+                    return;
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error de conexión al subir la imagen. Por favor, intenta de nuevo.';
+                console.error('Error:', error);
+                return;
+            }
+        } else {
+            // Si no hay archivo (o estamos en Vercel), usar la URL proporcionada
+            imagenUrl = imagenUrlInput ? imagenUrlInput.value.trim() || null : null;
+        }
 
         const formData = {
             titulo: document.getElementById('noticia-titulo').value.trim(),
