@@ -718,6 +718,11 @@ main {
     margin-right: 320px;
 }
 
+/* Ajustar margen del footer cuando hay sidebar */
+.main-wrapper.has-sidebar ~ footer {
+    margin-right: 320px;
+}
+
 /* Responsive para sidebar */
 @media (max-width: 1200px) {
     .sidebar-clasificacion {
@@ -725,6 +730,10 @@ main {
     }
     
     .main-wrapper.has-sidebar main {
+        margin-right: 280px;
+    }
+    
+    .main-wrapper.has-sidebar ~ footer {
         margin-right: 280px;
     }
 }
@@ -735,6 +744,10 @@ main {
     }
     
     .main-wrapper.has-sidebar main {
+        margin-right: 260px;
+    }
+    
+    .main-wrapper.has-sidebar ~ footer {
         margin-right: 260px;
     }
     
@@ -765,6 +778,10 @@ main {
         margin-right: 0;
         width: 100%;
         max-width: 100%;
+    }
+    
+    .main-wrapper.has-sidebar ~ footer {
+        margin-right: 0;
     }
     
     /* Asegurar que el botón de toggle sea visible y accesible en móviles */
@@ -875,7 +892,8 @@ footer {
     background-color: #FF4B44;
     padding: 1.5rem 2rem;
     position: relative;
-    z-index: 101; /* Por encima del sidebar (z-index: 100) */
+    transition: margin-right 0.3s ease;
+    z-index: 50; /* Por debajo del sidebar (z-index: 100) */
 }
 
 .footer-content {
