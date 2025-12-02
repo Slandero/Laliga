@@ -874,6 +874,8 @@ main {
 footer {
     background-color: #FF4B44;
     padding: 1.5rem 2rem;
+    position: relative;
+    z-index: 101; /* Por encima del sidebar (z-index: 100) */
 }
 
 .footer-content {
