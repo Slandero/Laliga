@@ -1928,7 +1928,7 @@ function FichajesPage() {
                                 <path d="M3 3h10v10H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M5 1v4M11 1v4M2 6h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
-                            <input type="text" id="filtro-fecha-desde" class="filtro-input" placeholder="Desde" />
+                            <input type="text" id="filtro-fecha-desde" class="filtro-input" placeholder="Desde (DD/MM/YYYY)" />
                         </div>
                     </div>
                     <div class="filtro-group">
@@ -1937,7 +1937,7 @@ function FichajesPage() {
                                 <path d="M3 3h10v10H3V3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M5 1v4M11 1v4M2 6h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
-                            <input type="text" id="filtro-fecha-hasta" class="filtro-input" placeholder="Hasta" />
+                            <input type="text" id="filtro-fecha-hasta" class="filtro-input" placeholder="Hasta (DD/MM/YYYY)" />
                         </div>
                     </div>
                     <div class="filtro-group filtro-group-search">
